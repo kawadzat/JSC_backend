@@ -18,7 +18,4 @@ public interface AssertEntityRepository extends PagingAndSortingRepository<Asser
 
     @Query("SELECT a FROM AssertEntity a WHERE a.station.stationName = ?1")
     List<AssertEntity> getAllAssertsByStation( StationName stationName);
-
-
-
 }

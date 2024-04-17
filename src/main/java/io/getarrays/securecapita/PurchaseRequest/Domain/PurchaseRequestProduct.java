@@ -24,12 +24,12 @@ public class PurchaseRequestProduct {
     private Long id;
     private int   itemNumber;
     private String    ItemDescription;
-    private String  UnitPrice	;
-    private String    EstimateValue	;
-    private int       Quantity;
+    private String  unitPrice	;
+    private String    estimateValue	;
+    private int       quantity;
 
     @ManyToOne
-    @JoinColumn(name = "purchaseRequest_id")
+    @JoinColumn(name = "purchaseRequest_id",nullable = false)
     private PurchaseRequest purchaseRequest;
 
 }

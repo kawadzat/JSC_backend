@@ -1,21 +1,25 @@
 package io.getarrays.securecapita.asserts.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.getarrays.securecapita.itauditing.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.Date;
-@EqualsAndHashCode
+
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
+
 @Getter
 @Setter
-@ToString
-@NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
+@JsonInclude(NON_DEFAULT)
+@Builder
 @Entity
+@NoArgsConstructor
 
-public class Inspection {
+public class Inspection extends Auditable<String> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

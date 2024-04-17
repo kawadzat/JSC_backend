@@ -51,6 +51,8 @@ spring:
           starttls:
             enable: true
             required: true
+  report:
+    path: /path/to/reports
 springdoc:
   api-docs:
     path: /kunal-api-docs

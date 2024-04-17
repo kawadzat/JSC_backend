@@ -55,7 +55,7 @@ public class AssertService  implements  AssertServiceInterface{
 
         if (assertEntityOptional.isPresent()) {
             AssertEntity assertEntity = assertEntityOptional.get();
-            inspection.setAssertEntity(assertEntity);
+            inspection.  setAssertEntity(assertEntity);
             inspectionRepository.save(inspection);
         }
     }

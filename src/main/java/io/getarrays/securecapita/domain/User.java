@@ -14,7 +14,8 @@ import jakarta.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
-
+import java.util.HashSet;
+import java.util.Set;
 /**
  * @author Junior RT
  * @version 1.0
@@ -29,6 +30,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
 @JsonInclude(NON_DEFAULT)
 @Entity
 @Table(name = "users")
+
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -49,11 +51,24 @@ public class User {
     private String imageUrl;
     private boolean enabled;
 
-
     private boolean isNotLocked=true;
     private boolean isUsingMfa;
     private LocalDateTime createdAt;
 
     @OneToOne
     @JoinColumn(name = "station_id")
-    private Station station;}
+    private Station station;
+
+    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_role",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id")}
+    )
+    Set<Role> roles = new HashSet<>();
+
+}
+
+
+
+

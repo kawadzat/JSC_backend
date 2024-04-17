@@ -35,14 +35,14 @@ public interface UserRepository<T extends User> {
     //List<T> findAllWithPagination(int page, int pageSize);
 
 
-
+    User verifyCode(String email, String code);
 
 
  //   Stream<PurchaseRequestEntity> findAll(io.getarrays.securecapita.purchaserequest.Page page);
     /* More Complex Operations */
     User getUserByEmail(String email);
     void sendVerificationCode(UserDTO user);
-    User verifyCode(String email, String code);
+
     void resetPassword(String email);
     T verifyPasswordKey(String key);
     void renewPassword(String key, String password, String confirmPassword);

@@ -26,7 +26,6 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping(path = "/assert")
 @RequiredArgsConstructor
 public class AssertController {
-
     private final UserService userService;
     @Autowired
     AssertService assertService;

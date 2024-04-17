@@ -1,17 +1,14 @@
 version: 0.2
 
-env:
-  variables:
-    JAVA_HOME: "/usr/lib/jvm/java-8-openjdk-amd64"
-
 phases:
   install:
     commands:
       - echo Logging into Amazon  ECR on  'date'
         - aws --version
       - echo logging into Amazon ECR......
-      - (Get-ECRLoginCommand).Password | docker login --username AWS --password-stdin 010088613349.dkr.ecr.eu-north-1.amazonaws.com
-      -echo settings repository URI .....
+      - aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 010088613349.dkr.ecr.eu-north-1.amazonaws.com
+
+
 
 
   pre_build:

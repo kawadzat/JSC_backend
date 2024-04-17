@@ -17,7 +17,9 @@ import io.getarrays.securecapita.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import jdk.jfr.Timespan;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.convert.DurationStyle;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,7 +30,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-//import java.util.concurrent.TimeUnit;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import java.util.concurrent.TimeUnit;
 
 import static io.getarrays.securecapita.dtomapper.UserDTOMapper.toUser;
 import static io.getarrays.securecapita.enumeration.EventType.*;
@@ -42,6 +47,14 @@ import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 import static org.springframework.security.authentication.UsernamePasswordAuthenticationToken.unauthenticated;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentContextPath;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import javax.xml.datatype.DatatypeConstants;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * @author Junior RT
@@ -154,6 +167,20 @@ public class UserResource {
                         .statusCode(OK.value())
                         .build());
     }
+//    @GetMapping("/verify/code/{email}/{code}")
+//    public ResponseEntity<HttpResponse> verifyCode(@PathVariable("email") String email, @PathVariable("code") String code) {
+//        UserDTO user = userService.verifyCode(email, code);
+//        publisher.publishEvent(new NewUserEvent(user.getEmail(), LOGIN_ATTEMPT_SUCCESS));
+//        return ResponseEntity.ok().body(
+//                HttpResponse.builder()
+//                        .timeStamp(now().toString())
+//                        .data(of("user", user, "access_token", tokenProvider.createAccessToken(getUserPrincipal(user))
+//                                , "refresh_token", tokenProvider.createRefreshToken(getUserPrincipal(user))))
+//                        .message("Login Success")
+//                        .status(OK)
+//                        .statusCode(OK.value())
+//                        .build());
+//    }
 
 
     // START - To reset password when user is not logged in
@@ -172,6 +199,9 @@ public class UserResource {
                         .statusCode(OK.value())
                         .build());
     }
+
+
+
 
     @GetMapping("/resetpassword/{email}")
     public ResponseEntity<HttpResponse> resetPassword(@PathVariable("email") String email) {
@@ -293,8 +323,15 @@ public class UserResource {
         return Files.readAllBytes(Paths.get(System.getProperty("user.home") + "/Downloads/images/" + fileName));
     }
 
+
+
+
+
     @GetMapping("/verify/account/{key}")
     public ResponseEntity<HttpResponse> verifyAccount(@PathVariable("key") String key) {
+
+
+   //     TimeUnit.SECONDS.sleep(3);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -303,6 +340,43 @@ public class UserResource {
                         .statusCode(OK.value())
                         .build());
     }
+
+
+//    @GetMapping("/verify/password/{key}")
+//    public ResponseEntity<HttpResponse> verifyPasswordUrl(@PathVariable("key") String key) throws InterruptedException {
+//       TimeUnit.SECONDS.sleep(3);
+//        UserDTO user = userService.verifyPasswordKey(key);
+//        return ResponseEntity.ok().body(
+//                HttpResponse.builder()
+//                        .timeStamp(now().toString())
+//                        .data(of("user", user))
+//                        .message("Please enter a new password")
+//                        .status(OK)
+//                        .statusCode(OK.value())
+//                        .build());
+//    }
+
+    // START - To reset password when user is not logged in
+
+
+
+
+
+//    @GetMapping("/verify/code/{email}/{code}")
+//    public ResponseEntity<HttpResponse> verifyCode(@PathVariable("email") String email, @PathVariable("code") String code) {
+//        UserDTO user = userService.verifyCode(email, code);
+//        publisher.publishEvent(new NewUserEvent(user.getEmail(), LOGIN_ATTEMPT_SUCCESS));
+//        return ResponseEntity.ok().body(
+//                HttpResponse.builder()
+//                        .timeStamp(now().toString())
+//                        .data(of("user", user, "access_token", tokenProvider.createAccessToken(getUserPrincipal(user))
+//                                , "refresh_token", tokenProvider.createRefreshToken(getUserPrincipal(user))))
+//                        .message("Login Success")
+//                        .status(OK)
+//                        .statusCode(OK.value())
+//                        .build());
+//    }
+
 
     @GetMapping("/refresh/token")
     public ResponseEntity<HttpResponse> refreshToken(HttpServletRequest request) {
