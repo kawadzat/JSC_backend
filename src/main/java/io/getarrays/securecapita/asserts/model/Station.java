@@ -27,16 +27,14 @@ public class Station {
     @Id
     @GeneratedValue(strategy = AUTO)
 
-    private Integer  station_id;
+    private Integer station_id;
 
-    @Column(name="station_name")
-    @Enumerated(EnumType.STRING)
-    private StationName stationName;
-
+    @Column(name = "station_name")
+    private String stationName;
 
     @OneToMany(mappedBy = "station")
     @Builder.Default
-    private Set<AssertEntity> asserts=new HashSet<>();
+    private Set<AssertEntity> asserts = new HashSet<>();
     @OneToOne(mappedBy = "station")
     private User user;
 

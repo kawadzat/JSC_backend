@@ -10,11 +10,11 @@ spring:
     url: jdbc:mysql://localhost:3306/securecapita
     password: caroline_654321
     username: root
-    initialization-mode: always
+    initialization-mode: never
   jpa:
     database-platform: org.hibernate.dialect.MySQL8DBDialect
     generate-ddl: true
-    show-sql: false
+    show-sql: true
     hibernate:
       ddl-auto: none
     properties:
@@ -27,8 +27,8 @@ spring:
         multipart:
           enabled: true
           file-size-threshold: 2KB
-          max-file-size: 400MB
-          max-request-size: 400MB
+          max-file-size: 200MB
+          max-request-size: 215MB
   sql:
     init:
       mode: never
@@ -36,23 +36,21 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: zimjsc2020@gmail.com
-    password: gahj myev tkrl dldd
+    username: kkunal2005@gmail.com
+    password: ugds lkwg qhwq hryd
     default-encoding: UTF-8
     properties:
       mail:
         mime:
           charset: UTF
         smtp:
-          writetimeout: 40000
-          connectiontimeout: 40000
+          writetimeout: 10000
+          connectiontimeout: 10000
           timeout: 10000
           auth: true
           starttls:
             enable: true
             required: true
-  report:
-    path: /path/to/reports
 springdoc:
   api-docs:
     path: /kunal-api-docs
@@ -64,13 +62,4 @@ springdoc:
     path: /kunal-documentation
 kunal:
   openapi:
-    dev-url: http://localhost:7070
-
-purchase:
-  query:
-    find:
-      all: select * from purchaserequestnew order by id LIMIT :limit OFFSET :offset
-
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
+    dev-url: http://localhost:7070n

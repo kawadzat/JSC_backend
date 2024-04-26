@@ -33,8 +33,6 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import java.util.concurrent.TimeUnit;
-
 import static io.getarrays.securecapita.dtomapper.UserDTOMapper.toUser;
 import static io.getarrays.securecapita.enumeration.EventType.*;
 import static io.getarrays.securecapita.utils.ExceptionUtils.processError;
@@ -141,7 +139,7 @@ public class UserResource {
     }
 
 
-    @GetMapping("/profile")
+    @GetMapping("/profile")//this pull roles and name of person together
     public ResponseEntity<HttpResponse> profile(Authentication authentication) {
         UserDTO user = userService.getUserByEmail(getAuthenticatedUser(authentication).getEmail());
         return ResponseEntity.ok().body(

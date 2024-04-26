@@ -2,38 +2,40 @@ package io.getarrays.securecapita.asserts.service;
 
 import io.getarrays.securecapita.asserts.model.AssertEntity;
 import io.getarrays.securecapita.asserts.model.Inspection;
-import io.getarrays.securecapita.asserts.model.StationName;
+import io.getarrays.securecapita.asserts.model.Station;
 import io.getarrays.securecapita.asserts.repo.AssertEntityRepository;
 import io.getarrays.securecapita.asserts.repo.InspectionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.getarrays.securecapita.asserts.repo.StationRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
-public class AssertService  implements  AssertServiceInterface{
+@AllArgsConstructor
+public class AssertService implements AssertServiceInterface {
 
-
-    @Autowired
-  public AssertEntityRepository assertRepository;
-
-    @Autowired
-    public InspectionRepository inspectionRepository;
-
-
+    private final AssertEntityRepository assertRepository;
+    private final InspectionRepository inspectionRepository;
+    private final StationRepository stationRepository;
 
     /* updating the user */
     public AssertEntity updateAssertEntity(AssertEntity assertEntity) {
 
-        AssertEntity updatedAssertEntity =assertRepository.save(assertEntity);
+        AssertEntity updatedAssertEntity = assertRepository.save(assertEntity);
 
         return updatedAssertEntity;
     }
 
 
     /* to create user */
-    public AssertEntity createAssert(AssertEntity newAssert) {
+    public AssertEntity createAssert(AssertEntity newAssert) throws Exception {
+        Optional<Station> optionalStation = stationRepository.findById(newAssert.getSelectedStationID());
+        if (optionalStation.isEmpty()) {
+            throw new Exception("Station not found");
+        }
+        newAssert.setStation(optionalStation.get());
         AssertEntity createdAssert = assertRepository.save(newAssert);
         return createdAssert;
     }
@@ -55,13 +57,13 @@ public class AssertService  implements  AssertServiceInterface{
 
         if (assertEntityOptional.isPresent()) {
             AssertEntity assertEntity = assertEntityOptional.get();
-            inspection.  setAssertEntity(assertEntity);
+            inspection.setAssertEntity(assertEntity);
             inspectionRepository.save(inspection);
         }
     }
 
     public Inspection getInspection(Long id) {
-        return  inspectionRepository .findById(id).get();
+        return inspectionRepository.findById(id).get();
     }
 
     @Override
@@ -70,16 +72,14 @@ public class AssertService  implements  AssertServiceInterface{
     }
 
 
-    public  Iterable  <AssertEntity> getAsserts() {
+    public Iterable<AssertEntity> getAsserts() {
         return assertRepository.findAll();
     }
 
     @Override
-    public List<AssertEntity> getAllAssertsByStation(StationName stationName) {
-        return assertRepository.getAllAssertsByStation(stationName);
+    public ResponseEntity<?> getAllAssertsByStation(Long stationId) {
+        return ResponseEntity.ok(assertRepository.getAllAssertsByStation(stationId));
     }
-
-
 
 
 }

@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.getarrays.securecapita.itauditing.Auditable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Collection;
@@ -26,7 +26,7 @@ import static jakarta.persistence.FetchType.EAGER;
 
 @Table(name = "assert")
 
-public class AssertEntity    extends Auditable<String>  {
+public class AssertEntity extends Auditable<String>  {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -34,15 +34,26 @@ public class AssertEntity    extends Auditable<String>  {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
 
     @Temporal(TemporalType.DATE)
+    @NotNull
     private Date date;
+    @NotNull
     private String assetDisc;
+    @NotNull
     private int assetNumber;
+    @NotNull
     private String  serialNumber;
+    //add all details, station, and only can filter from frontend
+    //CAN WE DO IT
+    @NotNull
     private String invoiceNumber;
+    @NotNull
     private  String assertType;
+    @NotNull
     private String location;
+    @NotNull
     private int quantity;
 
+    @NotNull
     private String initialRemarks;
     @OneToMany(mappedBy = "assertEntity")
     @JsonManagedReference
@@ -53,4 +64,7 @@ public class AssertEntity    extends Auditable<String>  {
     @JoinColumn(name = "station_id")
     private Station station;
 
+    @Transient
+    @NotNull
+    private Long selectedStationID;
 }

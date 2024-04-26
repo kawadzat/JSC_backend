@@ -40,8 +40,6 @@ public class RoleRepositoryImpl implements RoleRepository<Role> {
     public Collection<Role> list() {
 
 
-
-
         log.info("Fetching all roles");
         try {
             return jdbc.query(SELECT_ROLES_QUERY, new RoleRowMapper());

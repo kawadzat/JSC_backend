@@ -1,8 +1,6 @@
 package io.getarrays.securecapita.asserts.controller;
 
 import io.getarrays.securecapita.asserts.model.Station;
-import io.getarrays.securecapita.asserts.model.StationName;
-import io.getarrays.securecapita.asserts.service.AssertService;
 import io.getarrays.securecapita.asserts.service.StationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,14 +47,7 @@ public class StationController {
 
     @GetMapping("/getAll")
     public ResponseEntity<?> getAllStations(){
-        List<HashMap<String,Object>> responses=new ArrayList<>();
-        for(StationName stationName:StationName.values()){
-            HashMap<String,Object> response=new HashMap<>();
-            response.put("id",stationName.getId());
-            response.put("name",stationName.getName());
-            responses.add(response);
-        }
-        return ResponseEntity.ok(responses);
+        return stationService.getAllStations();
     }
 
 

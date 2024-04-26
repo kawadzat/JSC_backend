@@ -157,6 +157,16 @@
 			<version>3.18.1-GA</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.jetbrains.kotlin</groupId>
+			<artifactId>kotlin-stdlib</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jetbrains.kotlin</groupId>
+			<artifactId>kotlin-reflect</artifactId>
+		</dependency>
+
+
 
 		<dependency>
 			<groupId>org.apache.httpcomponents.client5</groupId>

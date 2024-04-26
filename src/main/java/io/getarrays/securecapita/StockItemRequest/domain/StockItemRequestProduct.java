@@ -4,7 +4,7 @@ package io.getarrays.securecapita.StockItemRequest.domain;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.getarrays.securecapita.asserts.model.AssertEntity;
-import io.getarrays.securecapita.stockitem.StocksDao;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,8 +18,6 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
 @Entity
 @NoArgsConstructor
 public class StockItemRequestProduct {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class UserDTO {
     private Long id;
     private String firstName;
@@ -32,4 +31,9 @@ public class UserDTO {
     private LocalDateTime createdAt;
     private String roleName;
     private String permissions;
+
+    @Override
+    public String toString() {
+        return firstName+" "+lastName+", "+email;
+    }
 }
