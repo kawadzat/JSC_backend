@@ -3,6 +3,7 @@ package io.getarrays.securecapita.repository;
 import io.getarrays.securecapita.domain.Role;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * @author Junior RT

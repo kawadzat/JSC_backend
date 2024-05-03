@@ -17,7 +17,8 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class Auditable <U> {
 
-
+//adding user to station assign and unassign to station, user should add assert to station he belongs to
+    //tell me more,lets start simple add user to station
     @Column(name="created_by", columnDefinition="VARCHAR(1000)")
     private U createdBy;
 

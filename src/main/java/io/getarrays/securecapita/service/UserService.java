@@ -1,9 +1,11 @@
 package io.getarrays.securecapita.service;
 
 import io.getarrays.securecapita.asserts.model.Station;
+import io.getarrays.securecapita.domain.Role;
 import io.getarrays.securecapita.domain.User;
 import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.form.UpdateForm;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
@@ -16,7 +18,6 @@ import java.util.Collection;
  */
       public interface UserService {
 
-    void assignStationToUser(Long userId, Integer stationId);
     UserDTO createUser(User user);
 
 
@@ -55,11 +56,5 @@ import java.util.Collection;
     UserDTO verifyCode(String email, String code);
 
 
-
-
-
-
-
-
-
+    ResponseEntity<?> changeRole(Long userId, String role);
 }

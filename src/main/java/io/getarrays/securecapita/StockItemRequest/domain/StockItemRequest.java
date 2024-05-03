@@ -1,11 +1,14 @@
 package io.getarrays.securecapita.StockItemRequest.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.getarrays.securecapita.asserts.model.Inspection;
+import io.getarrays.securecapita.asserts.model.Station;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -42,5 +45,15 @@ public class StockItemRequest {
 
     @OneToMany(mappedBy = "stockItemRequest", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StockItemRequestProduct> stockItemRequestProducts = new ArrayList<>();
+
+
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "station_id")
+    private Station station;
+
+    @Transient
+    @NotNull
+    private Long selectedStationID;
 
 }

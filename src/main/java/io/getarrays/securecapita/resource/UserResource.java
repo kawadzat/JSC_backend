@@ -505,13 +505,13 @@ public class UserResource {
 //       userService.assignStationToUser(userId, stationId);
 //
 //        return ResponseEntity.ok("Station assigned to user successfully.");
-//    }
-@PutMapping("/{userId}/assignStation/{stationId}")
-public ResponseEntity<String> assignStationToUser(@PathVariable("userId") Long userId,
-                                                  @PathVariable("stationId") Integer stationId) {
-userService.assignStationToUser(userId, stationId);
-    return ResponseEntity.ok("Station assigned to user successfully.");
-}
+////    }
+//@PutMapping("/{userId}/assignStation/{stationId}")
+//public ResponseEntity<String> assignStationToUser(@PathVariable("userId") Long userId,
+//                                                  @PathVariable("stationId") Integer stationId) {
+//userService.assignStationToUser(userId, stationId);
+//    return ResponseEntity.ok("Station assigned to user successfully.");
+//}
 
 }
 

@@ -1,5 +1,6 @@
 package io.getarrays.securecapita.asserts.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.getarrays.securecapita.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,8 +26,6 @@ public class Station {
 
     @Column(name = "station_id", columnDefinition = "BIGINT default 0")
     @Id
-    @GeneratedValue(strategy = AUTO)
-
     private Integer station_id;
 
     @Column(name = "station_name")
@@ -35,10 +34,16 @@ public class Station {
     @OneToMany(mappedBy = "station")
     @Builder.Default
     private Set<AssertEntity> asserts = new HashSet<>();
-    @OneToOne(mappedBy = "station")
-    private User user;
+    @ManyToMany
+    @JsonIgnore
+    private Set<User> users = new HashSet<>();
 
     public void add(AssertEntity assertEntity) {
         asserts.add(assertEntity);
     }
+
+    public void addUser(User user) {
+        users.add(user);
+    }
+
 }

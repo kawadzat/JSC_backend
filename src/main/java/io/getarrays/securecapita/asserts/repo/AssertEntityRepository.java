@@ -2,18 +2,25 @@ package io.getarrays.securecapita.asserts.repo;
 
 import io.getarrays.securecapita.asserts.model.AssertEntity;
 
+import io.getarrays.securecapita.dto.AssetItemStat;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
+
 @Repository
-public interface AssertEntityRepository extends PagingAndSortingRepository<AssertEntity, Long>, ListCrudRepository<AssertEntity, Long> {
+public interface AssertEntityRepository extends PagingAndSortingRepository<AssertEntity, Long>, JpaRepository<AssertEntity, Long>, ListCrudRepository<AssertEntity, Long> {
 
 //    @Query("select  from Assert where a.stationName=:n" )
 //    List<AssertEntity> getAllAssertsByStation(@Param("n")String stationName);
 
     @Query("SELECT a FROM AssertEntity a WHERE a.station.station_id = ?1")
-    List<AssertEntity> getAllAssertsByStation( Long stationId);
+    List<AssertEntity> getAllAssertsByStation(Long stationId);
+
+
+
 }

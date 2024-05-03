@@ -1,21 +1,26 @@
 package io.getarrays.securecapita.service.implementation;
 
+import com.twilio.http.Response;
 import io.getarrays.securecapita.asserts.model.Station;
 import io.getarrays.securecapita.domain.Role;
 import io.getarrays.securecapita.domain.User;
 import io.getarrays.securecapita.dto.UserDTO;
+import io.getarrays.securecapita.exception.CustomMessage;
 import io.getarrays.securecapita.form.UpdateForm;
 import io.getarrays.securecapita.repository.RoleRepository;
 import io.getarrays.securecapita.repository.UserRepository;
+import io.getarrays.securecapita.repository.implementation.RoleRepository1;
 import io.getarrays.securecapita.repository.implementation.UserRepository1;
+import io.getarrays.securecapita.roles.UserRole;
 import io.getarrays.securecapita.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.sql.Timestamp;
+import java.util.*;
 
 import static io.getarrays.securecapita.dtomapper.UserDTOMapper.fromUser;
 
@@ -33,6 +38,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository1 userRepository1;
     private final UserRepository<User> userRepository;
     private final RoleRepository<Role> roleRoleRepository;
+    private final RoleRepository1 roleRepository1;
+
 
     @Override
     public boolean deleteUser(Long id) {
@@ -50,7 +57,6 @@ public class UserServiceImpl implements UserService {
     public UserDTO createUser(User user) {
         return mapToUserDTO(userRepository.create(user));
     }
-
 
 
     @Override
@@ -90,6 +96,27 @@ public class UserServiceImpl implements UserService {
         return mapToUserDTO(userRepository.verifyCode(email, code));
     }
 
+    @Override
+    @Transactional
+    public ResponseEntity<?> changeRole(Long userId, String role) {
+        System.out.println(role);
+        Optional<Role> roleOptional = roleRepository1.findByRoleName(role);
+        if (roleOptional.isEmpty()) {
+            return ResponseEntity.badRequest().body(new CustomMessage("Role is invalid."));
+        }
+        Optional<User> userOptional = userRepository1.findById(userId);
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.badRequest().body(new CustomMessage("UserId is invalid."));
+        }
+        User user = userOptional.get();
+        user.expireAllRoles();
+        userRepository1.save(user);
+        user.removeAllRole();
+        UserRole userRole=UserRole.builder().active(true).createdDate(new Timestamp(System.currentTimeMillis())).role(roleOptional.get()).build();
+        user.addRole(userRole);
+        userRepository1.save(user);
+        return ResponseEntity.ok(new CustomMessage("Role updated for User: "+user.getFirstName()));
+    }
 
 
     @Override
@@ -125,20 +152,15 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
-
-
-
-
     @Override
     public void updatePassword(Long id, String currentPassword, String newPassword, String confirmNewPassword) {
         userRepository.updatePassword(id, currentPassword, newPassword, confirmNewPassword);
     }
 
 
-    public void assignStationToUser(Long userId, Integer stationId) {
-        userRepository1.addStationToUser(userId, stationId);
-    }
+//    public void assignStationToUser(Long userId, Integer stationId) {
+//        userRepository1.addStationToUser(userId, stationId);
+//    }
 
     @Override
     public void updateUserRole(Long userId, String roleName) {
@@ -162,7 +184,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addStationToUser(Long id, Station station) {
-
 
 
     }

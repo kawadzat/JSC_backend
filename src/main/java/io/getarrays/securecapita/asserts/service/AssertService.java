@@ -4,12 +4,16 @@ import io.getarrays.securecapita.asserts.model.AssertEntity;
 import io.getarrays.securecapita.asserts.model.Inspection;
 import io.getarrays.securecapita.asserts.model.Station;
 import io.getarrays.securecapita.asserts.repo.AssertEntityRepository;
+import io.getarrays.securecapita.asserts.repo.AssertsJpaRepository;
 import io.getarrays.securecapita.asserts.repo.InspectionRepository;
 import io.getarrays.securecapita.asserts.repo.StationRepository;
+import io.getarrays.securecapita.dto.AssetItemStat;
+import io.getarrays.securecapita.dto.Stats;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -19,6 +23,8 @@ public class AssertService implements AssertServiceInterface {
     private final AssertEntityRepository assertRepository;
     private final InspectionRepository inspectionRepository;
     private final StationRepository stationRepository;
+    private final AssertEntityRepository assertEntityRepository;
+    private final AssertsJpaRepository assertsJpaRepository;
 
     /* updating the user */
     public AssertEntity updateAssertEntity(AssertEntity assertEntity) {
@@ -81,5 +87,22 @@ public class AssertService implements AssertServiceInterface {
         return ResponseEntity.ok(assertRepository.getAllAssertsByStation(stationId));
     }
 
+    @Override
+    public ResponseEntity<?> getStats() {
+        // Fetch the total fixed asserts and total current asserts
+        int totalFixedAsserts = assertsJpaRepository.countFixedAsserts();
+        int totalCurrentAsserts = assertsJpaRepository.countCurrentAsserts();
+
+        // Fetch asset statistics
+        ArrayList<AssetItemStat> assetsStats = assertsJpaRepository.findAssertItemStatsByAssetDisc();
+
+        // Return a new Stats object with the calculated totals and fetched asset statistics
+        return ResponseEntity.ok(Stats.builder()
+                .totalAsserts(assertsJpaRepository.count())
+                .totalFixedAsserts(totalFixedAsserts)
+                .totalCurrentAsserts(totalCurrentAsserts)
+                .assetsStats(assetsStats)
+                .build());
+    }
 
 }

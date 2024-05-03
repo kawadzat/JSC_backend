@@ -16,4 +16,6 @@ public interface AssertServiceInterface {
 
 
     AssertEntity getAssertEntityById(Long assertEntityId);
+
+    ResponseEntity<?> getStats();
 }

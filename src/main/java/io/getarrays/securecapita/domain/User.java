@@ -2,6 +2,7 @@ package io.getarrays.securecapita.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.getarrays.securecapita.asserts.model.Station;
+import io.getarrays.securecapita.roles.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +15,8 @@ import jakarta.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
+
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 /**
@@ -55,18 +58,26 @@ public class User {
     private boolean isUsingMfa;
     private LocalDateTime createdAt;
 
-    @OneToOne
-    @JoinColumn(name = "station_id")
-    private Station station;
+//    @OneToOne
+//    @JoinColumn(name = "station_id")
+//    private Station station;
 
-    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_role",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "role_id")}
-    )
-    Set<Role> roles = new HashSet<>();
+    @ManyToMany
+    private Set<UserRole> roles = new HashSet<>();
 
+    public void addRole(UserRole role) {
+        roles.add(role);
+    }
+
+    public void removeRole(UserRole role) {
+        roles.remove(role);
+    }
+    public void expireAllRoles() {
+        roles.forEach((role)->role.setActive(false));
+    }
+    public void removeAllRole() {
+        roles.clear();
+    }
 }
 
 

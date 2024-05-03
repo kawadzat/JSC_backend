@@ -1,11 +1,10 @@
-package io.getarrays.securecapita.domain;
+package io.getarrays.securecapita.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import java.util.ArrayList;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
 
@@ -16,14 +15,13 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
  * @since 5/15/2023
  */
 
-@Setter
-@Getter
-@SuperBuilder
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
-//@JsonInclude(NON_DEFAULT)
+@NoArgsConstructor
+@Builder
 public class Stats {
-    private int totalCustomers;
-    private int totalInvoices;
-    private double totalBilled;
+    private long totalAsserts;
+    private long totalFixedAsserts;
+    private long totalCurrentAsserts;
+    private ArrayList<AssetItemStat> assetsStats;
 }

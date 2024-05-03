@@ -57,4 +57,8 @@ public class StationController {
         return stationService.addAssert(stationId,assertId);
     }
 
+    @PostMapping("/addUserToStation")
+    public ResponseEntity<?> addUserToStation(@RequestParam("userId") Long userId,@RequestParam("stationId") Long stationId){
+        return stationService.addUser(stationId,userId);
+    }
 }

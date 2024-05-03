@@ -7,8 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.Optional;
+
 public interface UserRepository1   extends JpaRepository<User,Long> {
-    @Modifying
-    @Query(value = "UPDATE users SET station_id = :stationId WHERE id = :userId", nativeQuery = true)
-    int addStationToUser(@Param("userId") Long userId, @Param("stationId") Integer stationId);
+    @Query("SELECT u FROM User u WHERE u.email = :email")
+    Optional<User> findByEmail(String email);
+
+    @Query("Select u FROM User where  ")
+    ArrayList<User> findUsersWithNoRoles();
 }

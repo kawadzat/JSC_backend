@@ -1,11 +1,8 @@
 package io.getarrays.securecapita;
 
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.annotation.Order;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,26 +12,14 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 import java.util.List;
-
-/**
- * @author Junior RT
- * @version 1.0
- * @license Get Arrays, LLC (<a href="https://getarrays.io">...</a>)
- * @since 8/22/2022
- */
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.multipart.support.MultipartFilter;
 //////////
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 
 @SpringBootApplication//(exclude = { SecurityAutoConfiguration.class })
-@OpenAPIDefinition(info = @Info(title = "Invoices and Customers API", version = "2.0", description = "Application To Manage Invoices and Customers"))
 public class SecureCapitaApplication {
 
 	@Bean
-	public AuditorAware<String>auditorAware(){
+	public AuditorAware<String> auditorAware() {
 
 		return new SpringSecurityAuditorAware();
 	}
@@ -68,6 +53,6 @@ public class SecureCapitaApplication {
 		urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
 		return new CorsFilter(urlBasedCorsConfigurationSource);
 	}
-
-
 }
+
+

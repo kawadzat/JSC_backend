@@ -14,9 +14,9 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.MySQL8DBDialect
     generate-ddl: true
-    show-sql: true
+    show-sql: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     properties:
       hibernate:
         globally_quoted_indentifiers: true
@@ -51,15 +51,15 @@ spring:
           starttls:
             enable: true
             required: true
-springdoc:
-  api-docs:
-    path: /kunal-api-docs
-  swagger-ui:
-    operationsSorter: method
-    filter: true
-    tagsSorter: alpha
-    tryItOutEnabled: true
-    path: /kunal-documentation
-kunal:
-  openapi:
-    dev-url: http://localhost:7070n
+swagger:
+  api:
+    title: SecureCapital
+    description: API for Secure Capital
+    version: 0.9
+    termsOfServiceUrl: google.com
+    contact:
+      name: Your Contact Name Here
+      url: Your Contact URL Here
+
+
+

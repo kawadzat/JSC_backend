@@ -27,7 +27,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
  * @license Get Arrays, LLC (https://getarrays.io)
  * @since 11/19/2022
  */
-
+//code to return roles?
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -50,6 +50,8 @@ public class SecurityConfig {
         http.sessionManagement().sessionCreationPolicy(STATELESS);
         http.authorizeHttpRequests().requestMatchers(PUBLIC_URLS).permitAll();
         http.authorizeHttpRequests().requestMatchers(OPTIONS).permitAll(); // Not needed
+        http.authorizeHttpRequests().requestMatchers("/v3/api-docs/**","/swagger-ui/**","/swagger-ui.html").permitAll();
+        http.authorizeHttpRequests().requestMatchers("/api/v1/admin/roles/**").hasAnyAuthority("UPDATE:USER");
         http.authorizeHttpRequests().requestMatchers(DELETE, "/user/delete/**").hasAnyAuthority("DELETE:USER");
         http.authorizeHttpRequests().requestMatchers(DELETE, "/purchaseRequisition/delete/**").hasAnyAuthority("DELETE:purchaseRequisition");
         http.exceptionHandling().accessDeniedHandler(customAccessDeniedHandler).authenticationEntryPoint(customAuthenticationEntryPoint);

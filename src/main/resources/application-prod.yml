@@ -51,15 +51,13 @@ spring:
           starttls:
             enable: true
             required: true
-springdoc:
-  api-docs:
-    path: /kunal-api-docs
-  swagger-ui:
-    operationsSorter: method
-    filter: true
-    tagsSorter: alpha
-    tryItOutEnabled: true
-    path: /kunal-documentation
-kunal:
-  openapi:
-    dev-url: http://localhost:7070
+swagger:
+  api:
+    title: Your API Title Here
+    description: Your API Description Here
+    version: Your API Version Here
+    termsOfServiceUrl: Your Terms of Service URL Here
+    contact:
+      name: Your Contact Name Here
+      url: Your Contact URL Here
+

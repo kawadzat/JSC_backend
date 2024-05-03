@@ -1,12 +1,15 @@
 package io.getarrays.securecapita.PurchaseRequest.Domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.getarrays.securecapita.asserts.model.Inspection;
+import io.getarrays.securecapita.asserts.model.Station;
 import io.getarrays.securecapita.itauditing.Auditable;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -22,6 +25,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
 @Entity
 @NoArgsConstructor
 public class PurchaseRequest  extends Auditable<String> {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonProperty
@@ -39,5 +43,14 @@ public class PurchaseRequest  extends Auditable<String> {
 
     @OneToMany(mappedBy = "purchaseRequest")
     private List<PurchaseRequestProduct> purchaseRequestProducts;
+
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "station_id")
+    private Station station;
+
+    @Transient
+    @NotNull
+    private Long selectedStationID;
 
 }
