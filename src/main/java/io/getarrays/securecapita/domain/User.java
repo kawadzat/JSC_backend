@@ -63,6 +63,7 @@ public class User {
 //    private Station station;
 
     @ManyToMany
+    @Builder.Default
     private Set<UserRole> roles = new HashSet<>();
 
     public void addRole(UserRole role) {

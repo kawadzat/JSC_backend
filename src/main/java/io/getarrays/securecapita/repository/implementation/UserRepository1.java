@@ -14,6 +14,6 @@ public interface UserRepository1   extends JpaRepository<User,Long> {
     @Query("SELECT u FROM User u WHERE u.email = :email")
     Optional<User> findByEmail(String email);
 
-    @Query("Select u FROM User where  ")
+    @Query("Select u FROM User u where u.roles IS EMPTY")
     ArrayList<User> findUsersWithNoRoles();
 }

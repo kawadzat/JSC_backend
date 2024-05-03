@@ -24,6 +24,8 @@ public class UserRole {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "role_id")
     private Role role;
 
     private Boolean active;

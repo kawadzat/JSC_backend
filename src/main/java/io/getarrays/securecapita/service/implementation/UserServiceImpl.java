@@ -9,6 +9,7 @@ import io.getarrays.securecapita.exception.CustomMessage;
 import io.getarrays.securecapita.form.UpdateForm;
 import io.getarrays.securecapita.repository.RoleRepository;
 import io.getarrays.securecapita.repository.UserRepository;
+import io.getarrays.securecapita.repository.UserRoleRepository;
 import io.getarrays.securecapita.repository.implementation.RoleRepository1;
 import io.getarrays.securecapita.repository.implementation.UserRepository1;
 import io.getarrays.securecapita.roles.UserRole;
@@ -39,7 +40,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository<User> userRepository;
     private final RoleRepository<Role> roleRoleRepository;
     private final RoleRepository1 roleRepository1;
-
+    private final UserRoleRepository userRoleRepository;
 
     @Override
     public boolean deleteUser(Long id) {
@@ -55,6 +56,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO createUser(User user) {
+        List<Role> roles = roleRepository1.findAll();
+        Optional<Role> role = roles.stream().filter(r -> r.getName().equals("ROLE_USER")).findFirst();
+        UserRole userRole = UserRole.builder().active(true).role(role.orElseGet(() -> roles.get(0))).createdDate(new Timestamp(System.currentTimeMillis())).build();
+        user.addRole(userRole);
         return mapToUserDTO(userRepository.create(user));
     }
 
