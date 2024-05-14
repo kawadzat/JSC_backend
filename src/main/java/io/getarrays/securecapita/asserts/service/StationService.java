@@ -6,7 +6,10 @@ import io.getarrays.securecapita.asserts.model.Station;
 import io.getarrays.securecapita.asserts.repo.AssertEntityRepository;
 import io.getarrays.securecapita.asserts.repo.StationRepository;
 import io.getarrays.securecapita.domain.User;
+import io.getarrays.securecapita.exception.CustomMessage;
 import io.getarrays.securecapita.repository.implementation.UserRepository1;
+import io.getarrays.securecapita.roles.UserRole;
+import io.getarrays.securecapita.roles.prerunner.ROLE_AUTH;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +83,7 @@ public class StationService {
 
     public ResponseEntity<?> getAllStations() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains("CREATE:ASSERT"))) {
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.VIEW_STATION.name()))) {
             List<Station> stations = stationRepository.findAll();
             List<Map<String, Object>> transformedStations = stations.stream()
                     .map(station -> {
@@ -92,7 +95,7 @@ public class StationService {
                     .toList();
             return ResponseEntity.ok(transformedStations);
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission.");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
     }
 
     public ResponseEntity<?> addUser(Long stationId, Long userId) {

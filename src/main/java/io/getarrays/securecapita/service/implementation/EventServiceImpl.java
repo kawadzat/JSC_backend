@@ -1,12 +1,16 @@
 package io.getarrays.securecapita.service.implementation;
 
+import io.getarrays.securecapita.domain.User;
 import io.getarrays.securecapita.domain.UserEvent;
 import io.getarrays.securecapita.enumeration.EventType;
 import io.getarrays.securecapita.repository.EventRepository;
 import io.getarrays.securecapita.service.EventService;
+import io.getarrays.securecapita.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 /**
@@ -27,11 +31,13 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public void addUserEvent(String email, EventType eventType, String device, String ipAddress) {
-        eventRepository.addUserEvent(email, eventType, device, ipAddress);
+        UserEvent userEvent= UserEvent.builder().type(eventType).createdAt(LocalDateTime.now()).device(device).ipAddress(ipAddress).userId(UserUtils.getAuthenticatedUser(SecurityContextHolder.getContext().getAuthentication()).getId()).build();
+        eventRepository.save(userEvent);
     }
 
     @Override
     public void addUserEvent(Long userId, EventType eventType, String device, String ipAddress) {
-        eventRepository.addUserEvent(userId, eventType, device, ipAddress);
+        UserEvent userEvent= UserEvent.builder().type(eventType).createdAt(LocalDateTime.now()).device(device).ipAddress(ipAddress).userId(userId).build();
+        eventRepository.save(userEvent);
     }
 }

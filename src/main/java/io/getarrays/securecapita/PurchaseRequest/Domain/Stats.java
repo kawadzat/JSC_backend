@@ -21,6 +21,7 @@ public class Stats {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonProperty
+    private Long id;
     private int totalMonthAmountRequest;
 
     private int totalMonthRequest;

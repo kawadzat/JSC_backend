@@ -1,6 +1,8 @@
 package io.getarrays.securecapita.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.getarrays.securecapita.enumeration.EventType;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,11 +25,18 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(NON_DEFAULT)
+@Entity
+@Table(name = "user_events")
 public class UserEvent {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String type;
+    private EventType type;
     private String description;
     private String device;
     private String ipAddress;
     private LocalDateTime createdAt;
+
+    private Long userId;
 }

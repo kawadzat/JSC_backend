@@ -73,7 +73,7 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
             SqlParameterSource parameters = getSqlParameterSource(user);
             jdbc.update(INSERT_USER_QUERY, parameters, holder);
             user.setId(requireNonNull(holder.getKey()).longValue());
-            roleRepository.addRoleToUser(user.getId(), ROLE_STORES.name());
+//            roleRepository.addRoleToUser(user.getId(), ROLE_STORES.name());
             String verificationUrl = getVerificationUrl(UUID.randomUUID().toString(), ACCOUNT.getType());
             jdbc.update(INSERT_ACCOUNT_VERIFICATION_URL_QUERY, of("userId", user.getId(), "url", verificationUrl));
             sendEmail(user.getFirstName(), user.getEmail(), verificationUrl, ACCOUNT);

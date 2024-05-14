@@ -1,8 +1,10 @@
 package io.getarrays.securecapita.dto;
 
+import io.getarrays.securecapita.domain.User;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 /**
  * @author Junior RT
@@ -13,6 +15,7 @@ import java.time.LocalDateTime;
 
 @Setter
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDTO {
@@ -31,6 +34,25 @@ public class UserDTO {
     private LocalDateTime createdAt;
     private String roleName;
     private String permissions;
+
+    public static UserDTO toDto(User user) {
+        return UserDTO.builder()
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .title(user.getTitle())
+                .bio(user.getBio())
+                .imageUrl(user.getImageUrl())
+                .enabled(user.isEnabled())
+                .isNotLocked(user.isNotLocked())
+                .isUsingMfa(user.isUsingMfa())
+                .createdAt(user.getCreatedAt())
+                .roleName(user.getRoles().stream().findAny().get().getRole().getName())
+                .permissions(user.getRoles().stream().findAny().get().getRole().getPermission())
+                .build();
+    }
 
     @Override
     public String toString() {

@@ -9,6 +9,9 @@ import io.getarrays.securecapita.asserts.repo.InspectionRepository;
 import io.getarrays.securecapita.asserts.repo.StationRepository;
 import io.getarrays.securecapita.dto.AssetItemStat;
 import io.getarrays.securecapita.dto.Stats;
+import io.getarrays.securecapita.exception.CustomMessage;
+import io.getarrays.securecapita.userlogs.ActionType;
+import io.getarrays.securecapita.userlogs.UserLogService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,25 +28,32 @@ public class AssertService implements AssertServiceInterface {
     private final StationRepository stationRepository;
     private final AssertEntityRepository assertEntityRepository;
     private final AssertsJpaRepository assertsJpaRepository;
+    private final UserLogService userLogService;
 
     /* updating the user */
     public AssertEntity updateAssertEntity(AssertEntity assertEntity) {
 
         AssertEntity updatedAssertEntity = assertRepository.save(assertEntity);
-
+        userLogService.addLog(ActionType.UPDATED, "updated assert successfully.");
         return updatedAssertEntity;
     }
 
 
     /* to create user */
-    public AssertEntity createAssert(AssertEntity newAssert) throws Exception {
+    public ResponseEntity<?> createAssert(AssertEntity newAssert) throws Exception {
+        //check duplicate
+        Optional<AssertEntity> duplicatedAssert=assertsJpaRepository.findByName(newAssert.getAssetDisc());
+        if(duplicatedAssert.isPresent()){
+            return ResponseEntity.status(422).body(new CustomMessage("Found Duplicate Entry. Please check again."));
+        }
         Optional<Station> optionalStation = stationRepository.findById(newAssert.getSelectedStationID());
         if (optionalStation.isEmpty()) {
             throw new Exception("Station not found");
         }
         newAssert.setStation(optionalStation.get());
         AssertEntity createdAssert = assertRepository.save(newAssert);
-        return createdAssert;
+        userLogService.addLog(ActionType.CREATED, "created assert successfully. Assert: "+newAssert.getAssetDisc());
+        return ResponseEntity.ok(createdAssert);
     }
 
 
@@ -66,6 +76,8 @@ public class AssertService implements AssertServiceInterface {
             inspection.setAssertEntity(assertEntity);
             inspectionRepository.save(inspection);
         }
+        userLogService.addLog(ActionType.UPDATED, "added inspection to assert.");
+
     }
 
     public Inspection getInspection(Long id) {
@@ -95,6 +107,7 @@ public class AssertService implements AssertServiceInterface {
 
         // Fetch asset statistics
         ArrayList<AssetItemStat> assetsStats = assertsJpaRepository.findAssertItemStatsByAssetDisc();
+        userLogService.addLog(ActionType.VIEW, "checked stats of asserts.");
 
         // Return a new Stats object with the calculated totals and fetched asset statistics
         return ResponseEntity.ok(Stats.builder()

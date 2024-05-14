@@ -3,6 +3,7 @@ package io.getarrays.securecapita.configuration;
 import io.getarrays.securecapita.filter.CustomAuthorizationFilter;
 import io.getarrays.securecapita.handler.CustomAccessDeniedHandler;
 import io.getarrays.securecapita.handler.CustomAuthenticationEntryPoint;
+import io.getarrays.securecapita.roles.prerunner.ROLE_AUTH;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,8 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static org.springframework.http.HttpMethod.DELETE;
-import static org.springframework.http.HttpMethod.OPTIONS;
+import static org.springframework.http.HttpMethod.*;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 /**
@@ -39,9 +39,9 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final CustomAuthorizationFilter customAuthorizationFilter;
 
-    private static final String[] PUBLIC_URLS = { "/user/verify/password/**",
+    private static final String[] PUBLIC_URLS = {"/user/verify/password/**",
             "/user/login/**", "/user/verify/code/**", "/user/register/**", "/user/resetpassword/**", "/user/verify/account/**",
-            "/user/refresh/token/**", "/StockItemRequest","/user/image/**","user/list/**", "io/getarrays/securecapita/assert/**","newvehicle/**" ,"inspection/**", "inventory/**","/purchaseRequisition/**","/store/**","/inspection/addtoassert/**","product/**","category/**","stock/totalQuantity/**","users/{userId}/**" };
+            "/user/refresh/token/**", "/StockItemRequest", "/user/image/**", "user/list/**", "io/getarrays/securecapita/assert/**", "newvehicle/**", "inspection/**", "inventory/**", "/purchaseRequisition/**", "/store/**", "/inspection/addtoassert/**", "product/**", "category/**", "stock/totalQuantity/**", "users/{userId}/**"};
 
 
     @Bean
@@ -49,11 +49,11 @@ public class SecurityConfig {
         http.csrf().disable().cors();
         http.sessionManagement().sessionCreationPolicy(STATELESS);
         http.authorizeHttpRequests().requestMatchers(PUBLIC_URLS).permitAll();
-        http.authorizeHttpRequests().requestMatchers(OPTIONS).permitAll(); // Not needed
-        http.authorizeHttpRequests().requestMatchers("/v3/api-docs/**","/swagger-ui/**","/swagger-ui.html").permitAll();
-        http.authorizeHttpRequests().requestMatchers("/api/v1/admin/roles/**").hasAnyAuthority("UPDATE:USER");
-        http.authorizeHttpRequests().requestMatchers(DELETE, "/user/delete/**").hasAnyAuthority("DELETE:USER");
-        http.authorizeHttpRequests().requestMatchers(DELETE, "/purchaseRequisition/delete/**").hasAnyAuthority("DELETE:purchaseRequisition");
+        http.authorizeHttpRequests().requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll();
+        http.authorizeHttpRequests().requestMatchers("/api/v1/admin/roles/**").hasAnyAuthority(ROLE_AUTH.ASSIGN_ROLE.name());
+        http.authorizeHttpRequests().requestMatchers("/user/delete/**","/user/users/**","/user/list/**","/user/update/**").hasAnyAuthority(ROLE_AUTH.UPDATE_USER.name());
+//        http.authorizeHttpRequests().requestMatchers(DELETE, "/purchaseRequisition/delete/**").hasAnyAuthority("DELETE:purchaseRequisition");
+        http.authorizeHttpRequests().requestMatchers("/api/v1/products/create/**","/api/v1/products/delete/**").hasAnyAuthority(ROLE_AUTH.CREATE_PRODUCT.name());
         http.exceptionHandling().accessDeniedHandler(customAccessDeniedHandler).authenticationEntryPoint(customAuthenticationEntryPoint);
         http.authorizeHttpRequests().anyRequest().authenticated();
         http.addFilterBefore(customAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);

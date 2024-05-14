@@ -18,7 +18,7 @@ import java.util.Collection;
  */
       public interface UserService {
 
-    UserDTO createUser(User user);
+    ResponseEntity<?> createUser(User user);
 
 
 //    int getNumberOfpgaes(int pageSize);

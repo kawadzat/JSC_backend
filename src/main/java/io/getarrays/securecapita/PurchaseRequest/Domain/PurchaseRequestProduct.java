@@ -22,14 +22,14 @@ public class PurchaseRequestProduct {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonProperty
     private Long id;
-    private int   itemNumber;
-    private String    ItemDescription;
-    private String  unitPrice	;
-    private String    estimateValue	;
-    private int       quantity;
+    private int itemNumber;
+    private String ItemDescription;
+    private String unitPrice;
+    private String estimateValue;
+    private int quantity;
 
     @ManyToOne
-    @JoinColumn(name = "purchaseRequest_id",nullable = false)
+    @JoinColumn(name = "purchaseRequest_id", nullable = false)
     private PurchaseRequest purchaseRequest;
 
 }

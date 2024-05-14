@@ -7,7 +7,7 @@ server:
   port: 8080
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/securecapita
+    url: jdbc:mysql://localhost:3306/securecapital3
     password: caroline_654321
     username: root
     initialization-mode: never

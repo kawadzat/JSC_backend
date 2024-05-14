@@ -3,6 +3,9 @@ package io.getarrays.securecapita.asserts.service;
 import io.getarrays.securecapita.asserts.model.AssertEntity;
 import io.getarrays.securecapita.asserts.model.Inspection;
 import io.getarrays.securecapita.asserts.repo.InspectionRepository;
+import io.getarrays.securecapita.userlogs.ActionType;
+import io.getarrays.securecapita.userlogs.UserLogService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,13 +13,15 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class InspectionService  implements io.getarrays.securecapita.asserts.InspectionService {
+@RequiredArgsConstructor
+public class InspectionService implements io.getarrays.securecapita.asserts.InspectionService {
+    private final InspectionRepository inspectionRepository;
+    private final UserLogService userLogService;
 
-    @Autowired
-    public InspectionRepository inspectionRepository;
     /* to create user */
     public Inspection createInspection(Inspection newInspection) {
         Inspection createdInspection = inspectionRepository.save(newInspection);
+        userLogService.addLog(ActionType.CREATED,"created inspection with remarks: "+createdInspection.getRemarks());
         return createdInspection;
     }
 
@@ -29,7 +34,7 @@ public class InspectionService  implements io.getarrays.securecapita.asserts.Ins
     public Inspection addInspectionToAssertEntity(AssertEntity assertEntity, String inspection) {
 
 
-                Inspection newInspection = new Inspection();
+        Inspection newInspection = new Inspection();
         newInspection.setDate(new Date());
         newInspection.setRemarks(inspection);
         newInspection.setAssertEntity(assertEntity);
@@ -37,19 +42,19 @@ public class InspectionService  implements io.getarrays.securecapita.asserts.Ins
 
         List<Inspection> inspections = assertEntity.getInspections();
         inspections.add(newInspection);
-
-           return newInspection;
+        userLogService.addLog(ActionType.UPDATED, "added inspection to assert.");
+        return newInspection;
 
     }
 
     /* updating the user */
     public Inspection updateInspection(Inspection inspection) {
 
-        Inspection updatedInspection =inspectionRepository.save(inspection);
+        Inspection updatedInspection = inspectionRepository.save(inspection);
+        userLogService.addLog(ActionType.UPDATED, "updated inspection.");
 
         return updatedInspection;
     }
-
 
 
 //    @Override
@@ -64,8 +69,6 @@ public class InspectionService  implements io.getarrays.securecapita.asserts.Ins
 //
 //           return newInspection;
 //    }
-
-
 
 
 }

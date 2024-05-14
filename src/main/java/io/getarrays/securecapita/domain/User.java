@@ -12,6 +12,8 @@ import lombok.experimental.SuperBuilder;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import org.hibernate.Hibernate;
+
 import java.time.LocalDateTime;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
@@ -30,7 +32,6 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(NON_DEFAULT)
 @Entity
 @Table(name = "users")
 
@@ -54,6 +55,7 @@ public class User {
     private String imageUrl;
     private boolean enabled;
 
+    @Column(name = "non_locked")
     private boolean isNotLocked=true;
     private boolean isUsingMfa;
     private LocalDateTime createdAt;
@@ -62,7 +64,7 @@ public class User {
 //    @JoinColumn(name = "station_id")
 //    private Station station;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER,mappedBy = "userId")
     @Builder.Default
     private Set<UserRole> roles = new HashSet<>();
 

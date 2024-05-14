@@ -1,26 +1,27 @@
 package io.getarrays.securecapita.PurchaseRequest.Controller;
 
 import io.getarrays.securecapita.PurchaseRequest.Domain.PurchaseRequest;
-import io.getarrays.securecapita.PurchaseRequest.Domain.PurchaseRequestProduct;
 import io.getarrays.securecapita.PurchaseRequest.Service.PurchaseRequestService;
 
 import io.getarrays.securecapita.PurchaseRequest.Service.PurchaseRequestServiceReport;
-import io.getarrays.securecapita.domain.HttpResponse;
+import io.getarrays.securecapita.exception.CustomMessage;
+import io.getarrays.securecapita.roles.prerunner.ROLE_AUTH;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
-import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping(path = "/PurchaseRequest")
@@ -56,16 +57,42 @@ public class PurchaseRequestController {
 //    }
 
 
+//    @PostMapping("/create")
+//    public PurchaseRequest createPurchaseRequest(@RequestBody PurchaseRequest purchaseRequest) {
+//        System.out.println("Incoming purchase request from the client is: " + purchaseRequest);
+//
+//        PurchaseRequest createdPurchaseRequest = purchaseRequestService.createPurchaseRequest(purchaseRequest);
+//
+//        System.out.println("Created purchase request is: " + createdPurchaseRequest);
+//
+//        return createdPurchaseRequest;
+//    }
+
+
+
+
+
+
     @PostMapping("/create")
-    public PurchaseRequest createPurchaseRequest(@RequestBody PurchaseRequest purchaseRequest) {
-        System.out.println("Incoming purchase request from the client is: " + purchaseRequest);
+    public ResponseEntity<?> createPurchaseRequest (@RequestBody @Validated PurchaseRequest newPurchaseRequest ) throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.CREATE_PURCHASEREQUEST.name()))) {
+//            return  purchaseRequestService.createPurchaseRequest(newPurchaseRequest);
+//        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
 
-        PurchaseRequest createdPurchaseRequest = purchaseRequestService.createPurchaseRequest(purchaseRequest);
-
-        System.out.println("Created purchase request is: " + createdPurchaseRequest);
-
-        return createdPurchaseRequest;
     }
+
+
+
+
+
+
+
+
+
+
+
 
 
     @GetMapping("/getAll")

@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,7 +25,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
 @Builder
 @Entity
 @NoArgsConstructor
-public class PurchaseRequest  extends Auditable<String> {
+public class PurchaseRequest extends Auditable<String> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,10 +33,10 @@ public class PurchaseRequest  extends Auditable<String> {
     private Long id;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date date;
-  private  String  purchaseRequestNumber;
-  private  String  receiverEmail;
-    private int  departmentCode;
-   private String    reason	;
+    private String purchaseRequestNumber;
+    private String receiverEmail;
+    private int departmentCode;
+    private String reason;
 
     @Column
     @Nonnull
@@ -48,7 +49,6 @@ public class PurchaseRequest  extends Auditable<String> {
     @JsonIgnore
     @JoinColumn(name = "station_id")
     private Station station;
-
     @Transient
     @NotNull
     private Long selectedStationID;

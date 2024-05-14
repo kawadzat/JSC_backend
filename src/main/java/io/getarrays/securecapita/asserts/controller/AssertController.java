@@ -7,6 +7,8 @@ import io.getarrays.securecapita.asserts.service.AssertService;
 import io.getarrays.securecapita.domain.HttpResponse;
 import io.getarrays.securecapita.dto.Stats;
 import io.getarrays.securecapita.dto.UserDTO;
+import io.getarrays.securecapita.exception.CustomMessage;
+import io.getarrays.securecapita.roles.prerunner.ROLE_AUTH;
 import io.getarrays.securecapita.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,17 +32,15 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 public class AssertController {
     private final UserService userService;
-    @Autowired
-    AssertService assertService;
+    private final AssertService assertService;
 
     @PostMapping("/create")
     public ResponseEntity<?> createAssert(@RequestBody @Validated AssertEntity newAssert) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains("CREATE:ASSERT"))) {
-            AssertEntity createdAssert = assertService.createAssert(newAssert);
-            return ResponseEntity.ok(createdAssert);
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.CREATE_ASSET.name()))) {
+            return assertService.createAssert(newAssert);
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission.");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
 
     }
 
@@ -60,7 +60,7 @@ public class AssertController {
     @PostMapping("/addtoassert/{id}")
     public ResponseEntity<?> addInvoiceToCustomer(@PathVariable("id") Long id, @RequestBody Inspection inspection) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains("CREATE:ASSERT"))) {
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.CREATE_ASSET.name()))) {
             assertService.addInspectionToAssertEntity(id, inspection);
 //    UserDTO userDTO = userService.getUserByEmail(user.getEmail());
             List<AssertEntity> asserts = (List<AssertEntity>) assertService.getAsserts();
@@ -75,7 +75,7 @@ public class AssertController {
 
             return ResponseEntity.ok(response);
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission.");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
     }
 
 
@@ -100,29 +100,29 @@ public class AssertController {
     //  @PreAuthorize("hasRole('ROLE_SYSADMIN')")
     public ResponseEntity<?> getAllAsserts() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains("VIEW:ASSERT"))) {
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.VIEW_ASSET.name()))) {
             return ResponseEntity.ok(assertService.getAsserts());
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission.");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
     }
 
     @GetMapping("/{stationName}")
     public ResponseEntity<?> getAllAssertsByStation(@RequestParam("stationId") Long stationId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains("VIEW:ASSERT"))) {
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.VIEW_ASSET.name()))) {
             return assertService.getAllAssertsByStation(stationId);
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission.");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
 
     }
 
     @GetMapping("/getByStation")
     public ResponseEntity<?> getByStation(@RequestParam("stationId") Long stationId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains("VIEW:ASSERT"))) {
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.VIEW_ASSET.name()))) {
             return assertService.getAllAssertsByStation(stationId);
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission.");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
 
     }
 
@@ -130,14 +130,14 @@ public class AssertController {
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateAssertEntity(@PathVariable("id") Long assertEntityId, @RequestBody AssertEntity assertEntity) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains("UPDATE:ASSERT"))) {
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.CREATE_ASSET.name()))) {
             AssertEntity oldAssertEntity = assertService.getAssertEntityById(assertEntityId);
             oldAssertEntity.setDate(assertEntity.getDate());
             oldAssertEntity.setAssetDisc(assertEntity.getAssetDisc());
             AssertEntity updatedAssertEntity = assertService.updateAssertEntity(oldAssertEntity);
             return ResponseEntity.ok(updatedAssertEntity);
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission.");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
 
     }
 
@@ -148,3 +148,4 @@ public class AssertController {
     }
 
 }
+//lets on front end

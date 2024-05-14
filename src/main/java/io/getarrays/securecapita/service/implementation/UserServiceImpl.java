@@ -1,7 +1,7 @@
 package io.getarrays.securecapita.service.implementation;
 
-import com.twilio.http.Response;
 import io.getarrays.securecapita.asserts.model.Station;
+import io.getarrays.securecapita.domain.HttpResponse;
 import io.getarrays.securecapita.domain.Role;
 import io.getarrays.securecapita.domain.User;
 import io.getarrays.securecapita.dto.UserDTO;
@@ -17,13 +17,20 @@ import io.getarrays.securecapita.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URI;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static io.getarrays.securecapita.dtomapper.UserDTOMapper.fromUser;
+import static java.time.LocalDateTime.now;
+import static java.util.Map.of;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentContextPath;
 
 /**
  * @author Junior RT
@@ -40,6 +47,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository<User> userRepository;
     private final RoleRepository<Role> roleRoleRepository;
     private final RoleRepository1 roleRepository1;
+    private final BCryptPasswordEncoder passwordEncoder;
     private final UserRoleRepository userRoleRepository;
 
     @Override
@@ -55,13 +63,35 @@ public class UserServiceImpl implements UserService {
 //    }
 
     @Override
-    public UserDTO createUser(User user) {
+    public ResponseEntity<?> createUser(User user) {
+        // Check if the user already exists by username
+        Optional<User> existingUser = userRepository1.findByEmail(user.getEmail());
+        if (existingUser.isPresent()) {
+            return ResponseEntity.status(422).body(new CustomMessage("A user with the email '" + user.getEmail() + "' already exists."));
+        }
+
         List<Role> roles = roleRepository1.findAll();
         Optional<Role> role = roles.stream().filter(r -> r.getName().equals("ROLE_USER")).findFirst();
         UserRole userRole = UserRole.builder().active(true).role(role.orElseGet(() -> roles.get(0))).createdDate(new Timestamp(System.currentTimeMillis())).build();
-        user.addRole(userRole);
-        return mapToUserDTO(userRepository.create(user));
+        System.out.println(userRole);
+        user.setNotLocked(true);
+        user.setUsingMfa(false);
+        user.setEnabled(true);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setCreatedAt(LocalDateTime.now());
+        User savedUser=userRepository1.save(user);
+        userRole.setUserId(savedUser.getId());
+        savedUser.addRole(userRoleRepository.save(userRole));
+        return ResponseEntity.created(URI.create(fromCurrentContextPath().path("/user/get/<userId>").toUriString())).body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("user", mapToUserDTO(userRepository1.save(user))))
+                        .message("User created")
+                        .status(CREATED)
+                        .statusCode(CREATED.value())
+                        .build());
     }
+
 
 
     @Override
@@ -74,13 +104,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Collection<UserDTO> list() {
-        return maptoUserDTOList(userRepository.list());
+        return maptoUserDTOList(userRepository1.findAll());
     }
 
     private Collection<UserDTO> maptoUserDTOList(Collection<User> users) {
         Collection<UserDTO> userDTOS = new ArrayList<>();
         users.forEach(user -> {
-            userDTOS.add(fromUser(user, roleRoleRepository.getRoleByUserId(user.getId())));
+            userDTOS.add(fromUser(user, userRoleRepository.getRoleByUserId(user.getId())));
         });
         return userDTOS;
     }
@@ -88,7 +118,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getUserByEmail(String email) {
-        return mapToUserDTO(userRepository.getUserByEmail(email));
+        return mapToUserDTO(userRepository1.findByEmail(email).get());
     }
 
     @Override
@@ -115,12 +145,12 @@ public class UserServiceImpl implements UserService {
         }
         User user = userOptional.get();
         user.expireAllRoles();
-        userRepository1.save(user);
+        userRoleRepository.deleteAll(user.getRoles());
         user.removeAllRole();
-        UserRole userRole=UserRole.builder().active(true).createdDate(new Timestamp(System.currentTimeMillis())).role(roleOptional.get()).build();
-        user.addRole(userRole);
+        UserRole userRole = UserRole.builder().userId(userId).active(true).createdDate(new Timestamp(System.currentTimeMillis())).role(roleOptional.get()).build();
+        user.addRole(userRoleRepository.save(userRole));
         userRepository1.save(user);
-        return ResponseEntity.ok(new CustomMessage("Role updated for User: "+user.getFirstName()));
+        return ResponseEntity.ok(new CustomMessage("Role updated for User: " + user.getFirstName()));
     }
 
 
@@ -194,7 +224,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private UserDTO mapToUserDTO(User user) {
-        return fromUser(user, roleRoleRepository.getRoleByUserId(user.getId()));
+        System.out.println(user.getRoles());
+        return fromUser(user, userRoleRepository.getRoleByUserId(user.getId()));
     }
 }
 

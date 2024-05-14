@@ -1,6 +1,7 @@
 package io.getarrays.securecapita.domain;
 
 import io.getarrays.securecapita.dto.UserDTO;
+import io.getarrays.securecapita.roles.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -46,7 +47,7 @@ public class UserPrincipal implements UserDetails {
 //i need to implement this
     @Override
     public boolean isAccountNonLocked() {
-        return this.user.isNotLocked();
+        return true;
     }
 //stock is stores department
     //stock item is the department asking for stocks
@@ -58,10 +59,10 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.user.isEnabled();
+        return true;
     }
 
     public UserDTO getUser() {
-        return fromUser(this.user, role);
+        return fromUser(this.user, UserRole.builder().role(role).build());
     }
 }

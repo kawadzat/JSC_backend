@@ -39,7 +39,7 @@ public class AssertEntity extends Auditable<String>  {
     @NotNull
     private String assetDisc;
     @NotNull
-    private int assetNumber;
+    private String assetNumber;
     @NotNull
     private String  serialNumber;
     //add all details, station, and only can filter from frontend

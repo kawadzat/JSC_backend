@@ -34,15 +34,5 @@ public class StationPreRunner implements CommandLineRunner {
         stationArrayList.add(Station.builder().station_id(5).stationName("CHINHOYI_HIGH_COURT").build());
         stationArrayList.add(Station.builder().station_id(6).stationName("SUPRME_COURT").build());
         stationRepository.saveAll(stationArrayList);
-
-        //provide basic role to user with empty roles:
-        ArrayList<User> noRoleUsers = userRepository1.findUsersWithNoRoles();
-        List<Role> roles = roleRepository1.findAll();
-        Optional<Role> role = roles.stream().filter(r -> r.getName().equals("ROLE_USER")).findFirst();
-        for (User user : noRoleUsers) {
-            UserRole userRole = UserRole.builder().active(true).role(role.orElseGet(() -> roles.get(0))).createdDate(new Timestamp(System.currentTimeMillis())).build();
-            user.addRole(userRole);
-        }
-        userRepository1.saveAll(noRoleUsers);
     }
 }

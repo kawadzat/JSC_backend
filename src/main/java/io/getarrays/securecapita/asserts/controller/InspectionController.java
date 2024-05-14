@@ -21,11 +21,10 @@ import static java.time.LocalTime.now;
 @RequestMapping(path = "/inspection")
 @RequiredArgsConstructor
 public class InspectionController {
-   @Autowired
-   InspectionService inspectionService;
-    UserService userService;
+   private final InspectionService inspectionService;
+    private final UserService userService;
 
-    AssertService assertEntityService;
+    private final AssertService assertEntityService;
 
 
 
