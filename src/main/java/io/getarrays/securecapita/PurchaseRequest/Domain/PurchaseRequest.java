@@ -53,4 +53,6 @@ public class PurchaseRequest extends Auditable<String> {
     @NotNull
     private Long selectedStationID;
 
+    //lets assin on profile first
+
 }

@@ -28,7 +28,7 @@ public class ProductRequestController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<?> getAllRequests(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "0") int size) {
+    public ResponseEntity<?> getAllRequests(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
         return productRequestService.getAllRequests(page, size);
     }
 }

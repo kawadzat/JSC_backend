@@ -2,32 +2,37 @@ package io.getarrays.securecapita.roles.prerunner;
 
 public enum AUTH_ROLE {
     USER,
+    DEPUTY_REGISTRAR,
+    REGISTRAR,
     ADMIN,
     PRINCIPAL_ADMIN,
-    DEPUTY_HEAD,
     HEAD_ADMIN,
     SYSADMIN;
+
 
     public static int getPriority(AUTH_ROLE authRole) {
         switch (authRole) {
             case USER -> {
                 return 0;
             }
-            case ADMIN -> {
+            case DEPUTY_REGISTRAR, REGISTRAR -> {
                 return 1;
             }
-            case PRINCIPAL_ADMIN -> {
+            case ADMIN -> {
                 return 2;
             }
-            case DEPUTY_HEAD, SYSADMIN -> {
+            case PRINCIPAL_ADMIN -> {
                 return 3;
+            }
+            case HEAD_ADMIN, SYSADMIN -> {
+                return 4;
             }
         }
         return 0;
     }
 
     public static int getMaxPriority() {
-        return 3;
+        return 4;
     }
 }
 //Initiation/Creation - by Administration Officer

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.time.LocalTime.now;
@@ -39,7 +40,7 @@ public class InspectionController {
     @PostMapping("/inspection/{id}")
     public ResponseEntity<Map<String, Object>> addInspectionToAssertEnity(@PathVariable("id") AssertEntity id, @RequestBody Inspection inspection) {
         inspectionService.addInspectionToAssertEntity(id, String.valueOf(inspection));
-        Iterable<AssertEntity> asserts = assertEntityService.getAsserts();
+        List<AssertEntity> asserts = assertEntityService.getAsserts();
 
         Map<String, Object> response = new HashMap<>();
         response.put("timeStamp", now().toString());

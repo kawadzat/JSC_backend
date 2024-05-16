@@ -26,7 +26,7 @@ public class Station {
 
     @Column(name = "station_id", columnDefinition = "BIGINT default 0")
     @Id
-    private Integer station_id;
+    private Long station_id;
 
     @Column(name = "station_name")
     private String stationName;

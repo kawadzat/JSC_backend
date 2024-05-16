@@ -25,6 +25,8 @@ public class UserDTOMapper {
         BeanUtils.copyProperties(user, userDTO);
         userDTO.setRoleName(role.getRole().getName());
         userDTO.setPermissions(role.getRole().getPermission());
+        userDTO.setStation(user.getStation() == null ? null : user.getStation().getStationName());
+        userDTO.setAssigned(user.getStation()!=null);
         return userDTO;
     }
 

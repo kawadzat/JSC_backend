@@ -7,16 +7,23 @@ import io.getarrays.securecapita.asserts.repo.AssertEntityRepository;
 import io.getarrays.securecapita.asserts.repo.AssertsJpaRepository;
 import io.getarrays.securecapita.asserts.repo.InspectionRepository;
 import io.getarrays.securecapita.asserts.repo.StationRepository;
+import io.getarrays.securecapita.domain.User;
 import io.getarrays.securecapita.dto.AssetItemStat;
 import io.getarrays.securecapita.dto.Stats;
+import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.exception.CustomMessage;
+import io.getarrays.securecapita.repository.implementation.UserRepository1;
 import io.getarrays.securecapita.userlogs.ActionType;
 import io.getarrays.securecapita.userlogs.UserLogService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,6 +36,7 @@ public class AssertService implements AssertServiceInterface {
     private final AssertEntityRepository assertEntityRepository;
     private final AssertsJpaRepository assertsJpaRepository;
     private final UserLogService userLogService;
+    private final UserRepository1 userRepository1;
 
     /* updating the user */
     public AssertEntity updateAssertEntity(AssertEntity assertEntity) {
@@ -42,8 +50,8 @@ public class AssertService implements AssertServiceInterface {
     /* to create user */
     public ResponseEntity<?> createAssert(AssertEntity newAssert) throws Exception {
         //check duplicate
-        Optional<AssertEntity> duplicatedAssert=assertsJpaRepository.findByName(newAssert.getAssetDisc());
-        if(duplicatedAssert.isPresent()){
+        Optional<AssertEntity> duplicatedAssert = assertsJpaRepository.findBySerialAndStation(newAssert.getSerialNumber(), newAssert.getSelectedStationID());
+        if (duplicatedAssert.isPresent()) {
             return ResponseEntity.status(422).body(new CustomMessage("Found Duplicate Entry. Please check again."));
         }
         Optional<Station> optionalStation = stationRepository.findById(newAssert.getSelectedStationID());
@@ -52,7 +60,7 @@ public class AssertService implements AssertServiceInterface {
         }
         newAssert.setStation(optionalStation.get());
         AssertEntity createdAssert = assertRepository.save(newAssert);
-        userLogService.addLog(ActionType.CREATED, "created assert successfully. Assert: "+newAssert.getAssetDisc());
+        userLogService.addLog(ActionType.CREATED, "created assert successfully. Assert: " + newAssert.getAssetDisc());
         return ResponseEntity.ok(createdAssert);
     }
 
@@ -90,13 +98,14 @@ public class AssertService implements AssertServiceInterface {
     }
 
 
-    public Iterable<AssertEntity> getAsserts() {
-        return assertRepository.findAll();
+    public Iterable<AssertEntity> getAsserts(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("date"));
+        return assertRepository.findAll(pageRequest);
     }
 
     @Override
-    public ResponseEntity<?> getAllAssertsByStation(Long stationId) {
-        return ResponseEntity.ok(assertRepository.getAllAssertsByStation(stationId));
+    public ResponseEntity<?> getAllAssertsByStation(Long stationId, PageRequest pageRequest) {
+        return ResponseEntity.ok(assertRepository.getAllAssertsByStationPage(stationId, pageRequest));
     }
 
     @Override
@@ -118,4 +127,16 @@ public class AssertService implements AssertServiceInterface {
                 .build());
     }
 
+    public ResponseEntity<?> getAssertsForOwnStation(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("date"));
+        User user = userRepository1.findById(((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get();
+        if (user.getStation() != null) {
+            return getAllAssertsByStation(user.getStation().getStation_id(), pageRequest);
+        }
+        return ResponseEntity.ok(new ArrayList<AssertEntity>());
+    }
+
+    public List<AssertEntity> getAsserts() {
+        return assertsJpaRepository.findAll();
+    }
 }

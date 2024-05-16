@@ -21,6 +21,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
 /**
  * @author Junior RT
  * @version 1.0
@@ -56,15 +57,15 @@ public class User {
     private boolean enabled;
 
     @Column(name = "non_locked")
-    private boolean isNotLocked=true;
+    private boolean isNotLocked = true;
     private boolean isUsingMfa;
     private LocalDateTime createdAt;
 
-//    @OneToOne
-//    @JoinColumn(name = "station_id")
-//    private Station station;
+    @ManyToOne
+    @JoinColumn(name = "station_id")
+    private Station station;
 
-    @ManyToMany(fetch = FetchType.EAGER,mappedBy = "userId")
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "userId")
     @Builder.Default
     private Set<UserRole> roles = new HashSet<>();
 
@@ -75,9 +76,11 @@ public class User {
     public void removeRole(UserRole role) {
         roles.remove(role);
     }
+
     public void expireAllRoles() {
-        roles.forEach((role)->role.setActive(false));
+        roles.forEach((role) -> role.setActive(false));
     }
+
     public void removeAllRole() {
         roles.clear();
     }

@@ -16,13 +16,12 @@ import java.util.Collection;
  * @license Get Arrays, LLC (https://getarrays.io)
  * @since 8/28/2022
  */
-      public interface UserService {
+public interface UserService {
 
     ResponseEntity<?> createUser(User user);
 
 
 //    int getNumberOfpgaes(int pageSize);
-
 
 
     boolean deleteUser(Long id);
@@ -36,25 +35,36 @@ import java.util.Collection;
     UserDTO getUserByEmail(String email);
 
 
-
     void sendVerificationCode(UserDTO user);
+
     void resetPassword(String email);
+
     UserDTO verifyPasswordKey(String key);
+
     void renewPassword(String key, String password, String confirmPassword);
+
     UserDTO verifyAccountKey(String key);
+
     UserDTO updateUserDetails(UpdateForm user);
+
     UserDTO getUserById(Long userId);
 
 
     void updatePassword(Long userId, String currentPassword, String newPassword, String confirmNewPassword);
+
     void updateUserRole(Long userId, String roleName);
+
     void updateAccountSettings(Long userId, Boolean enabled, Boolean notLocked);
+
     UserDTO toggleMfa(String email);
+
     void updateImage(UserDTO user, MultipartFile image);
-    void addStationToUser(Long id, Station station);
+
 
     UserDTO verifyCode(String email, String code);
 
 
     ResponseEntity<?> changeRole(Long userId, String role);
+
+    ResponseEntity<?> addStationToUser(Long userId, Long stationId);
 }

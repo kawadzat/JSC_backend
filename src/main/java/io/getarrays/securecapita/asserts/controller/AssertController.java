@@ -1,17 +1,15 @@
 package io.getarrays.securecapita.asserts.controller;
 
-import com.twilio.http.Response;
 import io.getarrays.securecapita.asserts.model.AssertEntity;
 import io.getarrays.securecapita.asserts.model.Inspection;
 import io.getarrays.securecapita.asserts.service.AssertService;
 import io.getarrays.securecapita.domain.HttpResponse;
-import io.getarrays.securecapita.dto.Stats;
 import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.exception.CustomMessage;
 import io.getarrays.securecapita.roles.prerunner.ROLE_AUTH;
 import io.getarrays.securecapita.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -98,29 +96,31 @@ public class AssertController {
 
     @GetMapping("/getAll")
     //  @PreAuthorize("hasRole('ROLE_SYSADMIN')")
-    public ResponseEntity<?> getAllAsserts() {
+    public ResponseEntity<?> getAllAsserts(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.VIEW_ASSET.name()))) {
-            return ResponseEntity.ok(assertService.getAsserts());
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name()))) {
+            return ResponseEntity.ok(assertService.getAsserts(page,size));
+        } else if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.VIEW_ASSET.name()))) {
+            return assertService.getAssertsForOwnStation(page,size);
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
     }
 
     @GetMapping("/{stationName}")
-    public ResponseEntity<?> getAllAssertsByStation(@RequestParam("stationId") Long stationId) {
+    public ResponseEntity<?> getAllAssertsByStation(@RequestParam("stationId") Long stationId,@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.VIEW_ASSET.name()))) {
-            return assertService.getAllAssertsByStation(stationId);
+            return assertService.getAllAssertsByStation(stationId, PageRequest.of(page,size));
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
 
     }
 
     @GetMapping("/getByStation")
-    public ResponseEntity<?> getByStation(@RequestParam("stationId") Long stationId) {
+    public ResponseEntity<?> getByStation(@RequestParam("stationId") Long stationId,@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.VIEW_ASSET.name()))) {
-            return assertService.getAllAssertsByStation(stationId);
+            return assertService.getAllAssertsByStation(stationId, PageRequest.of(page,size));
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
 

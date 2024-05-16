@@ -27,12 +27,12 @@ public class StationPreRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         ArrayList<Station> stationArrayList = new ArrayList<>();
-        stationArrayList.add(Station.builder().station_id(1).stationName("HARARE_HIGH_COURT").build());
-        stationArrayList.add(Station.builder().station_id(2).stationName("BULAWAYO_HIGH_COURT").build());
-        stationArrayList.add(Station.builder().station_id(3).stationName("MASVINGO_HIGH_COURT").build());
-        stationArrayList.add(Station.builder().station_id(4).stationName("MUTARE_HIGH_COURT").build());
-        stationArrayList.add(Station.builder().station_id(5).stationName("CHINHOYI_HIGH_COURT").build());
-        stationArrayList.add(Station.builder().station_id(6).stationName("SUPRME_COURT").build());
+        stationArrayList.add(Station.builder().station_id(1L).stationName("HARARE_HIGH_COURT").build());
+        stationArrayList.add(Station.builder().station_id(2L).stationName("BULAWAYO_HIGH_COURT").build());
+        stationArrayList.add(Station.builder().station_id(3L).stationName("MASVINGO_HIGH_COURT").build());
+        stationArrayList.add(Station.builder().station_id(4L).stationName("MUTARE_HIGH_COURT").build());
+        stationArrayList.add(Station.builder().station_id(5L).stationName("CHINHOYI_HIGH_COURT").build());
+        stationArrayList.add(Station.builder().station_id(6L).stationName("SUPRME_COURT").build());
         stationRepository.saveAll(stationArrayList);
     }
 }

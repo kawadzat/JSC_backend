@@ -1,6 +1,7 @@
 package io.getarrays.securecapita.service.implementation;
 
 import io.getarrays.securecapita.asserts.model.Station;
+import io.getarrays.securecapita.asserts.repo.StationRepository;
 import io.getarrays.securecapita.domain.HttpResponse;
 import io.getarrays.securecapita.domain.Role;
 import io.getarrays.securecapita.domain.User;
@@ -49,6 +50,7 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository1 roleRepository1;
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserRoleRepository userRoleRepository;
+    private final StationRepository stationRepository;
 
     @Override
     public boolean deleteUser(Long id) {
@@ -79,7 +81,7 @@ public class UserServiceImpl implements UserService {
         user.setEnabled(true);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setCreatedAt(LocalDateTime.now());
-        User savedUser=userRepository1.save(user);
+        User savedUser = userRepository1.save(user);
         userRole.setUserId(savedUser.getId());
         savedUser.addRole(userRoleRepository.save(userRole));
         return ResponseEntity.created(URI.create(fromCurrentContextPath().path("/user/get/<userId>").toUriString())).body(
@@ -91,7 +93,6 @@ public class UserServiceImpl implements UserService {
                         .statusCode(CREATED.value())
                         .build());
     }
-
 
 
     @Override
@@ -218,9 +219,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addStationToUser(Long id, Station station) {
-
-
+    public ResponseEntity<?> addStationToUser(Long userId, Long stationId) {
+        Optional<User> user = userRepository1.findById(userId);
+        if (user.isEmpty()) {
+            return ResponseEntity.badRequest().body(new CustomMessage("User Not Found."));
+        }
+        Optional<Station> stationOptional = stationRepository.findById(stationId);
+        if (stationOptional.isEmpty()) {
+            return ResponseEntity.badRequest().body(new CustomMessage("Station Not Found."));
+        }
+        user.get().setStation(stationOptional.get());
+        userRepository1.save(user.get());
+        return ResponseEntity.ok(new CustomMessage("Station changed for user: " + user.get().getFirstName()));
     }
 
     private UserDTO mapToUserDTO(User user) {

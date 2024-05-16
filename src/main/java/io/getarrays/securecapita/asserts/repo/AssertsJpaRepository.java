@@ -28,4 +28,10 @@ public interface AssertsJpaRepository extends JpaRepository<AssertEntity, Long> 
 
     @Query("SELECT a FROM AssertEntity a WHERE a.assetDisc = :assetDisc")
     Optional<AssertEntity> findByName(@Param("assetDisc") String assetDisc);
+
+    @Query("SELECT a FROM AssertEntity a WHERE a.assetDisc = :assetDisc and a.station.station_id=:selectedStationID")
+    Optional<AssertEntity> findByNameAndStation(String assetDisc, Long selectedStationID);
+
+    @Query("SELECT a FROM AssertEntity a WHERE a.serialNumber = :serialNumber and a.station.station_id=:selectedStationID")
+    Optional<AssertEntity> findBySerialAndStation(String serialNumber, Long selectedStationID);
 }

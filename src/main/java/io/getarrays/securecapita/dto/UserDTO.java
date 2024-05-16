@@ -34,6 +34,8 @@ public class UserDTO {
     private LocalDateTime createdAt;
     private String roleName;
     private String permissions;
+    private String station;
+    private boolean isAssigned;
 
     public static UserDTO toDto(User user) {
         return UserDTO.builder()
@@ -51,11 +53,13 @@ public class UserDTO {
                 .createdAt(user.getCreatedAt())
                 .roleName(user.getRoles().stream().findAny().get().getRole().getName())
                 .permissions(user.getRoles().stream().findAny().get().getRole().getPermission())
+                .station(user.getStation() == null ? null : user.getStation().getStationName())
+                .isAssigned(user.getStation()!=null)
                 .build();
     }
 
     @Override
     public String toString() {
-        return firstName+" "+lastName+", "+email;
+        return firstName + " " + lastName + ", " + email;
     }
 }

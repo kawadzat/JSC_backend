@@ -6,6 +6,7 @@ import io.getarrays.securecapita.asserts.model.Station;
 import io.getarrays.securecapita.asserts.repo.AssertEntityRepository;
 import io.getarrays.securecapita.asserts.repo.StationRepository;
 import io.getarrays.securecapita.domain.User;
+import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.exception.CustomMessage;
 import io.getarrays.securecapita.repository.implementation.UserRepository1;
 import io.getarrays.securecapita.roles.UserRole;
@@ -21,10 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -83,8 +81,23 @@ public class StationService {
 
     public ResponseEntity<?> getAllStations() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.VIEW_STATION.name()))) {
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name()))) {
             List<Station> stations = stationRepository.findAll();
+            List<Map<String, Object>> transformedStations = stations.stream()
+                    .map(station -> {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("id", station.getStation_id());
+                        map.put("name", station.getStationName());
+                        return map;
+                    })
+                    .toList();
+            return ResponseEntity.ok(transformedStations);
+        } else if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.VIEW_STATION.name()))) {
+            User user = userRepository1.findById(((UserDTO) authentication.getPrincipal()).getId()).get();
+            List<Station> stations = new ArrayList<>();
+            if (user.getStation() != null) {
+                stations.add(user.getStation());
+            }
             List<Map<String, Object>> transformedStations = stations.stream()
                     .map(station -> {
                         Map<String, Object> map = new HashMap<>();
