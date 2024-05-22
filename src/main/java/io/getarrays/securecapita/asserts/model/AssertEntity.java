@@ -3,6 +3,7 @@ package io.getarrays.securecapita.asserts.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import io.getarrays.securecapita.domain.User;
 import io.getarrays.securecapita.itauditing.Auditable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -16,6 +17,7 @@ import java.util.List;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.EAGER;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -25,8 +27,7 @@ import static jakarta.persistence.FetchType.EAGER;
 @NoArgsConstructor
 
 @Table(name = "assert")
-
-public class AssertEntity extends Auditable<String>  {
+public class AssertEntity extends Auditable<String> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -41,13 +42,13 @@ public class AssertEntity extends Auditable<String>  {
     @NotNull
     private String assetNumber;
     @NotNull
-    private String  serialNumber;
+    private String serialNumber;
     //add all details, station, and only can filter from frontend
     //CAN WE DO IT
     @NotNull
     private String invoiceNumber;
     @NotNull
-    private  String assertType;
+    private String assertType;
     @NotNull
     private String location;
     @NotNull
@@ -67,4 +68,13 @@ public class AssertEntity extends Auditable<String>  {
     @Transient
     @NotNull
     private Long selectedStationID;
+
+
+    @ManyToOne
+    private User preparedBy;
+
+    @ManyToOne
+    private User checkedBy;
+    //will break for ten minutes there is guy thaT wants to see his website after 1 from nowok
+
 }

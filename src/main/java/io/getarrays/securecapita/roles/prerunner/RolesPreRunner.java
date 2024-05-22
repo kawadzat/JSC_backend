@@ -38,17 +38,8 @@ public class RolesPreRunner implements CommandLineRunner {
 
     public void initializeRoles() {
         List<Role> roles = roleRepository1.findAll();
-        if (roles.stream().anyMatch((role -> Objects.equals(role.getName(), AUTH_ROLE.USER.name())))) {
-            //runs everytime: can update
-            Role role = roles.stream().filter((role1 -> Objects.equals(role1.getName(), AUTH_ROLE.USER.name()))).findFirst().get();
-            role.setName(AUTH_ROLE.USER.name());
-            role.setPermission(ROLE_AUTH.READ_USER.name());
-            roleRepository1.save(role);
-        } else {
-            //runs first time
-            Role roleUser = Role.builder().name(AUTH_ROLE.USER.name()).permission(ROLE_AUTH.READ_USER.name()).build();
-            roleRepository1.save(roleUser);
-        }
+        updateRole(roles, AUTH_ROLE.USER, ROLE_AUTH.READ_USER.name());
+
         String permissionAdmin = ROLE_AUTH.READ_USER + "," +
 //                ROLE_AUTH.UPDATE_USER + "," +
                 ROLE_AUTH.VIEW_ASSET + "," +
@@ -56,20 +47,8 @@ public class RolesPreRunner implements CommandLineRunner {
                 ROLE_AUTH.ASSIGN_ROLE + "," +
                 ROLE_AUTH.CREATE_PRODUCT + "," +
                 ROLE_AUTH.CREATE_ASSET;
-        if (roles.stream().anyMatch((role -> Objects.equals(role.getName(), AUTH_ROLE.ADMIN.name())))) {
-            //runs everytime: can update
-            Role role = roles.stream().filter((role1 -> Objects.equals(role1.getName(), AUTH_ROLE.ADMIN.name()))).findFirst().get();
-            role.setName(AUTH_ROLE.ADMIN.name());
-//            role.setPermission("READ:USER,UPDATE:USER");
-            role.setPermission(
-                    permissionAdmin
-            );
-            roleRepository1.save(role);
-        } else {
-            //runs first time
-            Role roleUser = Role.builder().name(AUTH_ROLE.ADMIN.name()).permission(permissionAdmin).build();
-            roleRepository1.save(roleUser);
-        }
+        updateRole(roles, AUTH_ROLE.ADMIN, permissionAdmin);
+
 
         String permissionSysAdmin = ROLE_AUTH.READ_USER + "," +
                 ROLE_AUTH.UPDATE_USER + "," +
@@ -82,22 +61,7 @@ public class RolesPreRunner implements CommandLineRunner {
                 ROLE_AUTH.CREATE_PRODUCT + "," +
                 ROLE_AUTH.CREATE_PURCHASEREQUEST + "," +
                 ROLE_AUTH.CREATE_ASSET;
-        if (roles.stream().anyMatch((role -> Objects.equals(role.getName(), AUTH_ROLE.SYSADMIN.name())))) {
-            //runs everytime: can update
-            Role role = roles.stream().filter((role1 -> Objects.equals(role1.getName(), AUTH_ROLE.SYSADMIN.name()))).findFirst().get();
-            role.setName(AUTH_ROLE.SYSADMIN.name());
-            role.setPermission(
-                    permissionSysAdmin
-            );
-            roleRepository1.save(role);
-        } else {
-            //runs first time
-            Role roleUser = Role.builder().name(AUTH_ROLE.SYSADMIN.name())
-                    .permission(
-                            permissionSysAdmin
-                    ).build();
-            roleRepository1.save(roleUser);
-        }
+        updateRole(roles, AUTH_ROLE.SYSADMIN, permissionSysAdmin);
 
 
         String permissionPrinciple = ROLE_AUTH.READ_USER + "," +
@@ -111,15 +75,30 @@ public class RolesPreRunner implements CommandLineRunner {
                 ROLE_AUTH.CREATE_PRODUCT + "," +
                 ROLE_AUTH.CREATE_ASSET;
 
-        if (roles.stream().anyMatch((role -> Objects.equals(role.getName(), AUTH_ROLE.PRINCIPAL_ADMIN.name())))) {
-            Role role = roles.stream().filter((role1 -> Objects.equals(role1.getName(), AUTH_ROLE.PRINCIPAL_ADMIN.name()))).findFirst().get();
-            role.setName(AUTH_ROLE.PRINCIPAL_ADMIN.name());
+        updateRole(roles, AUTH_ROLE.PRINCIPAL_ADMIN, permissionPrinciple);
+
+
+        String permissionRegistrar = ROLE_AUTH.READ_USER + "," +
+                ROLE_AUTH.VIEW_ASSET + "," +
+                ROLE_AUTH.VIEW_STATION + "," +
+                ROLE_AUTH.CHECK_ASSET;
+
+        updateRole(roles, AUTH_ROLE.REGISTRAR, permissionRegistrar);
+        updateRole(roles, AUTH_ROLE.DEPUTY_REGISTRAR, permissionRegistrar);
+    }
+
+    //update role
+    private void updateRole(List<Role> roles, AUTH_ROLE authRole, String authorities) {
+
+        if (roles.stream().anyMatch((role -> Objects.equals(role.getName(), authRole.name())))) {
+            Role role = roles.stream().filter((role1 -> Objects.equals(role1.getName(), authRole.name()))).findFirst().get();
+            role.setName(authRole.name());
             role.setPermission(
-                    permissionPrinciple);
+                    authorities);
             roleRepository1.save(role);
         } else {
-            Role roleUser = Role.builder().name(AUTH_ROLE.PRINCIPAL_ADMIN.name()).permission(
-                    permissionPrinciple).build();
+            Role roleUser = Role.builder().name(authRole.name()).permission(
+                    authorities).build();
             roleRepository1.save(roleUser);
         }
     }

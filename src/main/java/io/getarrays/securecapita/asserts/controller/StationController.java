@@ -4,6 +4,7 @@ import io.getarrays.securecapita.asserts.model.Station;
 import io.getarrays.securecapita.asserts.service.StationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StationController {
 
-   /* to create user */
+    /* to create user */
 
     @Autowired
     StationService stationService;
@@ -28,37 +29,48 @@ public class StationController {
         return createdStation;
     }
 
-//is this the project i cant see the enum
+    //is this the project i cant see the enum
     @PutMapping("/update/{id}")
-    public Station updateStation(@PathVariable("id") Long stationId  ,@RequestBody  Station  station) {
+    public Station updateStation(@PathVariable("id") Long stationId, @RequestBody Station station) {
 
-        Station oldstation =stationService.getStationById(stationId);
+        Station oldstation = stationService.getStationById(stationId);
 
 
         oldstation.setStationName(station.getStationName());
 
 
-        Station updatedStation =stationService.updateStation(oldstation);
+        Station updatedStation = stationService.updateStation(oldstation);
 
         return updatedStation;
     }
 
 
-
     @GetMapping("/getAll")
-    public ResponseEntity<?> getAllStations(){
+    public ResponseEntity<?> getAllStations() {
         return stationService.getAllStations();
     }
 
 
     //add assert to station
     @PostMapping("/addAssertToStation")
-    public ResponseEntity<?> addAssertToStation(@RequestParam("assertId") Long assertId,@RequestParam("stationId") Long stationId){
-        return stationService.addAssert(stationId,assertId);
+    public ResponseEntity<?> addAssertToStation(@RequestParam("assertId") Long assertId, @RequestParam("stationId") Long stationId) {
+        return stationService.addAssert(stationId, assertId);
     }
 
     @PostMapping("/addUserToStation")
-    public ResponseEntity<?> addUserToStation(@RequestParam("userId") Long userId,@RequestParam("stationId") Long stationId){
-        return stationService.addUser(stationId,userId);
+    public ResponseEntity<?> addUserToStation(@RequestParam("userId") Long userId, @RequestParam("stationId") Long stationId) {
+        return stationService.addUser(stationId, userId);
+    }
+
+
+    //check
+    @PostMapping("/check")
+    public ResponseEntity<?> checkAssets(@RequestParam("stationId") Long stationId) {
+        return stationService.checkAssets(stationId);
+    }
+
+    @GetMapping("/stats")
+    public ResponseEntity<?> getOverallStats(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
+        return stationService.getStats(PageRequest.of(page,size));
     }
 }

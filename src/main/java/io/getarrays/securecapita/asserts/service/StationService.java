@@ -1,29 +1,27 @@
 package io.getarrays.securecapita.asserts.service;
 
-import com.twilio.http.Response;
 import io.getarrays.securecapita.asserts.model.AssertEntity;
 import io.getarrays.securecapita.asserts.model.Station;
 import io.getarrays.securecapita.asserts.repo.AssertEntityRepository;
 import io.getarrays.securecapita.asserts.repo.StationRepository;
 import io.getarrays.securecapita.domain.User;
+import io.getarrays.securecapita.dto.StationItemStat;
+import io.getarrays.securecapita.dto.StationStats;
 import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.exception.CustomMessage;
 import io.getarrays.securecapita.repository.implementation.UserRepository1;
-import io.getarrays.securecapita.roles.UserRole;
 import io.getarrays.securecapita.roles.prerunner.ROLE_AUTH;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +29,7 @@ public class StationService {
     private final StationRepository stationRepository;
     private final UserRepository1 userRepository1;
     private final AssertEntityRepository assertRepository;
+    private  final AssertService assertService;
 
     /* to create user */
     public Station createStation(Station newStation) {
@@ -123,7 +122,31 @@ public class StationService {
         System.out.println("Ok");
         optionStation.get().addUser(optionalUser.get());
         stationRepository.save(optionStation.get());
-        return ResponseEntity.ok("Added User to Station");
+        return ResponseEntity.ok(new CustomMessage("Added User to Station"));
+    }
+
+    public ResponseEntity<?> checkAssets(Long stationId) {
+        User user = userRepository1.findById(((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get();
+        Optional<Station> stationOptional = stationRepository.findById(stationId);
+        if (stationOptional.isEmpty()) {
+            return ResponseEntity.badRequest().body(new CustomMessage("Station not found."));
+        }
+        if (user.getStation() == null || !Objects.equals(user.getStation().getStation_id(), stationId)) {
+            return ResponseEntity.status(401).body(new CustomMessage("You are not authorized in this station."));
+        }
+        stationRepository.editCheckAllAssetsForStation(stationOptional.get(), user);
+        return ResponseEntity.ok(new CustomMessage("checked all assets till now."));
+    }
+
+    public ResponseEntity<?> getStats(PageRequest pageRequest) {
+        ArrayList<StationItemStat> stationItemStats=stationRepository.findAssertItemStatsByAssetDisc(pageRequest);
+        stationItemStats.forEach(stationItemStat -> {
+            stationItemStat.setAssetsStats(assertService.getStats(stationItemStat.getStationId()));
+        });
+        return ResponseEntity.ok(StationStats.builder()
+                .totalStations(stationRepository.count())
+                .stationItemStats(stationItemStats)
+                .build());
     }
 }
 

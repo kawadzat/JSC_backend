@@ -143,8 +143,8 @@ public class AssertController {
 
     //stat
     @GetMapping("/stats")
-    public ResponseEntity<?> getOverallStats() {
-        return assertService.getStats();
+    public ResponseEntity<?> getOverallStats(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
+        return assertService.getStats(PageRequest.of(page,size));
     }
 
 }

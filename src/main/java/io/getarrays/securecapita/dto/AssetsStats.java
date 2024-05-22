@@ -1,12 +1,8 @@
 package io.getarrays.securecapita.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
-
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
 
 /**
  * @author Junior RT
@@ -19,7 +15,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Stats {
+public class AssetsStats {
     private long totalAsserts;
     private long totalFixedAsserts;
     private long totalCurrentAsserts;

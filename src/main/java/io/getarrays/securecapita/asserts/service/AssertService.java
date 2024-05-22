@@ -9,7 +9,7 @@ import io.getarrays.securecapita.asserts.repo.InspectionRepository;
 import io.getarrays.securecapita.asserts.repo.StationRepository;
 import io.getarrays.securecapita.domain.User;
 import io.getarrays.securecapita.dto.AssetItemStat;
-import io.getarrays.securecapita.dto.Stats;
+import io.getarrays.securecapita.dto.AssetsStats;
 import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.exception.CustomMessage;
 import io.getarrays.securecapita.repository.implementation.UserRepository1;
@@ -59,6 +59,8 @@ public class AssertService implements AssertServiceInterface {
             throw new Exception("Station not found");
         }
         newAssert.setStation(optionalStation.get());
+        User user = userRepository1.findById(((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get();
+        newAssert.setPreparedBy(user);
         AssertEntity createdAssert = assertRepository.save(newAssert);
         userLogService.addLog(ActionType.CREATED, "created assert successfully. Assert: " + newAssert.getAssetDisc());
         return ResponseEntity.ok(createdAssert);
@@ -100,6 +102,7 @@ public class AssertService implements AssertServiceInterface {
 
     public Iterable<AssertEntity> getAsserts(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("date"));
+
         return assertRepository.findAll(pageRequest);
     }
 
@@ -109,17 +112,17 @@ public class AssertService implements AssertServiceInterface {
     }
 
     @Override
-    public ResponseEntity<?> getStats() {
+    public ResponseEntity<?> getStats(PageRequest pageRequest) {
         // Fetch the total fixed asserts and total current asserts
         int totalFixedAsserts = assertsJpaRepository.countFixedAsserts();
         int totalCurrentAsserts = assertsJpaRepository.countCurrentAsserts();
 
         // Fetch asset statistics
-        ArrayList<AssetItemStat> assetsStats = assertsJpaRepository.findAssertItemStatsByAssetDisc();
+        ArrayList<AssetItemStat> assetsStats = assertsJpaRepository.findAssertItemStatsByAssetDisc(pageRequest);
         userLogService.addLog(ActionType.VIEW, "checked stats of asserts.");
 
         // Return a new Stats object with the calculated totals and fetched asset statistics
-        return ResponseEntity.ok(Stats.builder()
+        return ResponseEntity.ok(AssetsStats.builder()
                 .totalAsserts(assertsJpaRepository.count())
                 .totalFixedAsserts(totalFixedAsserts)
                 .totalCurrentAsserts(totalCurrentAsserts)
@@ -127,6 +130,23 @@ public class AssertService implements AssertServiceInterface {
                 .build());
     }
 
+    public AssetsStats getStats(Long stationId) {
+        // Fetch the total fixed asserts and total current asserts
+        int totalFixedAsserts = assertsJpaRepository.countFixedAsserts(stationId);
+        int totalCurrentAsserts = assertsJpaRepository.countCurrentAsserts(stationId);
+
+        // Fetch asset statistics
+        ArrayList<AssetItemStat> assetsStats = assertsJpaRepository.findAssertItemStatsByAssetDisc(stationId);
+        userLogService.addLog(ActionType.VIEW, "checked stats of asserts.");
+
+        // Return a new Stats object with the calculated totals and fetched asset statistics
+        return AssetsStats.builder()
+                .totalAsserts(assertsJpaRepository.countAsserts(stationId))
+                .totalFixedAsserts(totalFixedAsserts)
+                .totalCurrentAsserts(totalCurrentAsserts)
+                .assetsStats(assetsStats)
+                .build();
+    }
     public ResponseEntity<?> getAssertsForOwnStation(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("date"));
         User user = userRepository1.findById(((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get();

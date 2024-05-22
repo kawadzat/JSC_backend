@@ -10,6 +10,7 @@ public enum AUTH_ROLE {
     SYSADMIN;
 
 
+
     public static int getPriority(AUTH_ROLE authRole) {
         switch (authRole) {
             case USER -> {

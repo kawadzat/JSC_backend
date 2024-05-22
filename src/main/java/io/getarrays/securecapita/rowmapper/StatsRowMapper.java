@@ -1,11 +1,5 @@
 package io.getarrays.securecapita.rowmapper;
 
-import io.getarrays.securecapita.dto.Stats;
-import org.springframework.jdbc.core.RowMapper;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 /**
  * @author Junior RT
  * @version 1.0

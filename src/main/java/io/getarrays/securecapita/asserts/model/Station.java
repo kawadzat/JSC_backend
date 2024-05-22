@@ -33,6 +33,7 @@ public class Station {
 
     @OneToMany(mappedBy = "station")
     @Builder.Default
+    @JsonIgnore
     private Set<AssertEntity> asserts = new HashSet<>();
     @ManyToMany
     @JsonIgnore
