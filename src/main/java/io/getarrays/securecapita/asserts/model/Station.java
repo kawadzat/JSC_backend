@@ -2,6 +2,7 @@ package io.getarrays.securecapita.asserts.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.getarrays.securecapita.domain.User;
+import io.getarrays.securecapita.officelocations.OfficeLocation;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -35,6 +36,11 @@ public class Station {
     @Builder.Default
     @JsonIgnore
     private Set<AssertEntity> asserts = new HashSet<>();
+
+    @OneToMany(mappedBy = "station")
+    @Builder.Default
+    @JsonIgnore
+    private Set<OfficeLocation> locations = new HashSet<>();
     @ManyToMany
     @JsonIgnore
     private Set<User> users = new HashSet<>();

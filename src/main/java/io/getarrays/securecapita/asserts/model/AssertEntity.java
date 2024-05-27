@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.getarrays.securecapita.domain.User;
 import io.getarrays.securecapita.itauditing.Auditable;
+import io.getarrays.securecapita.officelocations.OfficeLocation;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -51,6 +52,9 @@ public class AssertEntity extends Auditable<String> {
     private String assertType;
     @NotNull
     private String location;
+
+    @ManyToOne
+    private OfficeLocation officeLocation;
     @NotNull
     private int quantity;
 
@@ -75,6 +79,4 @@ public class AssertEntity extends Auditable<String> {
 
     @ManyToOne
     private User checkedBy;
-    //will break for ten minutes there is guy thaT wants to see his website after 1 from nowok
-
 }

@@ -38,13 +38,17 @@ public class RolesPreRunner implements CommandLineRunner {
 
     public void initializeRoles() {
         List<Role> roles = roleRepository1.findAll();
-        updateRole(roles, AUTH_ROLE.USER, ROLE_AUTH.READ_USER.name());
+        String permissionUser = ROLE_AUTH.READ_USER + "," + //who can request and approve admin, all admin?yes
+                ROLE_AUTH.REQUEST_MOVE_ASSET;
+        updateRole(roles, AUTH_ROLE.USER, permissionUser);
 
-        String permissionAdmin = ROLE_AUTH.READ_USER + "," +
+        String permissionAdmin = ROLE_AUTH.READ_USER + "," + //who can request and approve admin, all admin?yes
 //                ROLE_AUTH.UPDATE_USER + "," +
                 ROLE_AUTH.VIEW_ASSET + "," +
                 ROLE_AUTH.VIEW_STATION + "," +
                 ROLE_AUTH.ASSIGN_ROLE + "," +
+                ROLE_AUTH.REQUEST_MOVE_ASSET + "," +
+                ROLE_AUTH.APPROVE_MOVE_ASSET + "," +
                 ROLE_AUTH.CREATE_PRODUCT + "," +
                 ROLE_AUTH.CREATE_ASSET;
         updateRole(roles, AUTH_ROLE.ADMIN, permissionAdmin);
@@ -55,6 +59,8 @@ public class RolesPreRunner implements CommandLineRunner {
                 ROLE_AUTH.VIEW_ASSET + "," +
                 ROLE_AUTH.VIEW_STATION + "," +
                 ROLE_AUTH.ALL_STATION + "," +
+                ROLE_AUTH.REQUEST_MOVE_ASSET + "," +
+                ROLE_AUTH.APPROVE_MOVE_ASSET + "," +
                 ROLE_AUTH.CREATE_STATION + "," +
                 ROLE_AUTH.ASSIGN_STATION + "," +
                 ROLE_AUTH.ASSIGN_ROLE + "," +
@@ -71,6 +77,8 @@ public class RolesPreRunner implements CommandLineRunner {
                 ROLE_AUTH.ALL_STATION + "," +
                 ROLE_AUTH.CREATE_STATION + "," +
                 ROLE_AUTH.ASSIGN_STATION + "," +
+                ROLE_AUTH.REQUEST_MOVE_ASSET + "," +
+                ROLE_AUTH.APPROVE_MOVE_ASSET + "," +
                 ROLE_AUTH.ASSIGN_ROLE + "," +
                 ROLE_AUTH.CREATE_PRODUCT + "," +
                 ROLE_AUTH.CREATE_ASSET;

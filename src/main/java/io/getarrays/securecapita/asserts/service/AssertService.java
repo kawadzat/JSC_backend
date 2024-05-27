@@ -12,6 +12,8 @@ import io.getarrays.securecapita.dto.AssetItemStat;
 import io.getarrays.securecapita.dto.AssetsStats;
 import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.exception.CustomMessage;
+import io.getarrays.securecapita.officelocations.OfficeLocation;
+import io.getarrays.securecapita.officelocations.OfficeLocationRepository;
 import io.getarrays.securecapita.repository.implementation.UserRepository1;
 import io.getarrays.securecapita.userlogs.ActionType;
 import io.getarrays.securecapita.userlogs.UserLogService;
@@ -37,6 +39,7 @@ public class AssertService implements AssertServiceInterface {
     private final AssertsJpaRepository assertsJpaRepository;
     private final UserLogService userLogService;
     private final UserRepository1 userRepository1;
+    private final OfficeLocationRepository officeLocationRepository;
 
     /* updating the user */
     public AssertEntity updateAssertEntity(AssertEntity assertEntity) {
@@ -58,6 +61,11 @@ public class AssertService implements AssertServiceInterface {
         if (optionalStation.isEmpty()) {
             throw new Exception("Station not found");
         }
+        Optional<OfficeLocation> optionalOfficeLocation = officeLocationRepository.findByStationAndName(optionalStation.get().getStation_id(), newAssert.getLocation());
+        if (optionalStation.isEmpty()) {
+            throw new Exception("Office Location not found");
+        }
+        newAssert.setOfficeLocation(optionalOfficeLocation.get());
         newAssert.setStation(optionalStation.get());
         User user = userRepository1.findById(((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get();
         newAssert.setPreparedBy(user);
@@ -147,6 +155,7 @@ public class AssertService implements AssertServiceInterface {
                 .assetsStats(assetsStats)
                 .build();
     }
+
     public ResponseEntity<?> getAssertsForOwnStation(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("date"));
         User user = userRepository1.findById(((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get();
