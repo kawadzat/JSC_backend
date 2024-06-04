@@ -2,8 +2,8 @@
 
 # Function to install Docker using Snap
 install_docker() {
-    echo "Docker is not installed. Installing Docker..."
-    sudo curl -fsSL https://get.docker.com/ | sh
+    echo "Docker is not installed. Installing Docker using Snap..."
+    sudo snap install docker
     echo "Docker has been installed."
 }
 
@@ -20,29 +20,29 @@ read option
 case $option in
     build)
         echo "Building the Docker image..."
-        docker-compose build
+        sudo docker-compose build
         ;;
     start)
         echo "Starting the Docker Compose application..."
-        docker-compose up -d
+        sudo docker-compose up -d
         ;;
     stop)
         echo "Stopping the Docker Compose application..."
-        docker-compose down
+        sudo docker-compose down
         ;;
     clean)
         echo "Cleaning all Docker resources..."
-        docker system prune -a
+        sudo docker system prune -a
         ;;
     rebuild)
         echo "Rebuilding the Docker image and restarting the container..."
-        docker-compose build
-        docker-compose down
-        docker-compose up -d
+        sudo docker-compose build
+        sudo docker-compose down
+        sudo docker-compose up -d
         ;;
     log)
         echo "Displaying the logs of the Docker Compose application..."
-        docker-compose logs -f
+        sudo docker-compose logs -f
         ;;
     exit)
         echo "Exiting the script..."
