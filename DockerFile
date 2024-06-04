@@ -1,13 +1,16 @@
-FROM maven:3.9.5 AS build
+## Use a multi-stage build for caching dependencies
+FROM maven:3.8.8-eclipse-temurin-21-alpine AS build
 WORKDIR /app
+# copy the pom.xml file to the container
+COPY . .
+#show logs when installing dependencies
+RUN mvn -T 4 clean package -DskipTests
 
-COPY pom.xml /app
-RUN mvn dependency:resolve
-COPY . /app
-RUN mvn clean
-RUN mvn package -DskipTests -X
-
-FROM openjdk
-COPY --from=build /app/target/*.jar app.jar
-EXPOSE 8080
-CMD ["java", "-jar", "app.jar"]
+FROM eclipse-temurin:21-alpine
+WORKDIR /app
+COPY --from=build /app /app
+EXPOSE 8090
+ENV SERVER_PORT=8090
+ENV SPRING_PROFILES_ACTIVE=prod
+# Command to run the application
+CMD ["java", "--enable-preview", "-jar", "target/jscbackend.jar"]
