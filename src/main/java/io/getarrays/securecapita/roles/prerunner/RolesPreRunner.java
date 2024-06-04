@@ -38,8 +38,7 @@ public class RolesPreRunner implements CommandLineRunner {
 
     public void initializeRoles() {
         List<Role> roles = roleRepository1.findAll();
-        String permissionUser = ROLE_AUTH.READ_USER + "," + //who can request and approve admin, all admin?yes
-                ROLE_AUTH.REQUEST_MOVE_ASSET;
+        String permissionUser = ROLE_AUTH.READ_USER+"";
         updateRole(roles, AUTH_ROLE.USER, permissionUser);
 
         String permissionAdmin = ROLE_AUTH.READ_USER + "," + //who can request and approve admin, all admin?yes

@@ -1,5 +1,6 @@
 package io.getarrays.securecapita.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.getarrays.securecapita.asserts.model.Station;
 import io.getarrays.securecapita.roles.UserRole;
@@ -14,6 +15,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import org.hibernate.Hibernate;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
@@ -60,7 +62,10 @@ public class User {
     private boolean isNotLocked = true;
     private boolean isUsingMfa;
     private LocalDateTime createdAt;
-
+    @JsonIgnore
+    private Timestamp verificationTokenExpiry;
+    @JsonIgnore
+    private String verificationToken;
     @ManyToOne
     @JoinColumn(name = "station_id")
     private Station station;

@@ -13,6 +13,7 @@ import io.getarrays.securecapita.rowmapper.UserRowMapper;
 import io.getarrays.securecapita.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -30,10 +31,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-import static io.getarrays.securecapita.enumeration.RoleType.*;
 import static io.getarrays.securecapita.enumeration.VerificationType.ACCOUNT;
 import static io.getarrays.securecapita.enumeration.VerificationType.PASSWORD;
 import static io.getarrays.securecapita.query.UserQuery.*;
@@ -63,7 +64,7 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
     private final RoleRepository<Role> roleRepository;
     private final BCryptPasswordEncoder encoder;
     private final EmailService emailService;
-
+    private final UserRepository1 userRepository1;
 
     @Override
     public User create(User user) {
@@ -74,9 +75,10 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
             jdbc.update(INSERT_USER_QUERY, parameters, holder);
             user.setId(requireNonNull(holder.getKey()).longValue());
 //            roleRepository.addRoleToUser(user.getId(), ROLE_STORES.name());
-            String verificationUrl = getVerificationUrl(UUID.randomUUID().toString(), ACCOUNT.getType());
+            String key=UUID.randomUUID().toString();
+            String verificationUrl = getVerificationUrl(key, ACCOUNT.getType());
             jdbc.update(INSERT_ACCOUNT_VERIFICATION_URL_QUERY, of("userId", user.getId(), "url", verificationUrl));
-            sendEmail(user.getFirstName(), user.getEmail(), verificationUrl, ACCOUNT);
+            sendEmail(user.getFirstName(), user.getEmail(), verificationUrl, key, ACCOUNT);
             //emailService.sendVerificationUrl(user.getFirstName(), user.getEmail(), verificationUrl, ACCOUNT);
             user.setEnabled(false);
             user.setNotLocked(true);
@@ -88,8 +90,8 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
     }
 
 
-    private void sendEmail(String firstName, String email, String verificationUrl, VerificationType verificationType) {
-        CompletableFuture.runAsync(() -> emailService.sendVerificationEmail(firstName, email, verificationUrl, verificationType));
+    private void sendEmail(String firstName, String email, String verificationUrl, String verificationKey, VerificationType verificationType) {
+        CompletableFuture.runAsync(() -> emailService.sendVerificationEmail(firstName, email, verificationKey,verificationUrl, verificationType));
 
 //        CompletableFuture.runAsync(() -> {
 //            try {
@@ -271,17 +273,20 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
 
     @Override
     public void resetPassword(String email) {
-        if(getEmailCount(email.trim().toLowerCase()) <= 0) throw new ApiException("There is no account for this email address.");
+        Optional<User> optionalUser=userRepository1.findByEmail(email);
+        if(optionalUser.isEmpty()) throw new ApiException("There is no account for this email address.");
         try {
-                String expirationDate = format(addDays(new Date(), 1), DATE_FORMAT);
-                User user = getUserByEmail(email);
-                String verificationUrl = getVerificationUrl(UUID.randomUUID().toString(), PASSWORD.getType());
-                jdbc.update(DELETE_PASSWORD_VERIFICATION_BY_USER_ID_QUERY, of("userId",  user.getId()));
-                jdbc.update(INSERT_PASSWORD_VERIFICATION_QUERY, of("userId",  user.getId(), "url", verificationUrl, "expirationDate", expirationDate));
+            String verificationKey=UUID.randomUUID().toString();
+            String verificationUrl = getPasswordVerificationUrl(verificationKey, PASSWORD);
+            optionalUser.get().setVerificationToken(verificationKey);
+            optionalUser.get().setVerificationTokenExpiry(new Timestamp(addDays(new Date(), 1).getTime()));
+            userRepository1.save(optionalUser.get());
+//                jdbc.update(INSERT_PASSWORD_VERIFICATION_QUERY, of("userId",  user.getId(), "url", verificationUrl, "expirationDate", expirationDate));
 
-            sendEmail(user.getFirstName(), email, verificationUrl, PASSWORD);
-                log.info("Verification URL: {}", verificationUrl);
+            sendEmail(optionalUser.get().getFirstName(), email, verificationUrl, verificationKey, PASSWORD);
+            log.info("Verification URL: {}", verificationUrl);
         } catch (Exception exception) {
+            exception.printStackTrace();
             throw new ApiException("An error occurred. Please try again.");
         }
     }
@@ -453,6 +458,14 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
                 .addValue("address", user.getAddress())
                 .addValue("title", user.getTitle())
                 .addValue("bio", user.getBio());
+    }
+
+    @Value("${frontend.url}")
+    private String frontEndUrl;
+    @Value("${frontend.resetUrl}")
+    private String frontEndResetUrl;
+    private String getPasswordVerificationUrl(String key, VerificationType state) {
+        return frontEndUrl+frontEndResetUrl + "?key=" + key+"&state="+state.toString().toLowerCase();
     }
 
     private String getVerificationUrl(String key, String type) {

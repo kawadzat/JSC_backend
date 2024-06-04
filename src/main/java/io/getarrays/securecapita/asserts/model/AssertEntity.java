@@ -11,6 +11,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -34,10 +35,8 @@ public class AssertEntity extends Auditable<String> {
     private Long id;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-
-    @Temporal(TemporalType.DATE)
     @NotNull
-    private Date date;
+    private Timestamp date;
     @NotNull
     private String assetDisc;
     @NotNull
@@ -70,7 +69,6 @@ public class AssertEntity extends Auditable<String> {
     private Station station;
 
     @Transient
-    @NotNull
     private Long selectedStationID;
 
 

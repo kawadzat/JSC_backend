@@ -18,7 +18,11 @@ public class AssertMoveController {
 
     @GetMapping("/all")
     public ResponseEntity<Object> getAllRequests(@RequestParam(name = "page",defaultValue = "0")int page,@RequestParam(name = "size",defaultValue = "10")int size) {
-        return assertMoveService.getAll(page,size);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.REQUEST_MOVE_ASSET.name()))) {
+            return assertMoveService.getAll(page, size);
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
     }
 
     @PostMapping("/request")

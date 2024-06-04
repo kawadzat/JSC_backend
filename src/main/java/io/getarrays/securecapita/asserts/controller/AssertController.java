@@ -19,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -132,7 +133,7 @@ public class AssertController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.CREATE_ASSET.name()))) {
             AssertEntity oldAssertEntity = assertService.getAssertEntityById(assertEntityId);
-            oldAssertEntity.setDate(assertEntity.getDate());
+            oldAssertEntity.setDate(new Timestamp(System.currentTimeMillis()));
             oldAssertEntity.setAssetDisc(assertEntity.getAssetDisc());
             AssertEntity updatedAssertEntity = assertService.updateAssertEntity(oldAssertEntity);
             return ResponseEntity.ok(updatedAssertEntity);

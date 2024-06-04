@@ -37,7 +37,7 @@ public class AssertMoveService {
         User user = userRepository1.findById(((UserDTO) authentication.getPrincipal()).getId()).get();
         System.out.println(user.getStation());
         Page<AssertMoveRequest> officeLocations;
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdDate"));
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdDate").descending());
         if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name()))) {
             officeLocations = moveLocationRepository.findAll(pageRequest);
         } else {
@@ -53,9 +53,9 @@ public class AssertMoveService {
             Optional<AssertEntity> optionalAssert = assertEntityRepository.findById(assertMoveRequest.get().getAssertEntity().getId());
             if (optionalAssert.isPresent()) {
                 optionalAssert.get().setOfficeLocation(assertMoveRequest.get().getOfficeLocation());
-                assertEntityRepository.save(optionalAssert.get());
                 assertMoveRequest.get().setStatus(AssertMoveStatus.APPROVED);
                 assertMoveRequest.get().setUpdatedDate(new Timestamp(System.currentTimeMillis()));
+                assertEntityRepository.save(optionalAssert.get());
                 moveLocationRepository.save(assertMoveRequest.get());
                 return ResponseEntity.ok(new CustomMessage("Assert moved to " + assertMoveRequest.get().getOfficeLocation().getName()));
             }

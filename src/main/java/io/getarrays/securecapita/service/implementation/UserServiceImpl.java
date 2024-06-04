@@ -13,6 +13,7 @@ import io.getarrays.securecapita.repository.UserRepository;
 import io.getarrays.securecapita.repository.UserRoleRepository;
 import io.getarrays.securecapita.repository.implementation.RoleRepository1;
 import io.getarrays.securecapita.repository.implementation.UserRepository1;
+import io.getarrays.securecapita.resource.ResetPasswordDto;
 import io.getarrays.securecapita.roles.UserRole;
 import io.getarrays.securecapita.service.UserService;
 import jakarta.transaction.Transactional;
@@ -231,6 +232,21 @@ public class UserServiceImpl implements UserService {
         user.get().setStation(stationOptional.get());
         userRepository1.save(user.get());
         return ResponseEntity.ok(new CustomMessage("Station changed for user: " + user.get().getFirstName()));
+    }
+
+    @Override
+    public ResponseEntity<?> resetpassword(ResetPasswordDto resetPassword) {
+        if(resetPassword.getConfirmPassword().equals(resetPassword.getPassword())){
+            Optional<User> userOptional=userRepository1.findByPasswordVerificationToken(resetPassword.getToken());
+            if(userOptional.isPresent()){
+                userOptional.get().setPassword(passwordEncoder.encode(resetPassword.getPassword()));
+                userOptional.get().setVerificationToken(null);
+                userRepository1.save(userOptional.get());
+                return ResponseEntity.ok(new CustomMessage("Password changed, you can login."));
+            }
+            return ResponseEntity.badRequest().body(new CustomMessage("Your token is not valid."));
+        }
+        return ResponseEntity.badRequest().body(new CustomMessage("Confirm password do not match."));
     }
 
     private UserDTO mapToUserDTO(User user) {

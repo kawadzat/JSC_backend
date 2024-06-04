@@ -25,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -227,6 +228,11 @@ public class UserResource {
                         .status(OK)
                         .statusCode(OK.value())
                         .build());
+    }
+
+    @PostMapping("/reset/password")
+    public ResponseEntity<?> resetPasswordWithKey(@Validated @RequestBody ResetPasswordDto resetPassword){
+        return userService.resetpassword(resetPassword);
     }
 
     // END - To reset password when user is not logged in

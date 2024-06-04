@@ -39,7 +39,7 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final CustomAuthorizationFilter customAuthorizationFilter;
 
-    private static final String[] PUBLIC_URLS = {"/user/verify/password/**",
+    private static final String[] PUBLIC_URLS = {"/user/verify/password/**","/user/reset/password",
             "/user/login/**", "/user/verify/code/**", "/user/register/**", "/user/resetpassword/**", "/user/verify/account/**",
             "/user/refresh/token/**", "/StockItemRequest", "/user/image/**", "user/list/**", "io/getarrays/securecapita/assert/**", "newvehicle/**", "inspection/**", "inventory/**", "/purchaseRequisition/**", "/store/**", "/inspection/addtoassert/**", "product/**", "category/**", "stock/totalQuantity/**", "users/{userId}/**"};
 

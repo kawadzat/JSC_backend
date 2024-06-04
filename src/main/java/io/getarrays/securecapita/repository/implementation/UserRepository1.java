@@ -17,4 +17,6 @@ public interface UserRepository1   extends JpaRepository<User,Long> {
     @Query("Select u FROM User u where u.roles IS EMPTY")
     ArrayList<User> findUsersWithNoRoles();
 
+    @Query("SELECT u FROM User u WHERE u.verificationToken = :token AND u.verificationTokenExpiry > CURRENT_TIMESTAMP()")
+    Optional<User> findByPasswordVerificationToken(String token);
 }

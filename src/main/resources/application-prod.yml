@@ -33,20 +33,15 @@ spring:
     init:
       mode: never
       continue-on-error: false
+
   mail:
     host: smtp.gmail.com
     port: 587
-    username: kkunal2005@gmail.com
-    password: ugds lkwg qhwq hryd
-    default-encoding: UTF-8
+    username: javaspringboot7@gmail.com
+    password: gpceghqgktqlvfye
     properties:
       mail:
-        mime:
-          charset: UTF
         smtp:
-          writetimeout: 10000
-          connectiontimeout: 10000
-          timeout: 10000
           auth: true
           starttls:
             enable: true

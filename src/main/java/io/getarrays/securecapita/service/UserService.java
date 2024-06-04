@@ -1,10 +1,12 @@
 package io.getarrays.securecapita.service;
 
 import io.getarrays.securecapita.asserts.model.Station;
+import io.getarrays.securecapita.domain.HttpResponse;
 import io.getarrays.securecapita.domain.Role;
 import io.getarrays.securecapita.domain.User;
 import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.form.UpdateForm;
+import io.getarrays.securecapita.resource.ResetPasswordDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -67,4 +69,6 @@ public interface UserService {
     ResponseEntity<?> changeRole(Long userId, String role);
 
     ResponseEntity<?> addStationToUser(Long userId, Long stationId);
+
+    ResponseEntity<?> resetpassword(ResetPasswordDto resetPassword);
 }
