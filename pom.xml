@@ -295,6 +295,6 @@
             </plugin>
 
         </plugins>
-
+        <finalName>jscbackend</finalName>
     </build>
 </project>
