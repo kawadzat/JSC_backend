@@ -69,6 +69,25 @@ public class RolesPreRunner implements CommandLineRunner {
         updateRole(roles, AUTH_ROLE.SYSADMIN, permissionSysAdmin);
 
 
+
+        String permissionAuditor = ROLE_AUTH.READ_USER + "," +
+
+                ROLE_AUTH.VIEW_ASSET + "," +
+                ROLE_AUTH.VIEW_STATION + "," +
+
+                ROLE_AUTH.VIEW_STATION;
+        updateRole(roles, AUTH_ROLE.AUDITOR,permissionAuditor );
+
+
+
+
+
+
+
+
+
+
+
         String permissionPrinciple = ROLE_AUTH.READ_USER + "," +
 //                ROLE_AUTH.UPDATE_USER + "," +
                 ROLE_AUTH.VIEW_ASSET + "," +
@@ -83,6 +102,10 @@ public class RolesPreRunner implements CommandLineRunner {
                 ROLE_AUTH.CREATE_ASSET;
 
         updateRole(roles, AUTH_ROLE.PRINCIPAL_ADMIN, permissionPrinciple);
+
+
+
+
 
 
         String permissionRegistrar = ROLE_AUTH.READ_USER + "," +

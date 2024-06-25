@@ -7,7 +7,10 @@ public enum AUTH_ROLE {
     ADMIN,
     PRINCIPAL_ADMIN,
     HEAD_ADMIN,
-    SYSADMIN;
+    SYSADMIN,
+    AUDITOR,
+
+    SECRETARY;
 
 
 
@@ -16,7 +19,7 @@ public enum AUTH_ROLE {
             case USER -> {
                 return 0;
             }
-            case DEPUTY_REGISTRAR, REGISTRAR -> {
+            case DEPUTY_REGISTRAR ,REGISTRAR -> {
                 return 1;
             }
             case ADMIN -> {
@@ -25,15 +28,20 @@ public enum AUTH_ROLE {
             case PRINCIPAL_ADMIN -> {
                 return 3;
             }
-            case HEAD_ADMIN, SYSADMIN -> {
+            case HEAD_ADMIN, SYSADMIN,AUDITOR -> {
                 return 4;
             }
+
+            case SECRETARY ->  {
+                return 5;
+            }
+
         }
         return 0;
     }
 
     public static int getMaxPriority() {
-        return 4;
+        return 5;
     }
 }
 //Initiation/Creation - by Administration Officer

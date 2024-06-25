@@ -15,12 +15,15 @@ import io.getarrays.securecapita.exception.CustomMessage;
 import io.getarrays.securecapita.officelocations.OfficeLocation;
 import io.getarrays.securecapita.officelocations.OfficeLocationRepository;
 import io.getarrays.securecapita.repository.implementation.UserRepository1;
+import io.getarrays.securecapita.roles.prerunner.ROLE_AUTH;
 import io.getarrays.securecapita.userlogs.ActionType;
 import io.getarrays.securecapita.userlogs.UserLogService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -108,7 +111,7 @@ public class AssertService implements AssertServiceInterface {
     }
 
 
-    public Iterable<AssertEntity> getAsserts(int page, int size) {
+    public Page<AssertEntity> getAsserts(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("date"));
 
         return assertRepository.findAll(pageRequest);
@@ -120,22 +123,31 @@ public class AssertService implements AssertServiceInterface {
     }
 
     @Override
-    public ResponseEntity<?> getStats(PageRequest pageRequest) {
-        // Fetch the total fixed asserts and total current asserts
-        int totalFixedAsserts = assertsJpaRepository.countFixedAsserts();
-        int totalCurrentAsserts = assertsJpaRepository.countCurrentAsserts();
+    public ResponseEntity<?> getStats() {
+        User user = userRepository1.findById(((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name()))) {
+            // Fetch the total fixed asserts and total current asserts
+            int totalFixedAsserts = assertsJpaRepository.countFixedAsserts();
+            int totalCurrentAsserts = assertsJpaRepository.countCurrentAsserts();
 
-        // Fetch asset statistics
-        ArrayList<AssetItemStat> assetsStats = assertsJpaRepository.findAssertItemStatsByAssetDisc(pageRequest);
-        userLogService.addLog(ActionType.VIEW, "checked stats of asserts.");
+            // Fetch asset statistics
+            ArrayList<AssetItemStat> assetsStats = assertsJpaRepository.findAssertItemStatsByAssetDisc();
+            userLogService.addLog(ActionType.VIEW, "checked stats of asserts.");
 
-        // Return a new Stats object with the calculated totals and fetched asset statistics
-        return ResponseEntity.ok(AssetsStats.builder()
-                .totalAsserts(assertsJpaRepository.count())
-                .totalFixedAsserts(totalFixedAsserts)
-                .totalCurrentAsserts(totalCurrentAsserts)
-                .assetsStats(assetsStats)
-                .build());
+            // Return a new Stats object with the calculated totals and fetched asset statistics
+            return ResponseEntity.ok(AssetsStats.builder()
+                    .totalAsserts(assertsJpaRepository.count())
+                    .totalFixedAsserts(totalFixedAsserts)
+                    .totalCurrentAsserts(totalCurrentAsserts)
+                    .assetsStats(assetsStats)
+                    .build());
+        }else{
+            if(user.getStation()!=null){
+                return ResponseEntity.ok(getStats(user.getStation().getStation_id()));
+            }
+            return ResponseEntity.badRequest().body(new CustomMessage("You are not authorized to get stats for any station."));
+        }
     }
 
     public AssetsStats getStats(Long stationId) {

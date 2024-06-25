@@ -29,7 +29,7 @@ public interface AssertsJpaRepository extends JpaRepository<AssertEntity, Long> 
             "a.assetDisc, " +
             "COUNT(a.id)) FROM AssertEntity a " +
             "GROUP BY a.assetDisc")
-    ArrayList<AssetItemStat> findAssertItemStatsByAssetDisc(PageRequest pageRequest);
+    ArrayList<AssetItemStat> findAssertItemStatsByAssetDisc();
 
     @Query("SELECT new io.getarrays.securecapita.dto.AssetItemStat(" +
             "a.assetDisc, " +

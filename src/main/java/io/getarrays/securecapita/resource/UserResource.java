@@ -72,12 +72,7 @@ public class UserResource {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid LoginForm loginForm) {
-        try {
-            UserDTO user = authenticate(loginForm.getEmail(), loginForm.getPassword());
-            return user.isUsingMfa() ? sendVerificationCode(user) : sendResponse(user);
-        } catch (NoSuchElementException ex) {
-            return ResponseEntity.status(404).body(new CustomMessage("Username or password is not correct."));
-        }
+        return authenticate(loginForm.getEmail(), loginForm.getPassword());
     }
 
     //method to get user by id
@@ -231,7 +226,7 @@ public class UserResource {
     }
 
     @PostMapping("/reset/password")
-    public ResponseEntity<?> resetPasswordWithKey(@Validated @RequestBody ResetPasswordDto resetPassword){
+    public ResponseEntity<?> resetPasswordWithKey(@Validated @RequestBody ResetPasswordDto resetPassword) {
         return userService.resetpassword(resetPassword);
     }
 
@@ -424,7 +419,7 @@ public class UserResource {
                 .build(), NOT_FOUND);
     }*/
 
-    private UserDTO authenticate(String email, String password) throws NoSuchElementException {
+    private ResponseEntity<?> authenticate(String email, String password) throws NoSuchElementException {
         User testUser = userService1.loadUserByUsername(email);
         if (testUser != null) {
             publisher.publishEvent(new NewUserEvent(LOGIN_ATTEMPT, testUser.getId()));
@@ -435,13 +430,15 @@ public class UserResource {
 //            if (!testUser.isUsingMfa()) {
 //                publisher.publishEvent(new NewUserEvent(LOGIN_ATTEMPT_SUCCESS, testUser.getId()));
 //            }
-                return UserDTO.toDto(testUser);
+                UserDTO user = UserDTO.toDto(testUser);
+                return user.isUsingMfa() ? sendVerificationCode(user) : sendResponse(user);
             }
         }
 
         publisher.publishEvent(new NewUserEvent(LOGIN_ATTEMPT_FAILURE, testUser.getId()));
-        processError(request, response, new Exception("Unable to Login"));
-        throw new ApiException(new Exception("Unable to Login").getMessage());
+        return ResponseEntity.status(401).body(new CustomMessage("Please check your username or password."));
+        //        processError(request, response, new Exception("Unable to Login"));
+//        throw new ApiException(new Exception("Unable to Login. please check your credentials again.").getMessage());
     }
 
 

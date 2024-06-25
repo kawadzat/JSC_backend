@@ -53,6 +53,7 @@ public class AssertMoveService {
             Optional<AssertEntity> optionalAssert = assertEntityRepository.findById(assertMoveRequest.get().getAssertEntity().getId());
             if (optionalAssert.isPresent()) {
                 optionalAssert.get().setOfficeLocation(assertMoveRequest.get().getOfficeLocation());
+                optionalAssert.get().setLocation(assertMoveRequest.get().getOfficeLocation().getName());
                 assertMoveRequest.get().setStatus(AssertMoveStatus.APPROVED);
                 assertMoveRequest.get().setUpdatedDate(new Timestamp(System.currentTimeMillis()));
                 assertEntityRepository.save(optionalAssert.get());

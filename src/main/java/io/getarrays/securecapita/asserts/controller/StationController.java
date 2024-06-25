@@ -2,10 +2,16 @@ package io.getarrays.securecapita.asserts.controller;
 
 import io.getarrays.securecapita.asserts.model.Station;
 import io.getarrays.securecapita.asserts.service.StationService;
+import io.getarrays.securecapita.domain.User;
+import io.getarrays.securecapita.dto.UserDTO;
+import io.getarrays.securecapita.repository.implementation.UserRepository1;
+import io.getarrays.securecapita.roles.prerunner.ROLE_AUTH;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -19,9 +25,8 @@ public class StationController {
 
     /* to create user */
 
-    @Autowired
-    StationService stationService;
-
+    private final StationService stationService;
+    private final UserRepository1 userRepository1;
 
     @PostMapping("/create")
     public Station createStation(@RequestBody Station newStation) {
@@ -70,7 +75,13 @@ public class StationController {
     }
 
     @GetMapping("/stats")
-    public ResponseEntity<?> getOverallStats(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
-        return stationService.getStats(PageRequest.of(page,size));
+    public ResponseEntity<?> getOverallStats() {
+            return stationService.getStats();
+
+    }
+
+    @GetMapping("/stationsStat")
+    public ResponseEntity<?> getStationStats() {
+        return stationService.getStationStats();
     }
 }

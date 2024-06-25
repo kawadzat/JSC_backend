@@ -33,6 +33,22 @@ public class StationPreRunner implements CommandLineRunner {
         stationArrayList.add(Station.builder().station_id(4L).stationName("MUTARE_HIGH_COURT").build());
         stationArrayList.add(Station.builder().station_id(5L).stationName("CHINHOYI_HIGH_COURT").build());
         stationArrayList.add(Station.builder().station_id(6L).stationName("SUPRME_COURT").build());
+        stationArrayList.add(Station.builder().station_id(7L).stationName("CON_COURT").build());
+        stationArrayList.add(Station.builder().station_id(8L).stationName("HARARE_LABOUR_COURT").build());
+        stationArrayList.add(Station.builder().station_id(9L).stationName("CHEGUTU_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(10L).stationName("MBARE_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(11L).stationName("HARARE_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(12L).stationName("MASVINGO_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(13L).stationName("COMMERCIAL_COURT").build());
+        stationArrayList.add(Station.builder().station_id(14L).stationName("SHERIF_COURT").build());
+        stationArrayList.add(Station.builder().station_id(15L).stationName("COMMERCIAL_COURT").build());
+        stationArrayList.add(Station.builder().station_id(16L).stationName("NORTON_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(17L).stationName("KWEKWE_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(18L).stationName("BULAWAYO_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(19L).stationName("RUSAPE_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(20L).stationName("MABVUKU_TAFARA_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(21L).stationName("MUTARE_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(23L).stationName("VICFALLS_MAG_COURT").build());
         stationRepository.saveAll(stationArrayList);
     }
 }

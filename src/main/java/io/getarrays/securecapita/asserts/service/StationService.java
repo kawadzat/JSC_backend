@@ -2,6 +2,8 @@ package io.getarrays.securecapita.asserts.service;
 
 import io.getarrays.securecapita.asserts.model.AssertEntity;
 import io.getarrays.securecapita.asserts.model.Station;
+import io.getarrays.securecapita.asserts.model.StationsAssetsStatDto;
+import io.getarrays.securecapita.asserts.model.StationsStatDto;
 import io.getarrays.securecapita.asserts.repo.AssertEntityRepository;
 import io.getarrays.securecapita.asserts.repo.StationRepository;
 import io.getarrays.securecapita.domain.User;
@@ -11,9 +13,7 @@ import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.exception.CustomMessage;
 import io.getarrays.securecapita.repository.implementation.UserRepository1;
 import io.getarrays.securecapita.roles.prerunner.ROLE_AUTH;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +29,7 @@ public class StationService {
     private final StationRepository stationRepository;
     private final UserRepository1 userRepository1;
     private final AssertEntityRepository assertRepository;
-    private  final AssertService assertService;
+    private final AssertService assertService;
 
     /* to create user */
     public Station createStation(Station newStation) {
@@ -138,21 +138,66 @@ public class StationService {
         return ResponseEntity.ok(new CustomMessage("checked all assets till now."));
     }
 
-    public ResponseEntity<?> getStats(PageRequest pageRequest) {
-        ArrayList<StationItemStat> stationItemStats=stationRepository.findAssertItemStatsByAssetDisc(pageRequest);
-        stationItemStats.forEach(stationItemStat -> {
-            stationItemStat.setAssetsStats(assertService.getStats(stationItemStat.getStationId()));
-        });
-        return ResponseEntity.ok(StationStats.builder()
-                .totalStations(stationRepository.count())
-                .stationItemStats(stationItemStats)
-                .build());
+    public ResponseEntity<?> getStats() {
+        User user = userRepository1.findById(((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name()))) {
+            ArrayList<StationItemStat> stationItemStats = stationRepository.findAssertItemStatsByAssetDisc();
+            stationItemStats.forEach(stationItemStat -> {
+                stationItemStat.setAssetsStats(assertService.getStats(stationItemStat.getStationId()));
+            });
+            return ResponseEntity.ok(StationStats.builder()
+                    .totalStations(stationRepository.count())
+                    .stationItemStats(stationItemStats)
+                    .build());
+        }else {
+            if (user.getStation() != null) {
+                ArrayList<StationItemStat> stationItemStats = stationRepository.findAssertItemStatsByAssetDisc(user.getStation().getStation_id());
+                stationItemStats.forEach(stationItemStat -> {
+                    stationItemStat.setAssetsStats(assertService.getStats(stationItemStat.getStationId()));
+                });
+                return ResponseEntity.ok(StationStats.builder()
+                        .totalStations(stationRepository.count())
+                        .stationItemStats(stationItemStats)
+                        .build());
+            }
+        }
+        return ResponseEntity.badRequest().body(new CustomMessage("Not authorized for stats."));
+    }
+
+    public ResponseEntity<?> getStationStats() {
+        User user = userRepository1.findById(((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name()))) {
+            List<StationsStatDto> stationsStatDto = stationRepository.getStatforAllStations();
+            List<StationsAssetsStatDto> stationsOfficesStatDtos = stationRepository.getAllAssetsStats();
+            Map<String, List<StationsAssetsStatDto>> stationsToOfficesMap = new HashMap<>();
+            for (StationsAssetsStatDto officeStatDto : stationsOfficesStatDtos) {
+                stationsToOfficesMap.computeIfAbsent(officeStatDto.getStation(), k -> new ArrayList<>()).add(officeStatDto);
+            }
+            for (StationsStatDto stationStatDto : stationsStatDto) {
+                if (stationStatDto.getAssets() > 0) {
+                    stationStatDto.setAssetsList(stationsToOfficesMap.getOrDefault(stationStatDto.getName(), Collections.emptyList()));
+                }
+            }
+            return ResponseEntity.ok(stationsStatDto);
+        } else if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.VIEW_STATION.name()))) {
+            if (user.getStation() != null) {
+                List<StationsStatDto> stationsStatDto = stationRepository.getStatforStation(user.getStation().getStation_id());
+                List<StationsAssetsStatDto> stationsOfficesStatDtos = stationRepository.getAssetsStatsForStation(user.getStation().getStation_id());
+                System.out.println(stationsOfficesStatDtos);
+                Map<String, List<StationsAssetsStatDto>> stationsToOfficesMap = new HashMap<>();
+                for (StationsAssetsStatDto officeStatDto : stationsOfficesStatDtos) {
+                    stationsToOfficesMap.computeIfAbsent(officeStatDto.getStation(), k -> new ArrayList<>()).add(officeStatDto);
+                }
+                for (StationsStatDto stationStatDto : stationsStatDto) {
+                    if (stationStatDto.getAssets() > 0) {
+                        stationStatDto.setAssetsList(stationsToOfficesMap.getOrDefault(stationStatDto.getName(), Collections.emptyList()));
+                    }
+                }
+                return ResponseEntity.ok(stationsStatDto);
+            }
+        }
+        return ResponseEntity.badRequest().body(new CustomMessage("Not authorized for stats."));
     }
 }
-
-@Data
-class StationResponse {
-    private Long id;
-    private String name;
-}
-
