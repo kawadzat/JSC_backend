@@ -10,6 +10,7 @@ import io.getarrays.securecapita.roles.prerunner.ROLE_AUTH;
 import io.getarrays.securecapita.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -121,7 +122,7 @@ public class AssertController {
     public ResponseEntity<?> getByStation(@RequestParam("stationId") Long stationId, @RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.VIEW_ASSET.name()))) {
-            return assertService.getAllAssertsByStation(stationId, PageRequest.of(page, size));
+            return assertService.getAllAssertsByStation(stationId, PageRequest.of(page, size, Sort.by("lastModifiedDate").descending()));
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
 

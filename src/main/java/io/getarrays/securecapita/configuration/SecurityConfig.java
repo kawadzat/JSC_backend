@@ -41,7 +41,7 @@ public class SecurityConfig {
 
     private static final String[] PUBLIC_URLS = {"/user/verify/password/**","/user/reset/password",
             "/user/login/**", "/user/verify/code/**", "/user/register/**", "/user/resetpassword/**", "/user/verify/account/**",
-            "/user/refresh/token/**", "/StockItemRequest", "/user/image/**", "user/list/**", "io/getarrays/securecapita/assert/**", "newvehicle/**", "inspection/**", "inventory/**", "/purchaseRequisition/**", "/store/**", "/inspection/addtoassert/**", "product/**", "category/**", "stock/totalQuantity/**", "users/{userId}/**"};
+            "/user/refresh/token/**","/api/v1/user/station/get", "/StockItemRequest", "/user/image/**", "user/list/**", "io/getarrays/securecapita/assert/**", "newvehicle/**", "inspection/**", "inventory/**", "/purchaseRequisition/**", "/store/**", "/inspection/addtoassert/**", "product/**", "category/**", "stock/totalQuantity/**", "users/{userId}/**"};
 
 
     @Bean
@@ -52,7 +52,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests().requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll();
         http.authorizeHttpRequests().requestMatchers("/api/v1/admin/roles/**").hasAnyAuthority(ROLE_AUTH.ASSIGN_ROLE.name());
 
-        http.authorizeHttpRequests().requestMatchers("/user/delete/**","/user/users/**","/user/list/**","/user/update/**","/user/assignStationToUser/**").hasAnyAuthority(ROLE_AUTH.UPDATE_USER.name());
+        http.authorizeHttpRequests().requestMatchers("/user/delete/**","/user/users/**","/user/list/**","/user/update/**","/user/assignStationToUser/**","/api/v1/user/station/**").hasAnyAuthority(ROLE_AUTH.UPDATE_USER.name());
 //        http.authorizeHttpRequests().requestMatchers(DELETE, "/purchaseRequisition/delete/**").hasAnyAuthority("DELETE:purchaseRequisition");
         http.authorizeHttpRequests().requestMatchers("/api/v1/products/create/**","/api/v1/products/delete/**").hasAnyAuthority(ROLE_AUTH.CREATE_PRODUCT.name());
         http.authorizeHttpRequests().requestMatchers("/station/check/**").hasAnyAuthority(ROLE_AUTH.CHECK_ASSET.name());

@@ -49,4 +49,8 @@ public interface AssertsJpaRepository extends JpaRepository<AssertEntity, Long> 
 
     @Query("SELECT COUNT(a) FROM AssertEntity a WHERE a.station.station_id=:stationId")
     int countAsserts(Long stationId);
+
+    @Query("SELECT a FROM AssertEntity a WHERE a.assetNumber = :assetNumber and a.station.station_id=:selectedStationID")
+
+    Optional<AssertEntity> findByAssetAndStation(String assetNumber, Long selectedStationID);
 }

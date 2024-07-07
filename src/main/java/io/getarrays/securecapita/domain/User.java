@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.getarrays.securecapita.asserts.model.Station;
 import io.getarrays.securecapita.roles.UserRole;
+import io.getarrays.securecapita.stationsassignment.UserStation;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,15 +15,15 @@ import lombok.experimental.SuperBuilder;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Junior RT
@@ -66,10 +67,14 @@ public class User {
     private Timestamp verificationTokenExpiry;
     @JsonIgnore
     private String verificationToken;
-    @ManyToOne
-    @JoinColumn(name = "station_id")
-    private Station station;
+//    @ManyToOne
+//    @JoinColumn(name = "station_id")
+//    private Station station;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.EXTRA)
+    @Builder.Default
+    private List<UserStation> stations = new ArrayList<>();
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "userId")
     @Builder.Default
     private Set<UserRole> roles = new HashSet<>();
@@ -88,6 +93,12 @@ public class User {
 
     public void removeAllRole() {
         roles.clear();
+    }
+
+    public boolean isStationAssigned(Long stationId) {
+        Hibernate.initialize(getStations());
+        return stations.stream()
+                .anyMatch(userStation -> userStation.getStation().getStation_id().equals(stationId));
     }
 }
 

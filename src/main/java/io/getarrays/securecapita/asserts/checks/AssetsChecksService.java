@@ -38,11 +38,11 @@ public class AssetsChecksService {
         User user = userRepository1.findById(((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getAuthorities().stream().anyMatch((r) -> (r.getAuthority().contains(ROLE_AUTH.CHECK_ASSET.name()) || r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name())))) {
-            if(stationId==null&&user.getStation()==null){
+            if(!user.isStationAssigned(stationId)){
                 return ResponseEntity.badRequest().body(new CustomMessage("Station not Assigned to User."));
             }
-            Optional<Station> stationOptional = stationRepository.findById(stationId==null?user.getStation().getStation_id():stationId);
-            if (stationOptional.isEmpty() || (!Objects.equals(user.getStation().getStation_id(), stationOptional.get().getStation_id()) && authentication.getAuthorities().stream().noneMatch((r) -> r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name())))) {
+            Optional<Station> stationOptional = stationRepository.findById(stationId);
+            if (stationOptional.isEmpty() || (!user.isStationAssigned(stationId)) && authentication.getAuthorities().stream().noneMatch((r) -> r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name()))) {
                 return ResponseEntity.badRequest().body(new CustomMessage("Station not found."));
             }
             Timestamp timestamp = new Timestamp(new Date().getTime());
@@ -62,11 +62,11 @@ public class AssetsChecksService {
         User user = userRepository1.findById(((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getAuthorities().stream().anyMatch((r) -> (r.getAuthority().contains(ROLE_AUTH.CHECK_ASSET.name()) || r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name())))) {
-            if(stationId==null&&user.getStation()==null){
+            if(user.isStationAssigned(stationId)){
                 return ResponseEntity.badRequest().body(new CustomMessage("Station not Assigned to User."));
             }
-            Optional<Station> stationOptional = stationRepository.findById(stationId==null?user.getStation().getStation_id():stationId);
-            if (stationOptional.isEmpty() || (!Objects.equals(user.getStation().getStation_id(), stationOptional.get().getStation_id()) && authentication.getAuthorities().stream().noneMatch((r) -> r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name())))) {
+            Optional<Station> stationOptional = stationRepository.findById(stationId);
+            if (stationOptional.isEmpty() || (!user.isStationAssigned(stationId)) && authentication.getAuthorities().stream().noneMatch((r) -> r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name()))) {
                 return ResponseEntity.badRequest().body(new CustomMessage("Station not found."));
             }
             Page<AssertChecksResponseDto> assertChecksResponseDtoPage = assetChecksRepository.findAllChecks(stationOptional.get().getStation_id(), PageRequest.of(page, size, Sort.by("updatedDate").descending()));
