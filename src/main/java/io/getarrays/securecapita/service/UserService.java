@@ -68,7 +68,5 @@ public interface UserService {
 
     ResponseEntity<?> changeRole(Long userId, String role);
 
-    ResponseEntity<?> addStationToUser(Long userId, Long stationId);
-
     ResponseEntity<?> resetpassword(ResetPasswordDto resetPassword);
 }

@@ -475,12 +475,12 @@ public class UserResource {
     }
 
 
-    @PostMapping("/assignStationToUser")
-    public ResponseEntity<?> assignStationToUser(
-            @RequestParam("userId") Long userId,
-            @RequestParam("stationId") Long stationId) {
-        return userService.addStationToUser(userId, stationId);
-    }
+//    @PostMapping("/assignStationToUser")
+//    public ResponseEntity<?> assignStationToUser(
+//            @RequestParam("userId") Long userId,
+//            @RequestParam("stationId") Long stationId) {
+//        return userService.addStationToUser(userId, stationId);
+//    }
 
 
 //    @PostMapping("/assignStationToUser")

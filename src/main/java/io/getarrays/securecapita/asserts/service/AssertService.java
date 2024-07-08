@@ -118,10 +118,23 @@ public class AssertService implements AssertServiceInterface {
     }
 
     @Override
-    public ResponseEntity<?> getAllAssertsByStation(Long stationId, PageRequest pageRequest) {
+    public ResponseEntity<?> getAllAssertsByStation(Long userId,Long stationId, PageRequest pageRequest) {
         return ResponseEntity.ok(assertRepository.getAllAssertsByStationPage(stationId, pageRequest));
     }
 
+    @Override
+    public ResponseEntity<?> getAllAssertsByUserStation(Long userId, Long stationId, PageRequest pageRequest) {
+        return ResponseEntity.ok(assertRepository.getAssertsByUserStationPaged(userId,stationId, pageRequest));
+    }
+
+    @Override
+    public ResponseEntity<?> getAllAssertsByUserStation(Long userId, PageRequest pageRequest) {
+        User user=userRepository1.findById(userId).get();
+        if(!user.isStationAssigned()){
+            return ResponseEntity.badRequest().body(new CustomMessage("You are not authorized to get asserts for any station."));
+        }
+        return ResponseEntity.ok(assertRepository.getAssertsByUserStationPaged(userId,user.getStations().stream().findFirst().get().getId(), pageRequest));
+    }
     @Override
     public ResponseEntity<?> getStats() {
         User user = userRepository1.findById(((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get();
@@ -143,39 +156,39 @@ public class AssertService implements AssertServiceInterface {
                     .assetsStats(assetsStats)
                     .build());
         }else{
-            if(user.getStation()!=null){
-                return ResponseEntity.ok(getStats(user.getStation().getStation_id()));
+            if(user.isStationAssigned()){
+                return ResponseEntity.ok(getStats(user.getId()));
             }
             return ResponseEntity.badRequest().body(new CustomMessage("You are not authorized to get stats for any station."));
         }
     }
 
-    public AssetsStats getStats(Long stationId) {
+    public AssetsStats getStats(Long userId) {
         // Fetch the total fixed asserts and total current asserts
-        int totalFixedAsserts = assertsJpaRepository.countFixedAsserts(stationId);
-        int totalCurrentAsserts = assertsJpaRepository.countCurrentAsserts(stationId);
+        int totalFixedAsserts = assertsJpaRepository.countFixedAssertsForUser(userId);
+        int totalCurrentAsserts = assertsJpaRepository.countCurrentAssertsForUser(userId);
 
         // Fetch asset statistics
-        ArrayList<AssetItemStat> assetsStats = assertsJpaRepository.findAssertItemStatsByAssetDisc(stationId);
+        List<AssetItemStat> assetsStats = assertsJpaRepository.findAssertItemStatsByAssetDiscForUser(userId);
         userLogService.addLog(ActionType.VIEW, "checked stats of asserts.");
 
         // Return a new Stats object with the calculated totals and fetched asset statistics
         return AssetsStats.builder()
-                .totalAsserts(assertsJpaRepository.countAsserts(stationId))
+                .totalAsserts(assertsJpaRepository.countAssertsForUserStations(userId))
                 .totalFixedAsserts(totalFixedAsserts)
                 .totalCurrentAsserts(totalCurrentAsserts)
                 .assetsStats(assetsStats)
                 .build();
     }
 
-    public ResponseEntity<?> getAssertsForOwnStation(int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("lastModifiedDate").descending());
-        User user = userRepository1.findById(((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get();
-        if (user.getStation() != null) {
-            return getAllAssertsByStation(user.getStation().getStation_id(), pageRequest);
-        }
-        return ResponseEntity.ok(new ArrayList<AssertEntity>());
-    }
+//    public ResponseEntity<?> getAssertsForOwnStation(int page, int size) {
+//        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("lastModifiedDate").descending());
+//        User user = userRepository1.findById(((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get();
+//        if (user.isStationAssigned()) {
+//            return getAllAssertsByStation(user.getId(), pageRequest);
+//        }
+//        return ResponseEntity.ok(new ArrayList<AssertEntity>());
+//    }
 
     public List<AssertEntity> getAsserts() {
         return assertsJpaRepository.findAll();

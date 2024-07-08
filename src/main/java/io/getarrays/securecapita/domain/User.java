@@ -74,6 +74,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.EXTRA)
     @Builder.Default
+    @JsonIgnore
     private List<UserStation> stations = new ArrayList<>();
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "userId")
     @Builder.Default
@@ -99,6 +100,12 @@ public class User {
         Hibernate.initialize(getStations());
         return stations.stream()
                 .anyMatch(userStation -> userStation.getStation().getStation_id().equals(stationId));
+    }
+
+    //is stations empty
+    public boolean isStationAssigned() {
+        Hibernate.initialize(getStations());
+        return !stations.isEmpty();
     }
 }
 

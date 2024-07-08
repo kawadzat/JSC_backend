@@ -3,6 +3,7 @@ package io.getarrays.securecapita.dto;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Junior RT
@@ -19,5 +20,5 @@ public class AssetsStats {
     private long totalAsserts;
     private long totalFixedAsserts;
     private long totalCurrentAsserts;
-    private ArrayList<AssetItemStat> assetsStats;
+    private List<AssetItemStat> assetsStats;
 }

@@ -102,30 +102,35 @@ public class AssertController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name()))) {
             return ResponseEntity.ok(assertService.getAsserts(page, size));
-        } else if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.VIEW_ASSET.name()))) {
-            return assertService.getAssertsForOwnStation(page, size);
         }
+//        else if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.VIEW_ASSET.name()))) {
+//            return assertService.getAssertsForOwnStation(page, size);
+//        }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
     }
 
-    @GetMapping("/{stationName}")
-    public ResponseEntity<?> getAllAssertsByStation(@RequestParam("stationId") Long stationId, @RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.VIEW_ASSET.name()))) {
-            return assertService.getAllAssertsByStation(stationId, PageRequest.of(page, size));
-        }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
-
-    }
+//    @GetMapping("/{stationName}")
+//    public ResponseEntity<?> getAllAssertsByStation(@RequestParam("stationId") Long stationId, @RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.VIEW_ASSET.name()))) {
+//            return assertService.getAllAssertsByStation(stationId, PageRequest.of(page, size));
+//        }
+//        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
+//
+//    }
 
     @GetMapping("/getByStation")
-    public ResponseEntity<?> getByStation(@RequestParam("stationId") Long stationId, @RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
+    public ResponseEntity<?> getByStation(@RequestParam(name = "stationId", required = false) Long stationId, @RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.VIEW_ASSET.name()))) {
-            return assertService.getAllAssertsByStation(stationId, PageRequest.of(page, size, Sort.by("lastModifiedDate").descending()));
+        if (stationId != null) {
+            if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.VIEW_ASSET.name()))) {
+                return assertService.getAllAssertsByStation(((UserDTO) authentication.getPrincipal()).getId(), stationId, PageRequest.of(page, size, Sort.by("lastModifiedDate").descending()));
+            } else {
+                return assertService.getAllAssertsByUserStation(((UserDTO) authentication.getPrincipal()).getId(),stationId, PageRequest.of(page, size, Sort.by("lastModifiedDate").descending()));
+            }
+        } else {
+            return assertService.getAllAssertsByUserStation(((UserDTO) authentication.getPrincipal()).getId(), PageRequest.of(page, size, Sort.by("lastModifiedDate").descending()));
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
-
     }
 
 

@@ -32,16 +32,14 @@ public class AssertMoveService {
     private final UserRepository1 userRepository1;
 
     public ResponseEntity<Object> getAll(int page, int size) {
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository1.findById(((UserDTO) authentication.getPrincipal()).getId()).get();
-        System.out.println(user.getStation());
+//        User user = userRepository1.findById(((UserDTO) authentication.getPrincipal()).getId()).get();
         Page<AssertMoveRequest> officeLocations;
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdDate").descending());
         if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name()))) {
             officeLocations = moveLocationRepository.findAll(pageRequest);
         } else {
-            officeLocations = moveLocationRepository.findByStationId(userRepository1.findById(((UserDTO) authentication.getPrincipal()).getId()).get().getStation().getStation_id(), pageRequest);
+            officeLocations = moveLocationRepository.findByUserIdAndAssignedStations(userRepository1.findById(((UserDTO) authentication.getPrincipal()).getId()).get().getId(), pageRequest);
         }
         return ResponseEntity.ok(officeLocations.get());
     }

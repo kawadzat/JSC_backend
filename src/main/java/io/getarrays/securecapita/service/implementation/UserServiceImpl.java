@@ -16,6 +16,8 @@ import io.getarrays.securecapita.repository.implementation.UserRepository1;
 import io.getarrays.securecapita.resource.ResetPasswordDto;
 import io.getarrays.securecapita.roles.UserRole;
 import io.getarrays.securecapita.service.UserService;
+import io.getarrays.securecapita.stationsassignment.UserStation;
+import io.getarrays.securecapita.stationsassignment.UserStationRepo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -52,6 +54,7 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserRoleRepository userRoleRepository;
     private final StationRepository stationRepository;
+    private final UserStationRepo userStationRepo;
 
     @Override
     public boolean deleteUser(Long id) {
@@ -219,20 +222,6 @@ public class UserServiceImpl implements UserService {
         userRepository.updateImage(user, image);
     }
 
-    @Override
-    public ResponseEntity<?> addStationToUser(Long userId, Long stationId) {
-        Optional<User> user = userRepository1.findById(userId);
-        if (user.isEmpty()) {
-            return ResponseEntity.badRequest().body(new CustomMessage("User Not Found."));
-        }
-        Optional<Station> stationOptional = stationRepository.findById(stationId);
-        if (stationOptional.isEmpty()) {
-            return ResponseEntity.badRequest().body(new CustomMessage("Station Not Found."));
-        }
-        user.get().setStation(stationOptional.get());
-        userRepository1.save(user.get());
-        return ResponseEntity.ok(new CustomMessage("Station changed for user: " + user.get().getFirstName()));
-    }
 
     @Override
     public ResponseEntity<?> resetpassword(ResetPasswordDto resetPassword) {

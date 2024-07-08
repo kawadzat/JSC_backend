@@ -93,10 +93,7 @@ public class StationService {
             return ResponseEntity.ok(transformedStations);
         } else if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.VIEW_STATION.name()))) {
             User user = userRepository1.findById(((UserDTO) authentication.getPrincipal()).getId()).get();
-            List<Station> stations = new ArrayList<>();
-            if (user.getStation() != null) {
-                stations.add(user.getStation());
-            }
+            List<Station> stations =stationRepository.findAllByUserId(user.getId());
             List<Map<String, Object>> transformedStations = stations.stream()
                     .map(station -> {
                         Map<String, Object> map = new HashMap<>();
@@ -131,7 +128,7 @@ public class StationService {
         if (stationOptional.isEmpty()) {
             return ResponseEntity.badRequest().body(new CustomMessage("Station not found."));
         }
-        if (user.getStation() == null || !Objects.equals(user.getStation().getStation_id(), stationId)) {
+        if (!user.isStationAssigned(stationId)) {
             return ResponseEntity.status(401).body(new CustomMessage("You are not authorized in this station."));
         }
         stationRepository.editCheckAllAssetsForStation(stationOptional.get(), user);
@@ -150,9 +147,9 @@ public class StationService {
                     .totalStations(stationRepository.count())
                     .stationItemStats(stationItemStats)
                     .build());
-        }else {
-            if (user.getStation() != null) {
-                ArrayList<StationItemStat> stationItemStats = stationRepository.findAssertItemStatsByAssetDisc(user.getStation().getStation_id());
+        } else {
+            if (!user.isStationAssigned()) {
+                List<StationItemStat> stationItemStats = stationRepository.findAssertItemStatsByUserStations(user.getId());
                 stationItemStats.forEach(stationItemStat -> {
                     stationItemStat.setAssetsStats(assertService.getStats(stationItemStat.getStationId()));
                 });
@@ -182,9 +179,9 @@ public class StationService {
             }
             return ResponseEntity.ok(stationsStatDto);
         } else if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.VIEW_STATION.name()))) {
-            if (user.getStation() != null) {
-                List<StationsStatDto> stationsStatDto = stationRepository.getStatforStation(user.getStation().getStation_id());
-                List<StationsAssetsStatDto> stationsOfficesStatDtos = stationRepository.getAssetsStatsForStation(user.getStation().getStation_id());
+            if (!user.getStations().isEmpty()) {
+                List<StationsStatDto> stationsStatDto = stationRepository.getStatForUserStations(user.getId());
+                List<StationsAssetsStatDto> stationsOfficesStatDtos = stationRepository.getUserStationsAssetsStats(user.getId());
                 System.out.println(stationsOfficesStatDtos);
                 Map<String, List<StationsAssetsStatDto>> stationsToOfficesMap = new HashMap<>();
                 for (StationsAssetsStatDto officeStatDto : stationsOfficesStatDtos) {

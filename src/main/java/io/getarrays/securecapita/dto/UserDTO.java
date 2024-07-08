@@ -53,8 +53,8 @@ public class UserDTO {
                 .createdAt(user.getCreatedAt())
                 .roleName(user.getRoles().stream().findAny().get().getRole().getName())
                 .permissions(user.getRoles().stream().findAny().get().getRole().getPermission())
-                .station(user.getStation() == null ? null : user.getStation().getStationName())
-                .isAssigned(user.getStation()!=null)
+//                .station(user.getStation() == null ? null : user.getStation().getStationName())
+//                .isAssigned(user.getStation()!=null)
                 .build();
     }
 

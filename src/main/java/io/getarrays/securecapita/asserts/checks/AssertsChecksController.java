@@ -14,4 +14,6 @@ import org.springframework.web.bind.annotation.*;
 public class AssertsChecksController {
     private final UserRepository1 userRepository1;
     private final AssetsChecksService assetsChecksService;
+
+
 }

@@ -158,7 +158,16 @@
             <artifactId>javassist</artifactId>
             <version>3.18.1-GA</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.speedment.jpastreamer</groupId>
+            <artifactId>jpastreamer-core</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.speedment.jpastreamer.integration.spring</groupId>
+            <artifactId>spring-boot-jpastreamer-autoconfigure</artifactId>
+            <version>1.0.1</version>
+        </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>
@@ -293,7 +302,26 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>
+                                    ${project.build.directory}/generated-sources/annotations
+                                </source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
         <finalName>jscbackend</finalName>
     </build>
