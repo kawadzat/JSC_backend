@@ -38,7 +38,7 @@ public class RolesPreRunner implements CommandLineRunner {
 
     public void initializeRoles() {
         List<Role> roles = roleRepository1.findAll();
-        String permissionUser = ROLE_AUTH.READ_USER+"";
+        String permissionUser = ROLE_AUTH.READ_USER+ "," +        ROLE_AUTH.REQUEST_MOVE_ASSET; // Added REQUEST_MOVE_ASSET to user permissions;
         updateRole(roles, AUTH_ROLE.USER, permissionUser);
 
         String permissionAdmin = ROLE_AUTH.READ_USER + "," + //who can request and approve admin, all admin?yes
@@ -50,7 +50,10 @@ public class RolesPreRunner implements CommandLineRunner {
                 ROLE_AUTH.APPROVE_MOVE_ASSET + "," +
                 ROLE_AUTH.CREATE_PRODUCT + "," +
                 ROLE_AUTH.CREATE_ASSET;
-        updateRole(roles, AUTH_ROLE.ADMIN, permissionAdmin);
+        updateRole(roles, AUTH_ROLE.ADMIN, permissionAdmin)
+        ;
+
+
 
 
         String permissionSysAdmin = ROLE_AUTH.READ_USER + "," +
@@ -69,6 +72,19 @@ public class RolesPreRunner implements CommandLineRunner {
         updateRole(roles, AUTH_ROLE.SYSADMIN, permissionSysAdmin);
 
 
+        ;
+
+
+
+
+
+
+
+
+
+
+
+
 
         String permissionAuditor = ROLE_AUTH.READ_USER + "," +
 
@@ -80,12 +96,13 @@ public class RolesPreRunner implements CommandLineRunner {
 
 
 
+        String permissionSecretary = ROLE_AUTH.READ_USER + "," +
 
+                ROLE_AUTH.VIEW_ASSET + "," +
+                ROLE_AUTH.VIEW_STATION + "," +
 
-
-
-
-
+                ROLE_AUTH.VIEW_STATION;
+        updateRole(roles, AUTH_ROLE.SECRETARY,permissionAuditor );
 
 
         String permissionPrinciple = ROLE_AUTH.READ_USER + "," +
@@ -103,12 +120,7 @@ public class RolesPreRunner implements CommandLineRunner {
 
         updateRole(roles, AUTH_ROLE.PRINCIPAL_ADMIN, permissionPrinciple);
 
-
-
-
-
-
-        String permissionRegistrar = ROLE_AUTH.READ_USER + "," +
+       String permissionRegistrar = ROLE_AUTH.READ_USER + "," +
                 ROLE_AUTH.VIEW_ASSET + "," +
                 ROLE_AUTH.VIEW_STATION + "," +
                 ROLE_AUTH.CHECK_ASSET;

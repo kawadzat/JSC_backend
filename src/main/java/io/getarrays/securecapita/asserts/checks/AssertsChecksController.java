@@ -16,4 +16,13 @@ public class AssertsChecksController {
     private final AssetsChecksService assetsChecksService;
 
 
+    @GetMapping("")
+    public ResponseEntity<?> getAll(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
+        return assetsChecksService.getChecksMaster(page,size);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> create(@RequestParam("stationId") Long stationId) {
+        return assetsChecksService.createCheck(stationId);
+    }
 }

@@ -13,15 +13,9 @@ import java.util.List;
 @Repository
 public interface AssetChecksRepository extends JpaRepository<AssetCheck, Long> {
 
-    @Query(" SELECT new io.getarrays.securecapita.asserts.checks.AssertChecksResponseDto(" +
-            "a.id, " +
-            "a.station.stationName, " +
-            "a.checkedBy.firstName, " +
-            "a.checkedBy.email, " +
-            "a.updatedDate " +
-            ") FROM AssetCheck a "+
-            "WHERE a.station.station_id=:stationId "+
-            "GROUP BY a.id"
-    )
-    Page<AssertChecksResponseDto> findAllChecks(@RequestParam("stationId") Long stationId, PageRequest updatedDate);
+    @Query("SELECT new io.getarrays.securecapita.asserts.checks.AssertChecksResponseDto(a.id, a.station.stationName, a.checkedBy.firstName, a.checkedBy.email, a.updatedDate) FROM AssetCheck a")
+    Page<AssertChecksResponseDto> findAllChecks(PageRequest pageRequest);
+
+    @Query("SELECT new io.getarrays.securecapita.asserts.checks.AssertChecksResponseDto(a.id, a.station.stationName, a.checkedBy.firstName, a.checkedBy.email, a.updatedDate) FROM AssetCheck a WHERE a.station.station_id IN :stationIds")
+    Page<AssertChecksResponseDto> findAllChecks(List<Long> stationIds, PageRequest pageRequest);
 }
