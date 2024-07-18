@@ -17,12 +17,12 @@ public class AssertsChecksController {
 
 
     @GetMapping("")
-    public ResponseEntity<?> getAll(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
-        return assetsChecksService.getChecksMaster(page,size);
+    public ResponseEntity<?> getAll(@RequestParam("stationId") Long stationId,@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
+        return assetsChecksService.getChecksMaster(stationId,page,size);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestParam("stationId") Long stationId) {
-        return assetsChecksService.createCheck(stationId);
+    public ResponseEntity<?> create(@RequestParam("assetId") Long assetId) {
+        return assetsChecksService.createCheck(assetId);
     }
 }

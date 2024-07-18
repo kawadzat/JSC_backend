@@ -9,6 +9,7 @@ public enum AUTH_ROLE {
     HEAD_ADMIN,
     SYSADMIN,
     AUDITOR,
+    OFFICEBEARER,
 
     SECRETARY;
 
@@ -35,6 +36,12 @@ public enum AUTH_ROLE {
             case SECRETARY ->  {
                 return 5;
             }
+
+
+            case OFFICEBEARER ->  {
+                return 6;
+            }
+
 
         }
         return 0;

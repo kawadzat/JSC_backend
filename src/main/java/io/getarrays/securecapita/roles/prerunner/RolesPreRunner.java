@@ -45,16 +45,13 @@ public class RolesPreRunner implements CommandLineRunner {
 //                ROLE_AUTH.UPDATE_USER + "," +
                 ROLE_AUTH.VIEW_ASSET + "," +
                 ROLE_AUTH.VIEW_STATION + "," +
-                ROLE_AUTH.ASSIGN_ROLE + "," +
-                ROLE_AUTH.REQUEST_MOVE_ASSET + "," +
+//                ROLE_AUTH.ASSIGN_ROLE + "," +
+//                ROLE_AUTH.REQUEST_MOVE_ASSET + "," +
                 ROLE_AUTH.APPROVE_MOVE_ASSET + "," +
                 ROLE_AUTH.CREATE_PRODUCT + "," +
                 ROLE_AUTH.CREATE_ASSET;
         updateRole(roles, AUTH_ROLE.ADMIN, permissionAdmin)
         ;
-
-
-
 
         String permissionSysAdmin = ROLE_AUTH.READ_USER + "," +
                 ROLE_AUTH.UPDATE_USER + "," +
@@ -72,27 +69,32 @@ public class RolesPreRunner implements CommandLineRunner {
         updateRole(roles, AUTH_ROLE.SYSADMIN, permissionSysAdmin);
 
 
-        ;
 
 
-
-
-
-
-
-
-
-
-
-
-
-        String permissionAuditor = ROLE_AUTH.READ_USER + "," +
+       String permissionAuditor = ROLE_AUTH.READ_USER + "," +
 
                 ROLE_AUTH.VIEW_ASSET + "," +
                 ROLE_AUTH.VIEW_STATION + "," +
 
                 ROLE_AUTH.VIEW_STATION;
         updateRole(roles, AUTH_ROLE.AUDITOR,permissionAuditor );
+
+
+
+
+
+
+        String permissionOFFICEBEARER = ROLE_AUTH.READ_USER + "," +
+
+                ROLE_AUTH.VIEW_ASSET + "," +
+                ROLE_AUTH.VIEW_STATION + "," +
+
+                ROLE_AUTH.VIEW_STATION;
+        updateRole(roles, AUTH_ROLE.OFFICEBEARER,permissionAuditor );
+
+
+
+
 
 
 
@@ -109,14 +111,9 @@ public class RolesPreRunner implements CommandLineRunner {
 //                ROLE_AUTH.UPDATE_USER + "," +
                 ROLE_AUTH.VIEW_ASSET + "," +
                 ROLE_AUTH.VIEW_STATION + "," +
-                ROLE_AUTH.ALL_STATION + "," +
-                ROLE_AUTH.CREATE_STATION + "," +
-                ROLE_AUTH.ASSIGN_STATION + "," +
-                ROLE_AUTH.REQUEST_MOVE_ASSET + "," +
-                ROLE_AUTH.APPROVE_MOVE_ASSET + "," +
-                ROLE_AUTH.ASSIGN_ROLE + "," +
-                ROLE_AUTH.CREATE_PRODUCT + "," +
-                ROLE_AUTH.CREATE_ASSET;
+                ROLE_AUTH.ALL_STATION
+
+                            ;
 
         updateRole(roles, AUTH_ROLE.PRINCIPAL_ADMIN, permissionPrinciple);
 
