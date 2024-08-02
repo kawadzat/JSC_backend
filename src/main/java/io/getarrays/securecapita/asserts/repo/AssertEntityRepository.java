@@ -2,6 +2,7 @@ package io.getarrays.securecapita.asserts.repo;
 
 import io.getarrays.securecapita.asserts.model.AssertEntity;
 
+import io.getarrays.securecapita.asserts.model.AssertResponseDto;
 import io.getarrays.securecapita.dto.AssetItemStat;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,4 +35,7 @@ public interface AssertEntityRepository extends PagingAndSortingRepository<Asser
             Pageable pageable
     );
 
+
+    @Query("SELECT new io.getarrays.securecapita.asserts.model.AssertResponseDto(a.id, a.assetDisc,a.serialNumber) FROM AssertEntity a where a.station.station_id=:stationId")
+    List<AssertResponseDto> getAllAssertsByStation(Long stationId);
 }

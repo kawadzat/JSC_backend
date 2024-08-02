@@ -126,13 +126,21 @@ public class AssertController {
             if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.VIEW_ASSET.name()))) {
                 return assertService.getAllAssertsByStation(((UserDTO) authentication.getPrincipal()).getId(), stationId, PageRequest.of(page, size, Sort.by("lastModifiedDate").descending()));
             } else {
-                return assertService.getAllAssertsByUserStation(((UserDTO) authentication.getPrincipal()).getId(),stationId, PageRequest.of(page, size, Sort.by("lastModifiedDate").descending()));
+                return assertService.getAllAssertsByUserStation(((UserDTO) authentication.getPrincipal()).getId(), stationId, PageRequest.of(page, size, Sort.by("lastModifiedDate").descending()));
             }
         } else {
             return assertService.getAllAssertsByUserStation(((UserDTO) authentication.getPrincipal()).getId(), PageRequest.of(page, size, Sort.by("lastModifiedDate").descending()));
         }
     }
 
+    @GetMapping("/getByStationMin")
+    public ResponseEntity<?> getByStationMin(@RequestParam(name = "stationId", required = true) Long stationId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.VIEW_ASSET.name()))) {
+            return assertService.getAllAssertsByStationMin(stationId);
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
+    }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateAssertEntity(@PathVariable("id") Long assertEntityId, @RequestBody AssertEntity assertEntity) {
@@ -152,6 +160,12 @@ public class AssertController {
     @GetMapping("/stats")
     public ResponseEntity<?> getOverallStats() {
         return assertService.getStats();
+    }
+
+    //statsToken
+    @GetMapping("/statsToken")
+    public ResponseEntity<?> getOverallStatsToken() {
+        return assertService.getStatsToken();
     }
 
 }

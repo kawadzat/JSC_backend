@@ -148,7 +148,7 @@ public class StationService {
                     .stationItemStats(stationItemStats)
                     .build());
         } else {
-            if (!user.isStationAssigned()) {
+            if (user.isStationAssigned()) {
                 List<StationItemStat> stationItemStats = stationRepository.findAssertItemStatsByUserStations(user.getId());
                 stationItemStats.forEach(stationItemStat -> {
                     stationItemStat.setAssetsStats(assertService.getStats(stationItemStat.getStationId()));

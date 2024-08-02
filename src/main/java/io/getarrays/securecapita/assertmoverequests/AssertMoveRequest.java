@@ -25,13 +25,11 @@ public class AssertMoveRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     @ManyToOne
     private OfficeLocation officeLocation;
 
     @ManyToOne
     private AssertEntity assertEntity;
-
     private Timestamp createdDate;
     private Timestamp updatedDate;
     @Enumerated(EnumType.STRING)

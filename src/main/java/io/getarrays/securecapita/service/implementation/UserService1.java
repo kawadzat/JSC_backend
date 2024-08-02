@@ -34,7 +34,6 @@ public class UserService1 {
 //        return user.map(UserDTO::toDto).orElse(null);
     }
 
-    //lets continue tomorrow
     public void resetPassword(String email) {
         String expirationDate = format(addDays(new Date(), 1), DATE_FORMAT);
         Optional<User> user = userRepository1.findByEmail(email);

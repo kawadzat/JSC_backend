@@ -41,7 +41,7 @@ public class AssertMoveService {
         } else {
             officeLocations = moveLocationRepository.findByUserIdAndAssignedStations(userRepository1.findById(((UserDTO) authentication.getPrincipal()).getId()).get().getId(), pageRequest);
         }
-        return ResponseEntity.ok(officeLocations.get());
+        return ResponseEntity.ok(AssertMoveResponseDto.toList(officeLocations.get().toList()));
     }
 
 
@@ -52,6 +52,7 @@ public class AssertMoveService {
             if (optionalAssert.isPresent()) {
                 optionalAssert.get().setOfficeLocation(assertMoveRequest.get().getOfficeLocation());
                 optionalAssert.get().setLocation(assertMoveRequest.get().getOfficeLocation().getName());
+                optionalAssert.get().setStation(assertMoveRequest.get().getOfficeLocation().getStation());
                 assertMoveRequest.get().setStatus(AssertMoveStatus.APPROVED);
                 assertMoveRequest.get().setUpdatedDate(new Timestamp(System.currentTimeMillis()));
                 assertEntityRepository.save(optionalAssert.get());

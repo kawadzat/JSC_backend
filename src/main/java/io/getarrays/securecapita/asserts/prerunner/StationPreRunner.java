@@ -48,7 +48,7 @@ public class StationPreRunner implements CommandLineRunner {
         stationArrayList.add(Station.builder().station_id(19L).stationName("RUSAPE_MAG_COURT").build());
         stationArrayList.add(Station.builder().station_id(20L).stationName("MABVUKU_TAFARA_MAG_COURT").build());
         stationArrayList.add(Station.builder().station_id(21L).stationName("MUTARE_MAG_COURT").build());
-        stationArrayList.add(Station.builder().station_id(23L).stationName("VICFALLS_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(22L).stationName("VICFALLS_MAG_COURT").build());
         stationRepository.saveAll(stationArrayList);
     }
 }

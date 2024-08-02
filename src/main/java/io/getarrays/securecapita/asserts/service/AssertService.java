@@ -12,6 +12,9 @@ import io.getarrays.securecapita.dto.AssetItemStat;
 import io.getarrays.securecapita.dto.AssetsStats;
 import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.exception.CustomMessage;
+import io.getarrays.securecapita.jasper.downloadtoken.DownloadToken;
+import io.getarrays.securecapita.jasper.downloadtoken.DownloadTokenRepository;
+import io.getarrays.securecapita.jasper.downloadtoken.DownloadTokenService;
 import io.getarrays.securecapita.officelocations.OfficeLocation;
 import io.getarrays.securecapita.officelocations.OfficeLocationRepository;
 import io.getarrays.securecapita.repository.implementation.UserRepository1;
@@ -30,6 +33,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -118,23 +122,24 @@ public class AssertService implements AssertServiceInterface {
     }
 
     @Override
-    public ResponseEntity<?> getAllAssertsByStation(Long userId,Long stationId, PageRequest pageRequest) {
+    public ResponseEntity<?> getAllAssertsByStation(Long userId, Long stationId, PageRequest pageRequest) {
         return ResponseEntity.ok(assertRepository.getAllAssertsByStationPage(stationId, pageRequest));
     }
 
     @Override
     public ResponseEntity<?> getAllAssertsByUserStation(Long userId, Long stationId, PageRequest pageRequest) {
-        return ResponseEntity.ok(assertRepository.getAssertsByUserStationPaged(userId,stationId, pageRequest));
+        return ResponseEntity.ok(assertRepository.getAssertsByUserStationPaged(userId, stationId, pageRequest));
     }
 
     @Override
     public ResponseEntity<?> getAllAssertsByUserStation(Long userId, PageRequest pageRequest) {
-        User user=userRepository1.findById(userId).get();
-        if(!user.isStationAssigned()){
+        User user = userRepository1.findById(userId).get();
+        if (!user.isStationAssigned()) {
             return ResponseEntity.badRequest().body(new CustomMessage("You are not authorized to get asserts for any station."));
         }
-        return ResponseEntity.ok(assertRepository.getAssertsByUserStationPaged(userId,user.getStations().stream().findFirst().get().getId(), pageRequest));
+        return ResponseEntity.ok(assertRepository.getAssertsByUserStationPaged(userId, user.getStations().stream().findFirst().get().getId(), pageRequest));
     }
+
     @Override
     public ResponseEntity<?> getStats() {
         User user = userRepository1.findById(((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get();
@@ -155,8 +160,34 @@ public class AssertService implements AssertServiceInterface {
                     .totalCurrentAsserts(totalCurrentAsserts)
                     .assetsStats(assetsStats)
                     .build());
-        }else{
-            if(user.isStationAssigned()){
+        } else {
+            if (user.isStationAssigned()) {
+                return ResponseEntity.ok(getStats(user.getId()));
+            }
+            return ResponseEntity.badRequest().body(new CustomMessage("You are not authorized to get stats for any station."));
+        }
+    }
+
+    public ResponseEntity<?> getStats(User user) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name()))) {
+            // Fetch the total fixed asserts and total current asserts
+            int totalFixedAsserts = assertsJpaRepository.countFixedAsserts();
+            int totalCurrentAsserts = assertsJpaRepository.countCurrentAsserts();
+
+            // Fetch asset statistics
+            ArrayList<AssetItemStat> assetsStats = assertsJpaRepository.findAssertItemStatsByAssetDisc();
+            userLogService.addLog(ActionType.VIEW, "checked stats of asserts.");
+
+            // Return a new Stats object with the calculated totals and fetched asset statistics
+            return ResponseEntity.ok(AssetsStats.builder()
+                    .totalAsserts(assertsJpaRepository.count())
+                    .totalFixedAsserts(totalFixedAsserts)
+                    .totalCurrentAsserts(totalCurrentAsserts)
+                    .assetsStats(assetsStats)
+                    .build());
+        } else {
+            if (user.isStationAssigned()) {
                 return ResponseEntity.ok(getStats(user.getId()));
             }
             return ResponseEntity.badRequest().body(new CustomMessage("You are not authorized to get stats for any station."));
@@ -170,7 +201,7 @@ public class AssertService implements AssertServiceInterface {
 
         // Fetch asset statistics
         List<AssetItemStat> assetsStats = assertsJpaRepository.findAssertItemStatsByAssetDiscForUser(userId);
-        userLogService.addLog(ActionType.VIEW, "checked stats of asserts.");
+//        userLogService.addLog(ActionType.VIEW, "checked stats of asserts.");
 
         // Return a new Stats object with the calculated totals and fetched asset statistics
         return AssetsStats.builder()
@@ -192,5 +223,30 @@ public class AssertService implements AssertServiceInterface {
 
     public List<AssertEntity> getAsserts() {
         return assertsJpaRepository.findAll();
+    }
+
+    public ResponseEntity<?> getAllAssertsByStationMin(Long stationId) {
+        return ResponseEntity.ok(assertRepository.getAllAssertsByStation(stationId));
+    }
+
+    private DownloadTokenService downloadTokenService;
+
+    public ResponseEntity<?> getStatsToken() {
+        User user = userRepository1.findById(((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name()))) {
+            return downloadTokenService.createAssertDownloadToken();
+        } else {
+            if (user.isStationAssigned()) {
+                return downloadTokenService.createStationAssertDownloadToken();
+            }
+            return ResponseEntity.badRequest().body(new CustomMessage("You are not authorized to get stats for any station."));
+        }
+    }
+
+    private final DownloadTokenRepository downloadTokenRepository;
+
+    public AssetsStats getStatsUsingToken(DownloadToken token) {
+        return getStats(token.getCreator().getId());
     }
 }

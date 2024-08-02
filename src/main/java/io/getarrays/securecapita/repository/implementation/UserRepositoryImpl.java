@@ -223,6 +223,17 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
     }
 
     @Override
+    public UserDetails loadUserByUsernamePrinciple(String email) throws UsernameNotFoundException {
+        User user = getUserByEmail(email);
+        if(user == null) {
+            log.error("User not found in the database");
+            throw new UsernameNotFoundException("User not found in the database");
+        } else {
+            log.info("User found in the database: {}", email);
+            return new UserPrincipal(user, roleRepository.getRoleByUserId(user.getId()));
+        }
+    }
+    @Override
     public User getUserByEmail(String email) {
         try {
             User user = jdbc.queryForObject(SELECT_USER_BY_EMAIL_QUERY, of("email", email), new UserRowMapper());

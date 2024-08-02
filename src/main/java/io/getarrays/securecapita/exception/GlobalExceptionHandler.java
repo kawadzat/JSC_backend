@@ -172,4 +172,24 @@ public class GlobalExceptionHandler {
         errors.put("error", ex.getLocalizedMessage());
         return ResponseEntity.badRequest().body(errors);
     }
+
+    //jasper error;
+//    @ExceptionHandler({net.sf.jasperreports.engine.JRException.class})
+//    public ResponseEntity<Object> handleJRException(net.sf.jasperreports.engine.JRException ex) {
+//        HashMap<String, String> errors = new HashMap<>();
+//        ex.printStackTrace();
+//        errors.put("message", "Could not generate report");
+//        errors.put("error", ex.getLocalizedMessage());
+//        return ResponseEntity.badRequest().body(errors);
+//    }
+
+    //IOException
+//    @ExceptionHandler({java.io.IOException.class})
+//    public ResponseEntity<Object> handleIOException(java.io.IOException ex) {
+//        HashMap<String, String> errors = new HashMap<>();
+//        ex.printStackTrace();
+//        errors.put("message", "Something went wrong with the server");
+//        errors.put("error", ex.getLocalizedMessage());
+//        return ResponseEntity.badRequest().body(errors);
+//    }
 }

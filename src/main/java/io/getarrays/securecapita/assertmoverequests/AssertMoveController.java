@@ -19,7 +19,7 @@ public class AssertMoveController {
     @GetMapping("/all")
     public ResponseEntity<Object> getAllRequests(@RequestParam(name = "page",defaultValue = "0")int page,@RequestParam(name = "size",defaultValue = "10")int size) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.REQUEST_MOVE_ASSET.name()))) {
+        if ((authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.REQUEST_MOVE_ASSET.name()))||(authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.APPROVE_MOVE_ASSET.name()))))) {
             return assertMoveService.getAll(page, size);
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
@@ -28,7 +28,7 @@ public class AssertMoveController {
     @PostMapping("/request")
     public ResponseEntity<Object> addRequest(@RequestBody @Validated AssertMoveRequestDto assertMoveRequestDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.REQUEST_MOVE_ASSET.name()))) {
+        if ((authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.REQUEST_MOVE_ASSET.name()))||(authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.APPROVE_MOVE_ASSET.name()))))) {
             return assertMoveService.addRequest(assertMoveRequestDto);
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
@@ -51,5 +51,4 @@ public class AssertMoveController {
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
     }
-
 }

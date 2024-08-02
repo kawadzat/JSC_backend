@@ -4,7 +4,6 @@ import io.getarrays.securecapita.PurchaseRequest.Domain.PurchaseRequest;
 import io.getarrays.securecapita.PurchaseRequest.Repository.PurchaseRequestRepo;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.JasperReport;
-import org.apache.jasper.servlet.JasperLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;

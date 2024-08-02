@@ -4,6 +4,8 @@ import io.getarrays.securecapita.domain.User;
 import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.form.UpdateForm;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
@@ -38,7 +40,9 @@ public interface UserRepository<T extends User> {
     User verifyCode(String email, String code);
 
 
- //   Stream<PurchaseRequestEntity> findAll(io.getarrays.securecapita.purchaserequest.Page page);
+    UserDetails loadUserByUsernamePrinciple(String email) throws UsernameNotFoundException;
+
+    //   Stream<PurchaseRequestEntity> findAll(io.getarrays.securecapita.purchaserequest.Page page);
     /* More Complex Operations */
     User getUserByEmail(String email);
     void sendVerificationCode(UserDTO user);
