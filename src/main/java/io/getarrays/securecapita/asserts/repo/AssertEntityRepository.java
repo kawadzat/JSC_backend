@@ -16,7 +16,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-
 @Repository
 public interface AssertEntityRepository extends PagingAndSortingRepository<AssertEntity, Long>, JpaRepository<AssertEntity, Long>, ListCrudRepository<AssertEntity, Long> {
 
@@ -28,14 +27,41 @@ public interface AssertEntityRepository extends PagingAndSortingRepository<Asser
     @Query("SELECT DISTINCT a FROM AssertEntity a " +
             "JOIN a.station s " +
             "JOIN UserStation us ON us.station = s " +
-            "WHERE us.user.id = :userId AND s.station_id = :stationId")
+            "WHERE us.user.id = :userId AND s.station_id = :stationId " +
+            " AND (LOWER(a.assetDisc) LIKE %:query% " +
+            " OR LOWER(a.assetNumber) LIKE %:query% " +
+            " OR LOWER(a.serialNumber) LIKE %:query% " +
+            " OR LOWER(a.invoiceNumber) LIKE %:query% " +
+            " OR LOWER(a.assertType) LIKE %:query% " +
+            " OR LOWER(a.location) LIKE %:query% " +
+            " OR LOWER(a.officeLocation.name) LIKE %:query% " +
+            " OR a.quantity LIKE %:query% " +
+            " OR LOWER(a.initialRemarks) LIKE %:query% )")
     Page<AssertEntity> getAssertsByUserStationPaged(
             @Param("userId") Long userId,
             @Param("stationId") Long stationId,
+            @Param("query") String query,
             Pageable pageable
     );
 
-
+    @Query("SELECT DISTINCT a FROM AssertEntity a " +
+            "JOIN a.station s " +
+            "JOIN UserStation us ON us.station = s " +
+            "WHERE us.user.id = :userId AND s.station_id = :stationId " +
+            " AND (LOWER(a.assetDisc) LIKE %:query% " +
+            " OR LOWER(a.assetNumber) LIKE %:query% " +
+            " OR LOWER(a.serialNumber) LIKE %:query% " +
+            " OR LOWER(a.invoiceNumber) LIKE %:query% " +
+            " OR LOWER(a.assertType) LIKE %:query% " +
+            " OR LOWER(a.location) LIKE %:query% " +
+            " OR LOWER(a.officeLocation.name) LIKE %:query% " +
+            " OR a.quantity LIKE %:query% " +
+            " OR LOWER(a.initialRemarks) LIKE %:query% )")
+    List<AssertEntity> getAssertsByUserStation(
+            @Param("userId") Long userId,
+            @Param("stationId") Long stationId,
+            @Param("query") String query
+            );
     @Query("SELECT new io.getarrays.securecapita.asserts.model.AssertResponseDto(a.id, a.assetDisc,a.serialNumber) FROM AssertEntity a where a.station.station_id=:stationId")
     List<AssertResponseDto> getAllAssertsByStation(Long stationId);
 }

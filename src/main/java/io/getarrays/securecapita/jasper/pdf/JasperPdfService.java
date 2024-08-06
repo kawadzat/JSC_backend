@@ -1,80 +1,66 @@
 package io.getarrays.securecapita.jasper.pdf;
 
-import io.getarrays.securecapita.asserts.service.AssertService;
-import io.getarrays.securecapita.domain.User;
-import io.getarrays.securecapita.domain.UserPrincipal;
-import io.getarrays.securecapita.dto.AssetsStats;
-import io.getarrays.securecapita.exception.CustomMessage;
-import io.getarrays.securecapita.jasper.downloadtoken.DownloadToken;
-import io.getarrays.securecapita.jasper.downloadtoken.DownloadTokenService;
-import io.getarrays.securecapita.service.UserService;
 import lombok.RequiredArgsConstructor;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.ResourceLoader;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.*;
-
-@Service
+import java.util.*;@Service
 @RequiredArgsConstructor
 public class JasperPdfService {
-    private final ApplicationContext context;
-    private final ResourceLoader resourceLoader;
-    private final AssertService assertService;
-    private final DownloadTokenService downloadTokenService;
-    private final UserService userService;
+    private static final String LOGO_PATH = "/images/logo.png";
+    private static final String COMPANY_ADDRESS = "1234 Street, City, Country";
 
-    private void authenticateUser(User user) {
-//        UserPrincipal userPrincipal=userService.
-//        [[TODO]]
-//        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-//        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-    }
+    public ResponseEntity<?> generateAssetReport(String templateName, JRBeanCollectionDataSource jrDataSource, int pageLimit, String reportName) throws JRException, IOException {
+        JasperReport jasperReport = JasperCompileManager.compileReport(ResourceUtils.getFile(templateName).getAbsolutePath());
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("COMPANY_ADDRESS", COMPANY_ADDRESS);
+        parameters.put("LOGO_PATH", Objects.requireNonNull(getClass().getResource(LOGO_PATH)).getPath());
 
-    public ResponseEntity<?> generateAssetReport(UUID token) throws JRException, IOException {
-        Optional<DownloadToken> downloadTokenOptional = downloadTokenService.validateDownloadToken(token);
-        if (downloadTokenOptional.isPresent() && downloadTokenOptional.get().isValid()&&downloadTokenOptional.get().isAssertStat()) {
-            AssetsStats assetStats = assertService.getStatsUsingToken(downloadTokenOptional.get());
+        int totalRecords = jrDataSource.getRecordCount();
+        int pages = (int) Math.ceil((double) totalRecords / pageLimit);
 
-            JasperReport jasperReport = JasperCompileManager.compileReport(ResourceUtils.getFile("classpath:jasper/assettemplate.jrxml").getAbsolutePath());
+        List<JasperPrint> jasperPrintList = new ArrayList<>();
 
-//        List<Map<String, Object>> dataSource = List.of(
-//                Map.of("field1", "Data 1", "field2", "Data 2"),
-//                Map.of("field1", "Data 3", "field2", "Data 4")
-//        );
+        List<Object> allData = new ArrayList<>(jrDataSource.getData());
 
-            List<Map<String, Object>> dataSource = new ArrayList<>();
-            assetStats.getAssetsStats().forEach((assetItemStat -> {
-                dataSource.add(Map.of("name",assetItemStat.getName(), "total",assetItemStat.getTotal()));
-            }));
-            JRBeanCollectionDataSource jrDataSource = new JRBeanCollectionDataSource(dataSource);
+        for (int i = 0; i < pages; i++) {
+            int startIndex = i * pageLimit;
+            int endIndex = Math.min(startIndex + pageLimit, totalRecords);
 
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("COMPANY_ADDRESS", "1234 Street, City, Country");
-            parameters.put("LOGO_PATH", Objects.requireNonNull(getClass().getResource("/images/logo.png")).toString());
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, jrDataSource);
+            List<Object> pageData = new ArrayList<>(allData.subList(startIndex, endIndex));
+            JRBeanCollectionDataSource pageDataSource = new JRBeanCollectionDataSource(pageData);
 
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_PDF);
-            headers.setContentDispositionFormData("inline", "assetreport.pdf");
-            headers.setContentLength(outputStream.size());
-
-            return new ResponseEntity<>(outputStream.toByteArray(), headers, HttpStatus.OK);
+            JasperPrint pageJasperPrint = JasperFillManager.fillReport(jasperReport, parameters, pageDataSource);
+            jasperPrintList.add(pageJasperPrint);
         }
-        return ResponseEntity.badRequest().body(new CustomMessage("You are not authorized."));
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        JRPdfExporter exporter = new JRPdfExporter();
+        exporter.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
+        exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(outputStream));
+
+        SimplePdfExporterConfiguration configuration = new SimplePdfExporterConfiguration();
+        configuration.setCreatingBatchModeBookmarks(true);
+        exporter.setConfiguration(configuration);
+
+        exporter.exportReport();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("inline", reportName);
+        headers.setContentLength(outputStream.size());
+        return new ResponseEntity<>(outputStream.toByteArray(), headers, HttpStatus.OK);
     }
 }

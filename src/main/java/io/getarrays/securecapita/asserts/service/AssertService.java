@@ -33,7 +33,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -122,22 +121,30 @@ public class AssertService implements AssertServiceInterface {
     }
 
     @Override
-    public ResponseEntity<?> getAllAssertsByStation(Long userId, Long stationId, PageRequest pageRequest) {
+    public ResponseEntity<?> getAllAssertsByStation(Long userId, Long stationId, String query,PageRequest pageRequest) {
         return ResponseEntity.ok(assertRepository.getAllAssertsByStationPage(stationId, pageRequest));
     }
 
     @Override
-    public ResponseEntity<?> getAllAssertsByUserStation(Long userId, Long stationId, PageRequest pageRequest) {
-        return ResponseEntity.ok(assertRepository.getAssertsByUserStationPaged(userId, stationId, pageRequest));
+    public ResponseEntity<?> getAllAssertsByUserStation(Long userId, Long stationId, String query, PageRequest pageRequest) {
+        return ResponseEntity.ok(assertRepository.getAssertsByUserStationPaged(userId, stationId, query,pageRequest));
     }
 
     @Override
-    public ResponseEntity<?> getAllAssertsByUserStation(Long userId, PageRequest pageRequest) {
+    public ResponseEntity<?> getAllAssertsByUserStation(Long userId, String query,PageRequest pageRequest) {
         User user = userRepository1.findById(userId).get();
         if (!user.isStationAssigned()) {
             return ResponseEntity.badRequest().body(new CustomMessage("You are not authorized to get asserts for any station."));
         }
-        return ResponseEntity.ok(assertRepository.getAssertsByUserStationPaged(userId, user.getStations().stream().findFirst().get().getId(), pageRequest));
+        return ResponseEntity.ok(assertRepository.getAssertsByUserStationPaged(userId, user.getStations().stream().findFirst().get().getId(), query,pageRequest));
+    }
+
+    public List<AssertEntity> getAllAssertsByUserStation(Long stationId,String query) {
+        User user = userRepository1.findById(((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get();
+        if (!user.isStationAssigned(stationId)) {
+            throw new RuntimeException("You are not authorized to get asserts for any station.");
+        }
+        return assertRepository.getAssertsByUserStation(user.getId(), stationId,query);
     }
 
     @Override
@@ -154,12 +161,7 @@ public class AssertService implements AssertServiceInterface {
             userLogService.addLog(ActionType.VIEW, "checked stats of asserts.");
 
             // Return a new Stats object with the calculated totals and fetched asset statistics
-            return ResponseEntity.ok(AssetsStats.builder()
-                    .totalAsserts(assertsJpaRepository.count())
-                    .totalFixedAsserts(totalFixedAsserts)
-                    .totalCurrentAsserts(totalCurrentAsserts)
-                    .assetsStats(assetsStats)
-                    .build());
+            return ResponseEntity.ok(AssetsStats.builder().totalAsserts(assertsJpaRepository.count()).totalFixedAsserts(totalFixedAsserts).totalCurrentAsserts(totalCurrentAsserts).assetsStats(assetsStats).build());
         } else {
             if (user.isStationAssigned()) {
                 return ResponseEntity.ok(getStats(user.getId()));
@@ -180,12 +182,7 @@ public class AssertService implements AssertServiceInterface {
             userLogService.addLog(ActionType.VIEW, "checked stats of asserts.");
 
             // Return a new Stats object with the calculated totals and fetched asset statistics
-            return ResponseEntity.ok(AssetsStats.builder()
-                    .totalAsserts(assertsJpaRepository.count())
-                    .totalFixedAsserts(totalFixedAsserts)
-                    .totalCurrentAsserts(totalCurrentAsserts)
-                    .assetsStats(assetsStats)
-                    .build());
+            return ResponseEntity.ok(AssetsStats.builder().totalAsserts(assertsJpaRepository.count()).totalFixedAsserts(totalFixedAsserts).totalCurrentAsserts(totalCurrentAsserts).assetsStats(assetsStats).build());
         } else {
             if (user.isStationAssigned()) {
                 return ResponseEntity.ok(getStats(user.getId()));
@@ -204,12 +201,7 @@ public class AssertService implements AssertServiceInterface {
 //        userLogService.addLog(ActionType.VIEW, "checked stats of asserts.");
 
         // Return a new Stats object with the calculated totals and fetched asset statistics
-        return AssetsStats.builder()
-                .totalAsserts(assertsJpaRepository.countAssertsForUserStations(userId))
-                .totalFixedAsserts(totalFixedAsserts)
-                .totalCurrentAsserts(totalCurrentAsserts)
-                .assetsStats(assetsStats)
-                .build();
+        return AssetsStats.builder().totalAsserts(assertsJpaRepository.countAssertsForUserStations(userId)).totalFixedAsserts(totalFixedAsserts).totalCurrentAsserts(totalCurrentAsserts).assetsStats(assetsStats).build();
     }
 
 //    public ResponseEntity<?> getAssertsForOwnStation(int page, int size) {
@@ -248,5 +240,9 @@ public class AssertService implements AssertServiceInterface {
 
     public AssetsStats getStatsUsingToken(DownloadToken token) {
         return getStats(token.getCreator().getId());
+    }
+
+    public List<AssertEntity> getAssetPDFStation(Long stationId,String query) {
+        return getAllAssertsByUserStation(stationId,query);
     }
 }

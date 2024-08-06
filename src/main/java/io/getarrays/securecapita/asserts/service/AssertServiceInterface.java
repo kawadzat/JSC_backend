@@ -11,16 +11,16 @@ public interface AssertServiceInterface {
 
     void addInspectionToAssertEntity(Long id, Inspection inspection);
 
-    ResponseEntity<?> getAllAssertsByStation(Long userId,Long stationId, PageRequest pageRequest);
+    ResponseEntity<?> getAllAssertsByStation(Long userId,Long stationId, String query,PageRequest pageRequest);
 
     public Inspection getInspection(Long id);
 
 
     AssertEntity getAssertEntityById(Long assertEntityId);
 
-    ResponseEntity<?> getAllAssertsByUserStation(Long userId, Long stationId, PageRequest pageRequest);
+    ResponseEntity<?> getAllAssertsByUserStation(Long userId, Long stationId, String query,PageRequest pageRequest);
 
-    ResponseEntity<?> getAllAssertsByUserStation(Long userId, PageRequest pageRequest);
+    ResponseEntity<?> getAllAssertsByUserStation(Long userId, String query,PageRequest pageRequest);
 
     ResponseEntity<?> getStats();
 }

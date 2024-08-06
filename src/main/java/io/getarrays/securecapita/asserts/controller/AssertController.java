@@ -6,6 +6,7 @@ import io.getarrays.securecapita.asserts.service.AssertService;
 import io.getarrays.securecapita.domain.HttpResponse;
 import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.exception.CustomMessage;
+import io.getarrays.securecapita.jasper.pdf.JasperPdfService;
 import io.getarrays.securecapita.roles.prerunner.ROLE_AUTH;
 import io.getarrays.securecapita.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ import static org.springframework.http.HttpStatus.OK;
 public class AssertController {
     private final UserService userService;
     private final AssertService assertService;
-
+    private JasperPdfService jasperPdfService;
     @PostMapping("/create")
     public ResponseEntity<?> createAssert(@RequestBody @Validated AssertEntity newAssert) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -120,16 +121,16 @@ public class AssertController {
 //    }
 
     @GetMapping("/getByStation")
-    public ResponseEntity<?> getByStation(@RequestParam(name = "stationId", required = false) Long stationId, @RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
+    public ResponseEntity<?> getByStation(@RequestParam(name = "stationId", required = false) Long stationId,@RequestParam(name = "query", defaultValue = "",required = false) String query, @RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (stationId != null) {
             if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.VIEW_ASSET.name()))) {
-                return assertService.getAllAssertsByStation(((UserDTO) authentication.getPrincipal()).getId(), stationId, PageRequest.of(page, size, Sort.by("lastModifiedDate").descending()));
+                return assertService.getAllAssertsByStation(((UserDTO) authentication.getPrincipal()).getId(), stationId, query,PageRequest.of(page, size, Sort.by("lastModifiedDate").descending()));
             } else {
-                return assertService.getAllAssertsByUserStation(((UserDTO) authentication.getPrincipal()).getId(), stationId, PageRequest.of(page, size, Sort.by("lastModifiedDate").descending()));
+                return assertService.getAllAssertsByUserStation(((UserDTO) authentication.getPrincipal()).getId(), stationId,query, PageRequest.of(page, size, Sort.by("lastModifiedDate").descending()));
             }
         } else {
-            return assertService.getAllAssertsByUserStation(((UserDTO) authentication.getPrincipal()).getId(), PageRequest.of(page, size, Sort.by("lastModifiedDate").descending()));
+            return assertService.getAllAssertsByUserStation(((UserDTO) authentication.getPrincipal()).getId(), query,PageRequest.of(page, size, Sort.by("lastModifiedDate").descending()));
         }
     }
 
