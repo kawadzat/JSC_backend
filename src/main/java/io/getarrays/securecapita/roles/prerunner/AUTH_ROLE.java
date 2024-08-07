@@ -13,9 +13,9 @@ public enum AUTH_ROLE {
 
     AdminCS,
 
-    SECRETARY;
+    SECRETARY,
 
-
+    ADMINOFFICER;
 
     public static int getPriority(AUTH_ROLE authRole) {
         switch (authRole) {
@@ -46,6 +46,9 @@ public enum AUTH_ROLE {
 
 
 
+            case ADMINOFFICER ->  {
+                return 7;
+            }
 
 
 
