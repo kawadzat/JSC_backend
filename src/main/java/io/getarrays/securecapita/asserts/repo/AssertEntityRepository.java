@@ -35,7 +35,7 @@ public interface AssertEntityRepository extends PagingAndSortingRepository<Asser
             " OR LOWER(a.assertType) LIKE %:query% " +
             " OR LOWER(a.location) LIKE %:query% " +
             " OR LOWER(a.officeLocation.name) LIKE %:query% " +
-            " OR a.quantity LIKE %:query% " +
+//            " OR a.quantity LIKE %:query% " +
             " OR LOWER(a.initialRemarks) LIKE %:query% )")
     Page<AssertEntity> getAssertsByUserStationPaged(
             @Param("userId") Long userId,
@@ -55,7 +55,7 @@ public interface AssertEntityRepository extends PagingAndSortingRepository<Asser
             " OR LOWER(a.assertType) LIKE %:query% " +
             " OR LOWER(a.location) LIKE %:query% " +
             " OR LOWER(a.officeLocation.name) LIKE %:query% " +
-            " OR a.quantity LIKE %:query% " +
+//            " OR a.quantity LIKE %:query% " +
             " OR LOWER(a.initialRemarks) LIKE %:query% )")
     List<AssertEntity> getAssertsByUserStation(
             @Param("userId") Long userId,

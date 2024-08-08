@@ -8,6 +8,7 @@ import io.getarrays.securecapita.itauditing.Auditable;
 import io.getarrays.securecapita.officelocations.OfficeLocation;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -54,8 +55,6 @@ public class AssertEntity extends Auditable<String> {
 
     @ManyToOne
     private OfficeLocation officeLocation;
-    @NotNull
-    private int quantity;
 
     @NotNull
     private String initialRemarks;

@@ -67,7 +67,7 @@ public class PdfDownloadController {
                 "date", assetItem.getDate() == null ? "" : assetItem.getDate(),
                 "initialRemarks", assetItem.getInitialRemarks() == null ? "" : assetItem.getInitialRemarks(),
                 "assetDisc", assetItem.getAssetDisc() == null ? "" : assetItem.getAssetDisc(),
-                "assetQty", assetItem.getQuantity(),
+//                "assetQty", assetItem.getQuantity(),
                 "serialNo", assetItem.getSerialNumber() == null ? "" : assetItem.getSerialNumber(),
                 "invoiceNo", assetItem.getInvoiceNumber() == null ? "" : assetItem.getInvoiceNumber(),
                 "location", assetItem.getLocation() == null ? "" : assetItem.getLocation(),

@@ -28,7 +28,8 @@ public class Station {
     @Column(name = "station_id", columnDefinition = "BIGINT default 0")
     @Id
     private Long station_id;
-
+    @ManyToOne
+    private Province province;
     @Column(name = "station_name")
     private String stationName;
 

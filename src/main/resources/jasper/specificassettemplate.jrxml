@@ -30,7 +30,7 @@
     <field name="date" class="java.util.Date"/>
     <field name="initialRemarks" class="java.lang.String"/>
     <field name="assetDisc" class="java.lang.String"/>
-    <field name="assetQty" class="java.lang.Integer"/>
+<!--    <field name="assetQty" class="java.lang.Integer"/>-->
     <field name="serialNo" class="java.lang.String"/>
     <field name="invoiceNo" class="java.lang.String"/>
     <field name="location" class="java.lang.String"/>
@@ -91,13 +91,13 @@
                 </textElement>
                 <text><![CDATA[Asset Description]]></text>
             </staticText>
-            <staticText>
-                <reportElement x="260" y="0" width="70" height="20" uuid="2d1f1fea-47b4-476b-b3bf-8d6c4a9b9a94"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font size="10" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Asset Quantity]]></text>
-            </staticText>
+<!--            <staticText>-->
+<!--                <reportElement x="260" y="0" width="70" height="20" uuid="2d1f1fea-47b4-476b-b3bf-8d6c4a9b9a94"/>-->
+<!--                <textElement textAlignment="Center" verticalAlignment="Middle">-->
+<!--                    <font size="10" isBold="true"/>-->
+<!--                </textElement>-->
+<!--                <text><![CDATA[Asset Quantity]]></text>-->
+<!--            </staticText>-->
             <staticText>
                 <reportElement x="330" y="0" width="90" height="20" uuid="3a7d3955-27c9-47c7-86c4-5d3c7f0f5b7b"/>
                 <textElement textAlignment="Center" verticalAlignment="Middle">

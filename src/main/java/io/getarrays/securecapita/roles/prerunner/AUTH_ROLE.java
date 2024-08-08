@@ -9,7 +9,7 @@ public enum AUTH_ROLE {
     HEAD_ADMIN,
     SYSADMIN,
     AUDITOR,
-    OFFICEBEARER,
+    ASSISTANT_ADMIN,
 
     AdminCS,
 
@@ -17,44 +17,6 @@ public enum AUTH_ROLE {
 
     ADMINOFFICER;
 
-    public static int getPriority(AUTH_ROLE authRole) {
-        switch (authRole) {
-            case USER -> {
-                return 0;
-            }
-            case DEPUTY_REGISTRAR ,REGISTRAR -> {
-                return 1;
-            }
-            case ADMIN -> {
-                return 2;
-            }
-            case PRINCIPAL_ADMIN -> {
-                return 3;
-            }
-            case HEAD_ADMIN, SYSADMIN,AUDITOR -> {
-                return 4;
-            }
-
-            case SECRETARY ->  {
-                return 5;
-            }
-
-
-            case OFFICEBEARER ->  {
-                return 6;
-            }
-
-
-
-            case ADMINOFFICER ->  {
-                return 7;
-            }
-
-
-
-        }
-        return 0;
-    }
 
     public static int getMaxPriority() {
         return 5;

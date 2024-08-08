@@ -147,7 +147,7 @@ public class RolesPreRunner implements CommandLineRunner {
                 ROLE_AUTH.VIEW_STATION + "," +
                 ROLE_AUTH.REQUEST_MOVE_ASSET + "," +
                 ROLE_AUTH.VIEW_STATION;
-        updateRole(roles, AUTH_ROLE.OFFICEBEARER,permissionOFFICEBEARER );
+        updateRole(roles, AUTH_ROLE.ASSISTANT_ADMIN,permissionOFFICEBEARER );
 
 
 
