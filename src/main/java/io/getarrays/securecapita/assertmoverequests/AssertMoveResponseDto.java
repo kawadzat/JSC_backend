@@ -15,6 +15,7 @@ import java.util.List;
 public class AssertMoveResponseDto {
     private Long id;
     private String name;
+    private String reason;
     private String requestedLocation;
     private String currentLocation;
     private String requestedStation;
@@ -31,6 +32,7 @@ public class AssertMoveResponseDto {
                         .name(assertMoveRequest.getAssertEntity().getAssetDisc())
                         .serial(assertMoveRequest.getAssertEntity().getSerialNumber())
                         .requestedLocation(assertMoveRequest.getOfficeLocation().getName())
+                        .reason(assertMoveRequest.getReason())
                         .requestedStation(assertMoveRequest.getOfficeLocation().getStation().getStationName())
                         .currentLocation(assertMoveRequest.getAssertEntity().getOfficeLocation().getName())
                         .currentStation(assertMoveRequest.getAssertEntity().getStation().getStationName())

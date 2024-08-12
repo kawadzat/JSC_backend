@@ -14,7 +14,7 @@ import static jakarta.persistence.GenerationType.AUTO;
 @AllArgsConstructor
 @SuperBuilder
 @Entity
-@Table(name = "station")
+@Table(name = "province")
 public class Province {
 
     @Id

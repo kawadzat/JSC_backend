@@ -16,4 +16,7 @@ public class AssertMoveRequestDto {
     private Long assertId;
     @NotNull
     private Long locationId;
+
+    @NotNull
+    private String reason;
 }

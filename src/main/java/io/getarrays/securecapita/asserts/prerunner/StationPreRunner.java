@@ -17,6 +17,7 @@ import java.lang.reflect.Array;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Component
@@ -70,13 +71,17 @@ public class StationPreRunner implements CommandLineRunner {
         List<Province> provinceList = provinceEntityRepo.saveAll(provinces);
 
         ArrayList<Station> stationArrayList = new ArrayList<>();
-        stationArrayList.add(Station.builder().station_id(1L).province(getProvince(provinceList,11L)).stationName("HARARE_HIGH_COURT").build());
-        stationArrayList.add(Station.builder().station_id(2L).province(getProvince(provinceList,11L)).stationName("BULAWAYO_HIGH_COURT").build());
-        stationArrayList.add(Station.builder().station_id(3L).province(getProvince(provinceList,11L)).stationName("MASVINGO_HIGH_COURT").build());
-        stationArrayList.add(Station.builder().station_id(4L).province(getProvince(provinceList,11L)).stationName("MUTARE_HIGH_COURT").build());
-        stationArrayList.add(Station.builder().station_id(5L).province(getProvince(provinceList,11L)).stationName("CHINHOYI_HIGH_COURT").build());
-        stationArrayList.add(Station.builder().station_id(6L).province(getProvince(provinceList,11L)).stationName("MASVINGO_COURT").build());
-        stationArrayList.add(Station.builder().station_id(7L).province(getProvince(provinceList,11L)).stationName("SUPREME_COURT").build());
+        stationArrayList.add(Station.builder().station_id(1L).province(getProvince(provinceList,6L)).stationName("CHIVHU_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(2L).province(getProvince(provinceList,6L)).stationName("GOROMONZI_HIGH_COURT").build());
+        stationArrayList.add(Station.builder().station_id(3L).province(getProvince(provinceList,6L)).stationName("HWEDZA_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(4L).province(getProvince(provinceList,6L)).stationName("KOTWA_HIGH_COURT").build());
+        stationArrayList.add(Station.builder().station_id(5L).province(getProvince(provinceList,6L)).stationName("MARONDERA_HIGH_COURT").build());
+        stationArrayList.add(Station.builder().station_id(6L).province(getProvince(provinceList,6L)).stationName("MUREWA_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(7L).province(getProvince(provinceList,6L)).stationName("MUTAWATAWA_MAG_COURT").build());
+
+//we
+
+
         stationArrayList.add(Station.builder().station_id(8L).province(getProvince(provinceList,11L)).stationName("HARARE_LABOUR_COURT").build());
         stationArrayList.add(Station.builder().station_id(9L).province(getProvince(provinceList,11L)).stationName("BULAWAYO_LABOUR_COURT").build());
         stationArrayList.add(Station.builder().station_id(10L).province(getProvince(provinceList,11L)).stationName("GWERU_LABOUR_COURT").build());
@@ -116,32 +121,106 @@ public class StationPreRunner implements CommandLineRunner {
 
 
 
-       stationArrayList.add(Station.builder().station_id(31L).province(getProvince(provinceList,1L)).stationName("BANKET_MAG_COURT").build());
-        stationArrayList.add(Station.builder().station_id(32L).province(getProvince(provinceList,1L)).stationName("BINDURA_MAG_COURT").build());
-        stationArrayList.add(Station.builder().station_id(33L).province(getProvince(provinceList,1L)).stationName("CENTENARY_MAG_COURT").build());
-
-
-        stationArrayList.add(Station.builder().station_id(34L).province(getProvince(provinceList,7L)).stationName("BINGA_MAG_COURT").build());
-        stationArrayList.add(Station.builder().station_id(35L).province(getProvince(provinceList,7L)).stationName("HWANGE_MAG_COURT").build());
-        stationArrayList.add(Station.builder().station_id(36L).province(getProvince(provinceList,7L)).stationName("LUPANE_MAG_COURT").build());
-        stationArrayList.add(Station.builder().station_id(37L).province(getProvince(provinceList,7L)).stationName("_MAG_COURT").build());
-        stationArrayList.add(Station.builder().station_id(38L).province(getProvince(provinceList,7L)).stationName("SHAMVA_MAG_COURT").build());
-
-
-        stationArrayList.add(Station.builder().station_id(39L).province(getProvince(provinceList,3L)).stationName("BULAWAYO_MAG_COURT").build());
-        stationArrayList.add(Station.builder().station_id(40L).province(getProvince(provinceList,3L)).stationName("INYATI_MAG_COURT").build());
-        stationArrayList.add(Station.builder().station_id(40L).province(getProvince(provinceList,3L)).stationName("NKAYI_MAG_COURT").build());
-        stationArrayList.add(Station.builder().station_id(41L).province(getProvince(provinceList,3L)).stationName("TSHOLOTSHO_MAG_COURT").build());
-        stationArrayList.add(Station.builder().station_id(42L).province(getProvince(provinceList,3L)).stationName("WESTERN_COMMONAGE_COURT").build());
+       stationArrayList.add(Station.builder().station_id(31L).province(getProvince(provinceList,4L)).stationName("GWERU_CRIMINAL_COURT").build());
+        stationArrayList.add(Station.builder().station_id(32L).province(getProvince(provinceList,4L)).stationName("GWERU_CIVIL_COURT").build());
+        stationArrayList.add(Station.builder().station_id(33L).province(getProvince(provinceList,4L)).stationName("KWEKWE_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(34L).province(getProvince(provinceList,4L)).stationName("MBERENGWA_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(35L).province(getProvince(provinceList,4L)).stationName("MVUMA_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(36L).province(getProvince(provinceList,4L)).stationName("SHURUNGWI_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(37L).province(getProvince(provinceList,4L)).stationName("ZVISHAVANE_MAG_COURT").build());
 
 
 
 
-        stationArrayList.add(Station.builder().station_id(43L).province(getProvince(provinceList,3L)).stationName("BULAWAYO_MAG_COURT").build());
-        stationArrayList.add(Station.builder().station_id(44L).province(getProvince(provinceList,3L)).stationName("INYATI_MAG_COURT").build());
-        stationArrayList.add(Station.builder().station_id(45L).province(getProvince(provinceList,3L)).stationName("NKAYI_MAG_COURT").build());
-        stationArrayList.add(Station.builder().station_id(46L).province(getProvince(provinceList,3L)).stationName("TSHOLOTSHO_MAG_COURT").build());
-        stationArrayList.add(Station.builder().station_id(47L).province(getProvince(provinceList,3L)).stationName("WESTERN_COMMONAGE_COURT").build());
+
+
+
+
+
+
+        stationArrayList.add(Station.builder().station_id(38L).province(getProvince(provinceList,7L)).stationName("BINGA_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(39L).province(getProvince(provinceList,7L)).stationName("HWANGE_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(40L).province(getProvince(provinceList,7L)).stationName("LUPANE_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(41L).province(getProvince(provinceList,7L)).stationName("VICTORIA_FALLS_MAG_COURT").build());
+
+
+
+
+
+        stationArrayList.add(Station.builder().station_id(42L).province(getProvince(provinceList,3L)).stationName("BULAWAYO_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(43L).province(getProvince(provinceList,3L)).stationName("INYATI_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(44L).province(getProvince(provinceList,3L)).stationName("NKAYI_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(45L).province(getProvince(provinceList,3L)).stationName("TSHOLOTSHO_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(46L).province(getProvince(provinceList,3L)).stationName("WESTERN_COMMONAGE_COURT").build());
+
+
+
+
+        stationArrayList.add(Station.builder().station_id(47L).province(getProvince(provinceList,1L)).stationName("BANKET_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(48L).province(getProvince(provinceList,1L)).stationName("CHEGUTU_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(49L).province(getProvince(provinceList,1L)).stationName("CHINHOYI_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(50L).province(getProvince(provinceList,1L)).stationName("KADOMA_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(51L).province(getProvince(provinceList,1L)).stationName("KARIBA_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(523L).province(getProvince(provinceList,1L)).stationName("MUBAIRA_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(53L).province(getProvince(provinceList,1L)).stationName("MUROMBEDZI_MAG_COURT").build());
+
+
+
+
+
+
+
+
+        stationArrayList.add(Station.builder().station_id(54L).province(getProvince(provinceList,2L)).stationName("BINDURA_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(55L).province(getProvince(provinceList,2L)).stationName("CENTENARY_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(56L).province(getProvince(provinceList,2L)).stationName("CONCESSION_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(57L).province(getProvince(provinceList,2L)).stationName("GURUVE_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(58L).province(getProvince(provinceList,2L)).stationName("MT DARWIN_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(59L).province(getProvince(provinceList,2L)).stationName("RUSHINGA_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(60L).province(getProvince(provinceList,2L)).stationName("SHAMVA_MAG_COURT").build());
+
+
+
+
+
+        stationArrayList.add(Station.builder().station_id(61L).province(getProvince(provinceList,10L)).stationName("CHIMANIMANI_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(62L).province(getProvince(provinceList,10L)).stationName("CHIPINGE_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(63L).province(getProvince(provinceList,10L)).stationName("MURAMBINDA_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(64L).province(getProvince(provinceList,10L)).stationName("MUTARE_CIVIL_COURT").build());
+        stationArrayList.add(Station.builder().station_id(65L).province(getProvince(provinceList,10L)).stationName("MUTARE_CRIMINAL_COURT").build());
+        stationArrayList.add(Station.builder().station_id(66L).province(getProvince(provinceList,10L)).stationName("MUTASA_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(67L).province(getProvince(provinceList,10L)).stationName("NYANGA_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(68L).province(getProvince(provinceList,10L)).stationName("RUSAPE_MAG_COURT").build());
+
+
+
+
+        stationArrayList.add(Station.builder().station_id(690L).province(getProvince(provinceList,5L)).stationName("BIKITA_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(70L).province(getProvince(provinceList,5L)).stationName("CHIREDZI_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(71L).province(getProvince(provinceList,5L)).stationName("CHIVI_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(72L).province(getProvince(provinceList,5L)).stationName("GUTU_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(73L).province(getProvince(provinceList,5L)).stationName("MASHAVA_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(74L).province(getProvince(provinceList,5L)).stationName("MASVINGO_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(75L).province(getProvince(provinceList,5L)).stationName("MWENEZI_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(76L).province(getProvince(provinceList,5L)).stationName("TRIANGLE_MAG_COURT").build());
+        stationArrayList.add(Station.builder().station_id(77L).province(getProvince(provinceList,5L)).stationName("ZAKA_MAG_COURT").build());
+
+
+
+
+        stationArrayList.add(Station.builder().station_id(78L).province(getProvince(provinceList,11L)).stationName("SECRETARIAT").build());
+        stationArrayList.add(Station.builder().station_id(79L).province(getProvince(provinceList,11L)).stationName("CONSTITUTIONAL_COURT").build());
+        stationArrayList.add(Station.builder().station_id(80L).province(getProvince(provinceList,11L)).stationName("SUPREME_COURT").build());
+        stationArrayList.add(Station.builder().station_id(81L).province(getProvince(provinceList,11L)).stationName("HARARE_HIGH_COURT").build());
+        stationArrayList.add(Station.builder().station_id(82L).province(getProvince(provinceList,11L)).stationName("BULAWAYO_HIGH_COURT").build());
+        stationArrayList.add(Station.builder().station_id(83L).province(getProvince(provinceList,11L)).stationName("MASVINGO_HIGH_COURT").build());
+        stationArrayList.add(Station.builder().station_id(84L).province(getProvince(provinceList,11L)).stationName("MUTATE_HIGH_COURT").build());
+        stationArrayList.add(Station.builder().station_id(85L).province(getProvince(provinceList,11L)).stationName("MASTER_HARARE_HIGH_COURT").build());
+        stationArrayList.add(Station.builder().station_id(86L).province(getProvince(provinceList,11L)).stationName("LABOUR_COURT_HARARE").build());
+        stationArrayList.add(Station.builder().station_id(87L).province(getProvince(provinceList,11L)).stationName("LABOUR_COURT_BULAWATO").build());
+        stationArrayList.add(Station.builder().station_id(88L).province(getProvince(provinceList,11L)).stationName("LABOUR_COURT_GWERU").build());
+
+
 
 
 
@@ -150,6 +229,6 @@ public class StationPreRunner implements CommandLineRunner {
     }
 
     private Province getProvince(List<Province> provinces,Long id){
-        return provinces.stream().findFirst().filter(province -> province.getId().equals(id)).get();
+        return provinces.stream().filter(province -> province.getId().equals(id)).findFirst().get();
     }
 }

@@ -168,7 +168,8 @@ public class RolesPreRunner implements CommandLineRunner {
 //                ROLE_AUTH.UPDATE_USER + "," +
                 ROLE_AUTH.VIEW_ASSET + "," +
                 ROLE_AUTH.VIEW_STATION + "," +
-                ROLE_AUTH.ALL_STATION
+                ROLE_AUTH.ALL_STATION+ "," +
+                ROLE_AUTH.REQUEST_MOVE_ASSET;
 
                             ;
 
@@ -177,7 +178,8 @@ public class RolesPreRunner implements CommandLineRunner {
        String permissionRegistrar = ROLE_AUTH.READ_USER + "," +
                 ROLE_AUTH.VIEW_ASSET + "," +
                 ROLE_AUTH.VIEW_STATION + "," +
-                ROLE_AUTH.CHECK_ASSET;
+                ROLE_AUTH.CHECK_ASSET + "," +
+               ROLE_AUTH.APPROVE_MOVE_ASSET;
 
         updateRole(roles, AUTH_ROLE.REGISTRAR, permissionRegistrar);
         updateRole(roles, AUTH_ROLE.DEPUTY_REGISTRAR, permissionRegistrar);

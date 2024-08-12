@@ -27,7 +27,7 @@ public class AssertMoveRequest {
     private Long id;
     @ManyToOne
     private OfficeLocation officeLocation;
-
+    private String reason;
     @ManyToOne
     private AssertEntity assertEntity;
     private Timestamp createdDate;
