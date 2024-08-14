@@ -84,6 +84,7 @@ public class AssertMoveService {
                 AssertMoveRequest assertMoveRequest = AssertMoveRequest.builder()
                         .assertEntity(optionalAssert.get())
                         .officeLocation(optionalOfficeLocation.get())
+
                         .reason(assertMoveService.getReason())
                         .status(AssertMoveStatus.PENDING)
                         .build();

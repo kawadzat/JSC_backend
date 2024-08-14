@@ -27,7 +27,6 @@ public class AssetCheck extends Auditable<String> {
     private Long id;
     @ManyToOne
     private AssertEntity asset;
-
     @ManyToOne
     private User checkedBy;
     private Timestamp createdDate;

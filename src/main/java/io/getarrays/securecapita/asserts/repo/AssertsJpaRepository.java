@@ -1,5 +1,6 @@
 package io.getarrays.securecapita.asserts.repo;
 
+import io.getarrays.securecapita.asserts.master.MasterAssertsDTO;
 import io.getarrays.securecapita.asserts.model.AssertEntity;
 import io.getarrays.securecapita.dto.AssetItemStat;
 import org.springframework.data.domain.PageRequest;
@@ -82,4 +83,12 @@ public interface AssertsJpaRepository extends JpaRepository<AssertEntity, Long> 
             "JOIN UserStation us ON us.station = s " +
             "WHERE us.user.id = :userId")
     int countAssertsForUserStations(@Param("userId") Long userId);
-}
+
+
+@Query("SELECT new io.getarrays.securecapita.asserts.master.MasterAssertsDTO(" +
+       "a.assetDisc, " +
+       "COUNT(a.id), " +
+       "SUM(CASE WHEN a.date < :previousYearMilli THEN 1 ELSE 0 END)) " +
+       "FROM AssertEntity a " +
+       "GROUP BY a.assetDisc")
+List<MasterAssertsDTO> getMasterAssertsForRecent2years(@Param("previousYearMilli") Long previousYearMilli);}
