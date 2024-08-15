@@ -1,9 +1,12 @@
 package io.getarrays.securecapita.dto;
 
+import io.getarrays.securecapita.ProjectManagement.Issue;
 import io.getarrays.securecapita.domain.User;
 import lombok.*;
 
+import java.sql.Array;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -33,6 +36,8 @@ public class UserDTO {
     private boolean isUsingMfa;
     private LocalDateTime createdAt;
     private String roleName;
+
+
     private String permissions;
     private String station;
     private boolean isAssigned;

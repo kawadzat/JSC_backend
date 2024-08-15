@@ -2,6 +2,7 @@ package io.getarrays.securecapita.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.getarrays.securecapita.ProjectManagement.Issue;
 import io.getarrays.securecapita.asserts.model.Station;
 import io.getarrays.securecapita.roles.UserRole;
 import io.getarrays.securecapita.stationsassignment.UserStation;
@@ -11,13 +12,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
+import java.util.ArrayList;
+import java.util.List;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
+import java.sql.Array;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -58,6 +61,14 @@ public class User {
     private String bio;
     private String imageUrl;
     private boolean enabled;
+
+
+
+    private int projectSize;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL)
+    private List<Issue> assignedIssues = new ArrayList<>();
 
     @Column(name = "non_locked")
     private boolean isNotLocked = true;
