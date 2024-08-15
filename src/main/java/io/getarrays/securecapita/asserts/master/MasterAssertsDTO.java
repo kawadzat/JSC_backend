@@ -11,4 +11,5 @@ public class MasterAssertsDTO {
     private String name;
     private Long currentYearTotal;
     private Long previousYearTotal;
+    private String remark;
 }

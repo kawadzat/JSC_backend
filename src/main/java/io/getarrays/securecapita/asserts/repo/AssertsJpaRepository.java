@@ -88,7 +88,9 @@ public interface AssertsJpaRepository extends JpaRepository<AssertEntity, Long> 
 @Query("SELECT new io.getarrays.securecapita.asserts.master.MasterAssertsDTO(" +
        "a.assetDisc, " +
        "COUNT(a.id), " +
-       "SUM(CASE WHEN a.date < :previousYearMilli THEN 1 ELSE 0 END)) " +
+       "SUM(CASE WHEN a.date < :previousYearMilli THEN 1 ELSE 0 END)," +
+        "(SELECT a2.initialRemarks FROM AssertEntity a2 WHERE a2.assetDisc = a.assetDisc ORDER BY a2.date DESC LIMIT 1)" +
+        ") " +
        "FROM AssertEntity a " +
        "GROUP BY a.assetDisc")
 List<MasterAssertsDTO> getMasterAssertsForRecent2years(@Param("previousYearMilli") Long previousYearMilli);}
