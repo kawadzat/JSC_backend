@@ -27,6 +27,26 @@ public interface MoveLocationRepository extends JpaRepository<AssertMoveRequest,
             Pageable pageable
     );
 
+@Query("SELECT DISTINCT amr FROM AssertMoveRequest amr " +
+            "JOIN amr.assertEntity ae " +
+            "JOIN ae.station s " +
+            "JOIN UserStation us ON us.station = s " +
+            "WHERE amr.status = :status AND amr.assertEntity.id = :assertId")
+    Optional<AssertMoveRequest> findByAssertEntityIdAndStatus(Long assertId, AssertMoveStatus status);
+
+    @Query("SELECT DISTINCT amr FROM AssertMoveRequest amr where amr.id=:assertRequestId")
+    Optional<AssertMoveRequest> findMoveRequest(Long assertRequestId);
+
+    @Query("Select a from AssertMoveRequest a where a.assertEntity.station.station_id=:stationId")
+    Page<AssertMoveRequest> findAllWithStationId(long stationId, PageRequest pageRequest);
+
+    @Query("SELECT DISTINCT amr FROM AssertMoveRequest amr " +
+            "JOIN amr.assertEntity ae " +
+            "JOIN ae.station s " +
+            "JOIN UserStation us ON us.station = s " +
+            "WHERE us.user.id = :userId AND s.station_id = :stationId")
+    Page<AssertMoveRequest> findByUserIdAndAssignedStationsId(long stationId, Long userId, PageRequest pageRequest);
+
 
 //    @Query("Select o from OfficeLocation o where o.station.station_id=:stationId AND o.name=:location")
 //    Optional<OfficeLocation> findByStationAndName(Long stationId, String location);

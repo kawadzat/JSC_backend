@@ -44,6 +44,7 @@ public class PdfDownloadController {
                     "name", assetItemStat.getName(),
                     "total", assetItemStat.getTotal()
             ))));
+            System.out.println("total assets: "+dataSource.size());
             JRBeanCollectionDataSource jrDataSource = new JRBeanCollectionDataSource(dataSource);
             return jasperPdfService.generateAssetReport(ASSET_TEMPLATE, jrDataSource, 10, ASSET_REPORT_NAME);
         }
@@ -61,7 +62,6 @@ public class PdfDownloadController {
     @GetMapping("/station/assets")
     public ResponseEntity<?> downloadStationAssetsPdf(@RequestParam("stationId") Long stationId,@RequestParam(name = "query",defaultValue = "") String query) throws JRException, IOException {
         List<AssertEntity> assets = assertService.getAssetPDFStation(stationId,query);
-        System.out.println(assets);
         List<Map<String, Object>> dataSource = new ArrayList<>();
         assets.forEach((assetItem -> dataSource.add(Map.of(
                 "date", assetItem.getDate() == null ? "" : assetItem.getDate(),

@@ -58,7 +58,8 @@ public class AssertEntity extends Auditable<String> {
 
     @NotNull
     private String initialRemarks;
-    @OneToMany(mappedBy = "assertEntity")
+
+    @OneToMany(mappedBy = "assertEntity", fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<Inspection> inspections;
 

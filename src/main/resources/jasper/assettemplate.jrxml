@@ -57,7 +57,7 @@
                 <textElement textAlignment="Center">
                     <font size="16"/>
                 </textElement>
-                <text><![CDATA[Total Asset Report]]></text>
+                <text><![CDATA[Station Total Asset Report]]></text>
             </staticText>
         </band>
     </title>

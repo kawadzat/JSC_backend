@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,9 @@ import java.util.List;
 @NoArgsConstructor
 public class AssertMoveResponseDto {
     private Long id;
+    private Timestamp date;
+    private String initiatedBy;
+    private String approvedBy;
     private String name;
     private String reason;
     private String requestedLocation;
@@ -37,6 +41,9 @@ public class AssertMoveResponseDto {
                         .currentLocation(assertMoveRequest.getAssertEntity().getOfficeLocation().getName())
                         .currentStation(assertMoveRequest.getAssertEntity().getStation().getStationName())
                         .status(assertMoveRequest.getStatus())
+                        .date(assertMoveRequest.getCreatedDate())
+                        .initiatedBy(assertMoveRequest.getInitiatedBy()!=null ? assertMoveRequest.getInitiatedBy().getEmail()+" ("+assertMoveRequest.getInitiatedBy().getFirstName()+")" : null)
+                        .approvedBy(assertMoveRequest.getApprovedBy() != null ? assertMoveRequest.getApprovedBy().getEmail()+" ("+assertMoveRequest.getApprovedBy().getFirstName()+")" : null)
                         .build()
         )));
         return assertMoveResponseDtoList;

@@ -85,9 +85,9 @@ public class RolesPreRunner implements CommandLineRunner {
                 ROLE_AUTH.UPDATE_USER + "," +
                 ROLE_AUTH.VIEW_ASSET + "," +
                 ROLE_AUTH.VIEW_STATION + "," +
-                ROLE_AUTH.ALL_STATION + "," +
+//                ROLE_AUTH.ALL_STATION + "," +
                 ROLE_AUTH.REQUEST_MOVE_ASSET + "," +
-                ROLE_AUTH.APPROVE_MOVE_ASSET + "," +
+//                ROLE_AUTH.APPROVE_MOVE_ASSET + "," +
                 ROLE_AUTH.CREATE_STATION + "," +
                 ROLE_AUTH.ASSIGN_STATION + "," +
                 ROLE_AUTH.ASSIGN_ROLE + "," +

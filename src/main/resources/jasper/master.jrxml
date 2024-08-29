@@ -154,7 +154,7 @@
             <textField>
                 <reportElement x="420" y="0" width="90" height="20" uuid="d226421e-070d-45b3-be7a-284ed47ea264"/>
                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$F{invoiceNo}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$F{invoice/Voucher NO}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="510" y="0" width="90" height="20" uuid="b6a94865-ecd6-40f0-99e9-04513f9b8356"/>

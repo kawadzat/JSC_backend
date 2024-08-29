@@ -153,11 +153,7 @@
                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$F{assetDisc}]]></textFieldExpression>
             </textField>
-            <textField>
-                <reportElement x="260" y="0" width="70" height="20" uuid="2f3f4c5d-3e3e-5f3f-0f0f-1c2f3c4f5c6d"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$F{assetQty}]]></textFieldExpression>
-            </textField>
+
             <textField>
                 <reportElement x="330" y="0" width="90" height="20" uuid="a01a9e05-b315-42b4-bc34-1239dc4533db"/>
                 <textElement textAlignment="Center" verticalAlignment="Middle"/>

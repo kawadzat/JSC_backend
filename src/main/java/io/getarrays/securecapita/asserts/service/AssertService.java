@@ -121,30 +121,39 @@ public class AssertService implements AssertServiceInterface {
     }
 
     @Override
-    public ResponseEntity<?> getAllAssertsByStation(Long userId, Long stationId, String query,PageRequest pageRequest) {
+    public ResponseEntity<?> getAllAssertsByStation(Long userId, Long stationId, String query, PageRequest pageRequest) {
         return ResponseEntity.ok(assertRepository.getAllAssertsByStationPage(stationId, pageRequest));
     }
 
     @Override
     public ResponseEntity<?> getAllAssertsByUserStation(Long userId, Long stationId, String query, PageRequest pageRequest) {
-        return ResponseEntity.ok(assertRepository.getAssertsByUserStationPaged(userId, stationId, query,pageRequest));
+        return ResponseEntity.ok(assertRepository.getAssertsByUserStationPaged(userId, stationId, query, pageRequest));
     }
 
     @Override
-    public ResponseEntity<?> getAllAssertsByUserStation(Long userId, String query,PageRequest pageRequest) {
+    public ResponseEntity<?> getAllAssertsByUserStation(Long userId, String query, PageRequest pageRequest) {
         User user = userRepository1.findById(userId).get();
         if (!user.isStationAssigned()) {
             return ResponseEntity.badRequest().body(new CustomMessage("You are not authorized to get asserts for any station."));
         }
-        return ResponseEntity.ok(assertRepository.getAssertsByUserStationPaged(userId, user.getStations().stream().findFirst().get().getId(), query,pageRequest));
+        return ResponseEntity.ok(assertRepository.getAssertsByUserStationPaged(userId, user.getStations().stream().findFirst().get().getId(), query, pageRequest));
     }
 
-    public List<AssertEntity> getAllAssertsByUserStation(Long stationId,String query) {
+    public List<AssertEntity> getAllAssertsByUserStation(Long stationId, String query) {
         User user = userRepository1.findById(((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get();
-        if (!user.isStationAssigned(stationId)) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!user.isStationAssigned(stationId)&& authentication.getAuthorities().stream().noneMatch((r) -> r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name()))) {
             throw new RuntimeException("You are not authorized to get asserts for any station.");
+        }else if(authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name()))){
+                if(query == null||query.isEmpty()) {
+                    return assertRepository.getAssertsByStation(stationId);
+                }
+            return assertRepository.getAssertsByStation(stationId, query);
         }
-        return assertRepository.getAssertsByUserStation(user.getId(), stationId,query);
+        if(query == null||query.isEmpty()) {
+            return assertRepository.getAssertsByUserStation(user.getId(), stationId);
+        }
+        return assertRepository.getAssertsByUserStation(user.getId(), stationId, query);
     }
 
     @Override
@@ -192,16 +201,31 @@ public class AssertService implements AssertServiceInterface {
     }
 
     public AssetsStats getStats(Long userId) {
-        // Fetch the total fixed asserts and total current asserts
-        int totalFixedAsserts = assertsJpaRepository.countFixedAssertsForUser(userId);
-        int totalCurrentAsserts = assertsJpaRepository.countCurrentAssertsForUser(userId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name()))) {
+            return getStatsForAllStations();
+        } else {
+            // Fetch the total fixed asserts and total current asserts
+            int totalFixedAsserts = assertsJpaRepository.countFixedAssertsForUser(userId);
+            int totalCurrentAsserts = assertsJpaRepository.countCurrentAssertsForUser(userId);
 
-        // Fetch asset statistics
-        List<AssetItemStat> assetsStats = assertsJpaRepository.findAssertItemStatsByAssetDiscForUser(userId);
+            // Fetch asset statistics
+            List<AssetItemStat> assetsStats = assertsJpaRepository.findAssertItemStatsByAssetDiscForUser(userId);
 //        userLogService.addLog(ActionType.VIEW, "checked stats of asserts.");
 
-        // Return a new Stats object with the calculated totals and fetched asset statistics
-        return AssetsStats.builder().totalAsserts(assertsJpaRepository.countAssertsForUserStations(userId)).totalFixedAsserts(totalFixedAsserts).totalCurrentAsserts(totalCurrentAsserts).assetsStats(assetsStats).build();
+            // Return a new Stats object with the calculated totals and fetched asset statistics
+            return AssetsStats.builder().totalAsserts(assertsJpaRepository.countAssertsForUserStations(userId)).totalFixedAsserts(totalFixedAsserts).totalCurrentAsserts(totalCurrentAsserts).assetsStats(assetsStats).build();
+        }
+    }
+
+    public AssetsStats getStatsForAllStations() {
+        // Fetch the total fixed asserts and total current asserts
+        int totalFixedAsserts = assertsJpaRepository.countFixedAsserts();
+        int totalCurrentAsserts = assertsJpaRepository.countCurrentAsserts();
+
+        // Fetch asset statistics
+        List<AssetItemStat> assetsStats = assertsJpaRepository.findAssertItemStatsByAssetDisc();
+        return AssetsStats.builder().totalAsserts(assertsJpaRepository.count()).totalFixedAsserts(totalFixedAsserts).totalCurrentAsserts(totalCurrentAsserts).assetsStats(assetsStats).build();
     }
 
 //    public ResponseEntity<?> getAssertsForOwnStation(int page, int size) {
@@ -242,7 +266,7 @@ public class AssertService implements AssertServiceInterface {
         return getStats(token.getCreator().getId());
     }
 
-    public List<AssertEntity> getAssetPDFStation(Long stationId,String query) {
-        return getAllAssertsByUserStation(stationId,query);
+    public List<AssertEntity> getAssetPDFStation(Long stationId, String query) {
+        return getAllAssertsByUserStation(stationId, query);
     }
 }

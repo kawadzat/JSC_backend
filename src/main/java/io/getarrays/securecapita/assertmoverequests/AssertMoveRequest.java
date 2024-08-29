@@ -3,6 +3,7 @@ package io.getarrays.securecapita.assertmoverequests;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.getarrays.securecapita.asserts.model.AssertEntity;
 import io.getarrays.securecapita.asserts.model.Station;
+import io.getarrays.securecapita.domain.User;
 import io.getarrays.securecapita.officelocations.OfficeLocation;
 import io.jsonwebtoken.lang.Assert;
 import jakarta.persistence.*;
@@ -12,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.sql.Timestamp;
 
@@ -25,11 +27,17 @@ public class AssertMoveRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+
     @ManyToOne
     private OfficeLocation officeLocation;
     private String reason;
     @ManyToOne
     private AssertEntity assertEntity;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private User initiatedBy;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private User approvedBy;
     private Timestamp createdDate;
     private Timestamp updatedDate;
     @Enumerated(EnumType.STRING)

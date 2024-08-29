@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 @Repository
 public interface UserRepository1   extends JpaRepository<User,Long> {
@@ -19,4 +20,5 @@ public interface UserRepository1   extends JpaRepository<User,Long> {
 
     @Query("SELECT u FROM User u WHERE u.verificationToken = :token AND u.verificationTokenExpiry > CURRENT_TIMESTAMP()")
     Optional<User> findByPasswordVerificationToken(String token);
+
 }

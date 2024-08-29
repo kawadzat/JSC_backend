@@ -16,7 +16,10 @@ import org.springframework.util.ResourceUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.*;@Service
+import java.util.*;
+import java.util.logging.Logger;
+
+@Service
 @RequiredArgsConstructor
 public class JasperPdfService {
     private static final String LOGO_PATH = "/images/logo.png";
@@ -27,7 +30,7 @@ public class JasperPdfService {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("COMPANY_ADDRESS", COMPANY_ADDRESS);
         parameters.put("LOGO_PATH", Objects.requireNonNull(getClass().getResource(LOGO_PATH)).getPath());
-
+        Logger.getLogger(getClass().getName()).info("Total records: " + jrDataSource.getRecordCount());
         int totalRecords = jrDataSource.getRecordCount();
         int pages = (int) Math.ceil((double) totalRecords / pageLimit);
 
