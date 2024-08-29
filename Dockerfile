@@ -9,8 +9,8 @@ RUN mvn -T 4 clean package -DskipTests
 FROM eclipse-temurin:21-alpine
 WORKDIR /app
 COPY --from=build /app /app
-EXPOSE 8090
-ENV SERVER_PORT=8090
+EXPOSE 9090
+ENV SERVER_PORT=9090
 ENV SPRING_PROFILES_ACTIVE=prod
 # Command to run the application
 CMD ["java", "--enable-preview", "-jar", "target/jscbackend.jar"]
