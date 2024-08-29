@@ -13,7 +13,7 @@ if ! command -v docker &> /dev/null; then
 fi
 
 # Prompt the user for input
-echo "Please enter an option (build, start, stop, clean all, rebuild, log or exit):"
+echo "Please enter an option (build, start, stop, clean, rebuild, log or exit):"
 read option
 
 # Execute corresponding commands based on the user's input
@@ -49,6 +49,6 @@ case $option in
         exit   0
         ;;
     *)
-        echo "Invalid option. Please enter build, start, stop, clean all, rebuild, log or exit."
+        echo "Invalid option. Please enter build, start, stop, clean all, rebuild, log  or exit."
         ;;
 esac
