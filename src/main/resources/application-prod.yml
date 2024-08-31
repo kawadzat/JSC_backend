@@ -7,21 +7,18 @@ server:
   port: 8080
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/securecapita2
-    password: caroline_654321
-    username: root
-    initialization-mode: never
+    url: jdbc:postgresql://aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres
+    password: VwWj2Xir4ptLvTfI
+    username: postgres.ixgfpgwnthmehtozgpuf
   jpa:
     database-platform: org.hibernate.dialect.MySQL8DBDialect
     generate-ddl: true
-    show-sql: true
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
         globally_quoted_indentifiers: true
-        dialect: org.hibernate.dialect.MySQL8Dialect
-        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
     spring:
       servlet:
         multipart:
@@ -29,10 +26,10 @@ spring:
           file-size-threshold: 2KB
           max-file-size: 200MB
           max-request-size: 215MB
-  sql:
-    init:
-      mode: never
-      continue-on-error: false
+#  sql:
+#    init:
+#      mode: never
+#      continue-on-error: false
 
   mail:
     host: smtp.gmail.com

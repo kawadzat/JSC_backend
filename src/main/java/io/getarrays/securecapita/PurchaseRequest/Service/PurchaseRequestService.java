@@ -5,7 +5,9 @@ import io.getarrays.securecapita.PurchaseRequest.Domain.PurchaseRequestProduct;
 import io.getarrays.securecapita.PurchaseRequest.Repository.PurchaseRequestProductRepo;
 import io.getarrays.securecapita.PurchaseRequest.Repository.PurchaseRequestRepo;
 import io.getarrays.securecapita.asserts.model.AssertEntity;
+import io.getarrays.securecapita.asserts.model.Inspection;
 import io.getarrays.securecapita.asserts.model.Station;
+import io.getarrays.securecapita.asserts.repo.AssertsJpaRepository;
 import io.getarrays.securecapita.asserts.repo.StationRepository;
 import io.getarrays.securecapita.exception.CustomMessage;
 import io.getarrays.securecapita.userlogs.ActionType;
@@ -23,6 +25,8 @@ import java.util.Optional;
 public class PurchaseRequestService implements PurchaseRequestInterface {
     private final StationRepository stationRepository;
     private final PurchaseRequestProductRepo purchaseRequestProductRepo;
+
+    private final AssertsJpaRepository assertsJpaRepository;
     private final PurchaseRequestRepo purchaseRequestRepo;
 
 
@@ -109,6 +113,13 @@ public class PurchaseRequestService implements PurchaseRequestInterface {
 
     public Optional<PurchaseRequest> findById(Long id) {
         return purchaseRequestRepo.findById(id);
+    }
+
+    public ResponseEntity<?> createPurchaseRequest(PurchaseRequest newPurchaseRequest) {
+
+        PurchaseRequest createdPurchaseRequest = purchaseRequestRepo.save(newPurchaseRequest);
+
+        return ResponseEntity.ok(new CustomMessage("Purchase Request added."));
     }
 
 

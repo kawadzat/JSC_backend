@@ -4,6 +4,7 @@ import io.getarrays.securecapita.PurchaseRequest.Domain.PurchaseRequest;
 import io.getarrays.securecapita.PurchaseRequest.Service.PurchaseRequestService;
 
 import io.getarrays.securecapita.PurchaseRequest.Service.PurchaseRequestServiceReport;
+import io.getarrays.securecapita.asserts.model.AssertEntity;
 import io.getarrays.securecapita.exception.CustomMessage;
 import io.getarrays.securecapita.roles.prerunner.ROLE_AUTH;
 import lombok.RequiredArgsConstructor;
@@ -76,9 +77,9 @@ public class PurchaseRequestController {
     @PostMapping("/create")
     public ResponseEntity<?> createPurchaseRequest (@RequestBody @Validated PurchaseRequest newPurchaseRequest ) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.CREATE_PURCHASEREQUEST.name()))) {
-//            return  purchaseRequestService.createPurchaseRequest(newPurchaseRequest);
-//        }
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.CREATE_PURCHASEREQUEST.name()))) {
+            return  purchaseRequestService.createPurchaseRequest(newPurchaseRequest);
+        }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
 
     }
@@ -87,8 +88,15 @@ public class PurchaseRequestController {
 
 
 
-
-
+//    @PostMapping("/create")
+//    public ResponseEntity<?> createAssert(@RequestBody @Validated AssertEntity newAssert) throws Exception {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.CREATE_ASSET.name()))) {
+//            return assertService.createAssert(newAssert);
+//        }
+//        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
+//
+//    }
 
 
 

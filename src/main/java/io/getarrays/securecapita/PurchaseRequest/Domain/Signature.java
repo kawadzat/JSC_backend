@@ -20,7 +20,6 @@ public class Signature {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonProperty
     private Long id;
-
     private String fullName;
 
 }
