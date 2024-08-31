@@ -11,6 +11,6 @@ WORKDIR /app
 COPY --from=build /app /app
 EXPOSE 9090
 ENV SERVER_PORT=9090
-ENV SPRING_PROFILES_ACTIVE=prod
+ENV SPRING_PROFILES_ACTIVE=dev
 # Command to run the application
 CMD ["java", "--enable-preview", "-jar", "target/jscbackend.jar"]
