@@ -53,8 +53,6 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository1 roleRepository1;
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserRoleRepository userRoleRepository;
-    private final StationRepository stationRepository;
-    private final UserStationRepo userStationRepo;
 
     @Override
     public boolean deleteUser(Long id) {
@@ -77,9 +75,8 @@ public class UserServiceImpl implements UserService {
         }
 
         List<Role> roles = roleRepository1.findAll();
-        Optional<Role> role = roles.stream().filter(r -> r.getName().equals("ROLE_USER")).findFirst();
+        Optional<Role> role = roles.stream().filter(r -> r.getName().equals("USER")).findFirst();
         UserRole userRole = UserRole.builder().active(true).role(role.orElseGet(() -> roles.get(0))).createdDate(new Timestamp(System.currentTimeMillis())).build();
-        System.out.println(userRole);
         user.setNotLocked(true);
         user.setUsingMfa(false);
         user.setEnabled(true);
@@ -88,7 +85,7 @@ public class UserServiceImpl implements UserService {
         User savedUser = userRepository1.save(user);
         userRole.setUserId(savedUser.getId());
         savedUser.addRole(userRoleRepository.save(userRole));
-        return ResponseEntity.created(URI.create(fromCurrentContextPath().path("/user/get/<userId>").toUriString())).body(
+        return ResponseEntity.ok(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
                         .data(of("user", mapToUserDTO(userRepository1.save(user))))
@@ -186,7 +183,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getUserById(Long userId) {
-        return mapToUserDTO(userRepository.get(userId));
+        return mapToUserDTO(userRepository1.findById(userId).get());
 
 
     }

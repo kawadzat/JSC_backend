@@ -24,14 +24,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class StationPreRunner implements CommandLineRunner {
     private final StationRepository stationRepository;
-    private final UserRepository1 userRepository1;
-    private final RoleRepository1 roleRepository1;
     private final ProvinceEntityRepo provinceEntityRepo;
 
     @Override
-    public void run(String... args) throws Exception {
-        List<Province> provinces = new ArrayList<>();
-        provinces.addAll(List.of(Province.builder()
+    public void run(String... args) {
+        List<Province> provinces = new ArrayList<>(List.of(Province.builder()
                         .id(1L)
                         .name("MASHOLAND WEST")
                         .build(),

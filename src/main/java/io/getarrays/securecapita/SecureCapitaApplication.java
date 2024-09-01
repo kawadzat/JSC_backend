@@ -16,7 +16,8 @@ import java.util.List;
 //////////
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @EnableAsync
-@SpringBootApplication//(exclude = { SecurityAutoConfiguration.class })
+
+@SpringBootApplication(scanBasePackages = {"io.getarrays.securecapita.asserts.prerunner" })
 public class SecureCapitaApplication {
 
 	@Bean
