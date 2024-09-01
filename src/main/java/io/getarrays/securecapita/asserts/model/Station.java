@@ -42,7 +42,7 @@ public class Station {
     @Builder.Default
     @JsonIgnore
     private Set<OfficeLocation> locations = new HashSet<>();
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JsonIgnore
     private Set<User> users = new HashSet<>();
 
