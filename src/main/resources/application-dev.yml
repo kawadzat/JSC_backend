@@ -7,9 +7,9 @@ server:
   port: 8080
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/securecapital
+    url: jdbc:mysql://10.41.0.4:3306/securecapital
     password: password
-    username: root
+    username: app
     initialization-mode: never
   jpa:
     database-platform: org.hibernate.dialect.MySQL8DBDialect
