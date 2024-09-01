@@ -82,8 +82,7 @@ public class User {
 //    @JoinColumn(name = "station_id")
 //    private Station station;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @LazyCollection(LazyCollectionOption.EXTRA)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
     @Builder.Default
     @JsonIgnore
     private List<UserStation> stations = new ArrayList<>();
