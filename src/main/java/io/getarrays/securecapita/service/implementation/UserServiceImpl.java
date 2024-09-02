@@ -20,6 +20,7 @@ import io.getarrays.securecapita.stationsassignment.UserStation;
 import io.getarrays.securecapita.stationsassignment.UserStationRepo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -105,13 +106,16 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    @Transactional
     public Collection<UserDTO> list() {
         return maptoUserDTOList(userRepository1.findAll());
     }
 
+    @Transactional
     private Collection<UserDTO> maptoUserDTOList(Collection<User> users) {
         Collection<UserDTO> userDTOS = new ArrayList<>();
         users.forEach(user -> {
+            Hibernate.initialize(user.getStations());
             userDTOS.add(fromUser(user, userRoleRepository.getRoleByUserId(user.getId())));
         });
         return userDTOS;
