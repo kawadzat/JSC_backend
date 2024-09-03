@@ -4,6 +4,7 @@ import io.getarrays.securecapita.domain.Role;
 import io.getarrays.securecapita.domain.User;
 import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.roles.UserRole;
+import org.hibernate.Hibernate;
 import org.springframework.beans.BeanUtils;
 
 /**
@@ -22,6 +23,8 @@ public class UserDTOMapper {
 
     public static UserDTO fromUser(User user, UserRole role) {
         UserDTO userDTO = new UserDTO();
+        Hibernate.initialize(user.getRoles());
+        Hibernate.initialize(user.getStations());
         BeanUtils.copyProperties(user, userDTO);
         userDTO.setRoleName(role.getRole().getName());
         userDTO.setPermissions(role.getRole().getPermission());

@@ -1,7 +1,5 @@
 package io.getarrays.securecapita.service.implementation;
 
-import io.getarrays.securecapita.asserts.model.Station;
-import io.getarrays.securecapita.asserts.repo.StationRepository;
 import io.getarrays.securecapita.domain.HttpResponse;
 import io.getarrays.securecapita.domain.Role;
 import io.getarrays.securecapita.domain.User;
@@ -16,8 +14,6 @@ import io.getarrays.securecapita.repository.implementation.UserRepository1;
 import io.getarrays.securecapita.resource.ResetPasswordDto;
 import io.getarrays.securecapita.roles.UserRole;
 import io.getarrays.securecapita.service.UserService;
-import io.getarrays.securecapita.stationsassignment.UserStation;
-import io.getarrays.securecapita.stationsassignment.UserStationRepo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
@@ -26,16 +22,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.net.URI;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 import static io.getarrays.securecapita.dtomapper.UserDTOMapper.fromUser;
 import static java.time.LocalDateTime.now;
 import static java.util.Map.of;
 import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentContextPath;
 
 /**
  * @author Junior RT
@@ -111,11 +108,11 @@ public class UserServiceImpl implements UserService {
         return maptoUserDTOList(userRepository1.findAll());
     }
 
-    @Transactional
     private Collection<UserDTO> maptoUserDTOList(Collection<User> users) {
         Collection<UserDTO> userDTOS = new ArrayList<>();
         users.forEach(user -> {
             Hibernate.initialize(user.getStations());
+            Hibernate.initialize(user.getRoles());
             userDTOS.add(fromUser(user, userRoleRepository.getRoleByUserId(user.getId())));
         });
         return userDTOS;
@@ -186,10 +183,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserDTO getUserById(Long userId) {
-        return mapToUserDTO(userRepository1.findById(userId).get());
-
-
+        User user=userRepository1.findById(userId).get();
+        Hibernate.initialize(user.getRoles());
+        return mapToUserDTO(user);
     }
 
 

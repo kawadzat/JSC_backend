@@ -1,26 +1,17 @@
 package io.getarrays.securecapita.service.implementation;
 
 import io.getarrays.securecapita.domain.User;
-import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.exception.ApiException;
 import io.getarrays.securecapita.repository.implementation.UserRepository1;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
 import static io.getarrays.securecapita.enumeration.VerificationType.PASSWORD;
-import static io.getarrays.securecapita.query.UserQuery.DELETE_PASSWORD_VERIFICATION_BY_USER_ID_QUERY;
-import static io.getarrays.securecapita.query.UserQuery.INSERT_PASSWORD_VERIFICATION_QUERY;
-import static java.util.Map.of;
-import static org.apache.commons.lang3.time.DateFormatUtils.format;
-import static org.apache.commons.lang3.time.DateUtils.addDays;
-import static org.hibernate.type.descriptor.java.DateJavaType.DATE_FORMAT;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentContextPath;
 
 @Service
@@ -35,7 +26,7 @@ public class UserService1 {
     }
 
     public void resetPassword(String email) {
-        String expirationDate = format(addDays(new Date(), 1), DATE_FORMAT);
+//        String expirationDate = format(addDays(new Date(), 1), DATE_FORMAT);
         Optional<User> user = userRepository1.findByEmail(email);
         if (user.isEmpty()) {
             throw new ApiException("An error occurred. Please try again.");
