@@ -6,8 +6,8 @@ server:
       enabled: false
   port: 8080
 spring:
-  profiles:
-    active: dev
+#  profiles:
+#    active: dev
   datasource:
     url: jdbc:mysql://localhost:3306/securecapital3
     password: caroline_654321
@@ -38,7 +38,7 @@ spring:
 
   mail:
     host: smtp.gmail.com
-    port: 465
+    port: 587
     username: javaspringboot7@gmail.com
     password: gpceghqgktqlvfye
     properties:
