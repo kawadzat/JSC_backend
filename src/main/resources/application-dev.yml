@@ -43,6 +43,7 @@ spring:
         mail:
           smtp:
             auth: true
+            timeout: 20000
             starttls:
               enable: true
               required: true
