@@ -6,8 +6,8 @@ server:
       enabled: false
   port: 8080
 spring:
-#  profiles:
-#    active: dev
+  profiles:
+    active: prod
   datasource:
     url: jdbc:mysql://localhost:3306/securecapital3
     password: caroline_654321
@@ -59,6 +59,6 @@ swagger:
       url: Your Contact URL Here
 
 frontend:
-  url: https://processmanagement.tanawellnesscoaching.com
-  resetUrl: /user/verify/password
+    url: https://processafr.com
+    resetUrl: /user/verify/password
 
