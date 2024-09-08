@@ -3,7 +3,7 @@ services:
   app:
     build: .
     ports:
-      - "9090:9090"
-    container_name: securecapita
+      - "9089:9089"
+    container_name: securecapita-public
     restart: unless-stopped
 
