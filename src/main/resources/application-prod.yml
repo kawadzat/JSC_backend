@@ -7,9 +7,9 @@ server:
   port: 8080
 spring:
   datasource:
-    url: jdbc:postgresql://aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres
-    password: VwWj2Xir4ptLvTfI
-    username: postgres.ixgfpgwnthmehtozgpuf
+    url: jdbc:mysql://10.41.0.4:3306/securecapital2
+    password: password
+    username: app
   jpa:
     database-platform: org.hibernate.dialect.MySQL8DBDialect
     generate-ddl: true
