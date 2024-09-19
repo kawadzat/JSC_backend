@@ -4,6 +4,7 @@ import io.getarrays.securecapita.asserts.master.MasterAssertsDTO;
 import io.getarrays.securecapita.asserts.model.AssertEntity;
 import io.getarrays.securecapita.dto.AssetItemStat;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -85,12 +86,19 @@ public interface AssertsJpaRepository extends JpaRepository<AssertEntity, Long> 
     int countAssertsForUserStations(@Param("userId") Long userId);
 
 
-@Query("SELECT new io.getarrays.securecapita.asserts.master.MasterAssertsDTO(" +
-       "a.assetDisc, " +
-       "COUNT(a.id), " +
-       "SUM(CASE WHEN a.date < :previousYearMilli THEN 1 ELSE 0 END)," +
-        "(SELECT a2.initialRemarks FROM AssertEntity a2 WHERE a2.assetDisc = a.assetDisc ORDER BY a2.date DESC LIMIT 1)" +
-        ") " +
-       "FROM AssertEntity a " +
-       "GROUP BY a.assetDisc")
-List<MasterAssertsDTO> getMasterAssertsForRecent2years(@Param("previousYearMilli") Long previousYearMilli);}
+    @Query("SELECT new io.getarrays.securecapita.asserts.master.MasterAssertsDTO(" +
+            "a.assetDisc, " +
+            "COUNT(a.id), " +
+            "SUM(CASE WHEN a.date < :previousYearMilli THEN 1 ELSE 0 END)," +
+            "(SELECT a2.initialRemarks FROM AssertEntity a2 WHERE a2.assetDisc = a.assetDisc ORDER BY a2.date DESC LIMIT 1)" +
+            ") " +
+            "FROM AssertEntity a " +
+            "GROUP BY a.assetDisc")
+    List<MasterAssertsDTO> getMasterAssertsForRecent2years(@Param("previousYearMilli") Long previousYearMilli);
+
+//    @EntityGraph(value = "assert-entity-graph",attributePaths = {"station"})
+//    for: approvedBy,initiatedBy and assertEntity
+     @EntityGraph(value = "assert-entity-graph",attributePaths = {"approvedBy","initiatedBy","assertEntity.inspections"})
+    @Query("SELECT a FROM AssertEntity a WHERE a.id = :assertId")
+    Optional<AssertEntity> findByAssertId(Long assertId);
+}

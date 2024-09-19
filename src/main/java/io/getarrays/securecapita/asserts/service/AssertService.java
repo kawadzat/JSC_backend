@@ -93,7 +93,7 @@ public class AssertService implements AssertServiceInterface {
 
     @Override
     public void addInspectionToAssertEntity(Long id, Inspection inspection) {
-        Optional<AssertEntity> assertEntityOptional = assertRepository.findById(id);
+        Optional<AssertEntity> assertEntityOptional = assertRepository.findByAssetId(id);
 
         if (assertEntityOptional.isPresent()) {
             AssertEntity assertEntity = assertEntityOptional.get();

@@ -21,6 +21,14 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Entity
 @Table(name = "assert_move_requests")
+@NamedEntityGraph(name = "assert-move-requests-entity-graph",
+        attributeNodes = {
+                @NamedAttributeNode("officeLocation"),
+                @NamedAttributeNode("assertEntity"),
+                @NamedAttributeNode("initiatedBy"),
+                @NamedAttributeNode("approvedBy")
+        }
+)
 public class AssertMoveRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,9 +40,9 @@ public class AssertMoveRequest {
     private String reason;
     @ManyToOne
     private AssertEntity assertEntity;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     private User initiatedBy;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     private User approvedBy;
     private Timestamp createdDate;
     private Timestamp updatedDate;

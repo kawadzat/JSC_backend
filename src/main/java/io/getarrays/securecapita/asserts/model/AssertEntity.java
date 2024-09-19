@@ -28,7 +28,7 @@ import static jakarta.persistence.FetchType.EAGER;
 @Builder
 @Entity
 @NoArgsConstructor
-
+@NamedEntityGraph(name = "assert-entity-graph")
 @Table(name = "assert")
 public class AssertEntity extends Auditable<String> {
     @Id
@@ -59,7 +59,7 @@ public class AssertEntity extends Auditable<String> {
     @NotNull
     private String initialRemarks;
 
-    @OneToMany(mappedBy = "assertEntity", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "assertEntity", cascade = ALL)
     @JsonManagedReference
     private List<Inspection> inspections;
 

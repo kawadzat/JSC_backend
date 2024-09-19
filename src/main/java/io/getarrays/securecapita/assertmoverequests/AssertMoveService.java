@@ -101,7 +101,7 @@ public class AssertMoveService {
         if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.REQUEST_MOVE_ASSET.name()))) {
             User user = userRepository1.findById(((UserDTO) authentication.getPrincipal()).getId()).get();
 
-            Optional<AssertEntity> optionalAssert = assertEntityRepository.findById(assertMoveService.getAssertId());
+            Optional<AssertEntity> optionalAssert = assertEntityRepository.findByAssertId(assertMoveService.getAssertId());
             if (moveLocationRepository.findByAssertEntityIdAndStatus(assertMoveService.getAssertId(), AssertMoveStatus.PENDING).isPresent()) {
                 return ResponseEntity.badRequest().body(new CustomMessage("Assert already in pending list."));
             }
