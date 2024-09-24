@@ -20,10 +20,10 @@ public class ProductsService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.CREATE_PRODUCT.name()))) {
             Product product = productDto.toEntity();
-            Optional<Product> duplicatedProduct=productRepository.findByName(product.getName());
-            if(duplicatedProduct.isPresent()){
-                return ResponseEntity.status(422).body(new CustomMessage("Found Duplicate Entry. Please check again."));
-            }
+//            Optional<Product> duplicatedProduct=productRepository.findByName(product.getName());
+//            if(duplicatedProduct.isPresent()){
+//                return ResponseEntity.status(422).body(new CustomMessage("Found Duplicate Entry. Please check again."));
+//            }
             productRepository.save(product);
             return ResponseEntity.ok(new CustomMessage("Product Created Successfully."));
         }
