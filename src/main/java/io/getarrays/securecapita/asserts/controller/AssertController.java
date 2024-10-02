@@ -59,7 +59,7 @@ public class AssertController {
 //                        .build());
 //    }
     @PostMapping("/addtoassert/{id}")
-    public ResponseEntity<?> addInvoiceToCustomer(@PathVariable("id") Long id, @RequestBody Inspection inspection) {
+    public ResponseEntity<?> addInvoiceToCustomer(@PathVariable("id") Long id, @RequestBody @Validated Inspection inspection) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.CREATE_ASSET.name()))) {
             assertService.addInspectionToAssertEntity(id, inspection);

@@ -14,6 +14,7 @@ public enum AUTH_ROLE {
     AdminCS,
 
     SECRETARY,
+    ASSISTANT_SECRETARY,
 
     ADMINOFFICER;
 

@@ -1,5 +1,7 @@
 package io.getarrays.securecapita.roles.prerunner;
 
+import io.micrometer.common.util.internal.logging.InternalLogger;
+
 public enum ROLE_AUTH {
     READ_USER,
     UPDATE_USER,
@@ -15,6 +17,9 @@ public enum ROLE_AUTH {
     CREATE_PURCHASEREQUEST,
     CHECK_ASSET,
     REQUEST_MOVE_ASSET,
-    APPROVE_MOVE_ASSET;
+    CREATE_1,
+    APPROVE_MOVE_ASSET,
+
+    CREATE_MAILLIST  ;
 
 }

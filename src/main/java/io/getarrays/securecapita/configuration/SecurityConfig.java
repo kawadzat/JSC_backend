@@ -55,6 +55,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests().requestMatchers("/user/delete/**","/user/users/**","/user/list/**","/user/update/**","/user/assignStationToUser/**","/api/v1/user/station/**").hasAnyAuthority(ROLE_AUTH.UPDATE_USER.name());
 //        http.authorizeHttpRequests().requestMatchers(DELETE, "/purchaseRequisition/delete/**").hasAnyAuthority("DELETE:purchaseRequisition");
         http.authorizeHttpRequests().requestMatchers("/api/v1/products/create/**","/api/v1/products/delete/**").hasAnyAuthority(ROLE_AUTH.CREATE_PRODUCT.name());
+        http.authorizeHttpRequests().requestMatchers("/api/v1/MailingList/create/**","/api/v1/mailinglist/delete/**").hasAnyAuthority(ROLE_AUTH.CREATE_MAILLIST.name());
         http.authorizeHttpRequests().requestMatchers("/station/check/**").hasAnyAuthority(ROLE_AUTH.CHECK_ASSET.name());
         http.authorizeHttpRequests().requestMatchers("/assert/confirm/**").hasAnyAuthority(ROLE_AUTH.CONFIRM_ASSET.name());
 

@@ -122,7 +122,7 @@ public class AssertService implements AssertServiceInterface {
 
     @Override
     public ResponseEntity<?> getAllAssertsByStation(Long userId, Long stationId, String query, PageRequest pageRequest) {
-        return ResponseEntity.ok(assertRepository.getAllAssertsByStationPage(stationId, pageRequest));
+        return ResponseEntity.ok(assertRepository.getAllAssertsByStationPage(stationId, query, pageRequest));
     }
 
     @Override

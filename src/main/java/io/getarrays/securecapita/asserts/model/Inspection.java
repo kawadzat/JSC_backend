@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.getarrays.securecapita.itauditing.Auditable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -24,7 +26,10 @@ public class Inspection extends Auditable<String> {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Temporal(TemporalType.DATE)
+    @NotNull
     private Date date;
+    @NotNull
+    @NotEmpty
     private String remarks;
 
 
