@@ -137,9 +137,9 @@ public class RolesPreRunner implements CommandLineRunner {
         String permissionSecretary = ROLE_AUTH.READ_USER + "," +
 
                 ROLE_AUTH.VIEW_ASSET + "," +
-                ROLE_AUTH.VIEW_STATION + "," +
+              
 
-                ROLE_AUTH.VIEW_STATION;
+                ROLE_AUTH.ALL_STATION;
         updateRole(roles, AUTH_ROLE.SECRETARY, permissionSecretary);
 
 
@@ -169,9 +169,9 @@ public class RolesPreRunner implements CommandLineRunner {
         String permissionASS_Secretary = ROLE_AUTH.READ_USER + "," +
 
                 ROLE_AUTH.VIEW_ASSET + "," +
-                ROLE_AUTH.VIEW_STATION + "," +
 
-                ROLE_AUTH.VIEW_STATION;
+                ROLE_AUTH.ALL_STATION
+                ;
         updateRole(roles, AUTH_ROLE.ASSISTANT_SECRETARY, permissionASS_Secretary);
 
 
