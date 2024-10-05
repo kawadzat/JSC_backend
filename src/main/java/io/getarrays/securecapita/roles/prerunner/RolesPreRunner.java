@@ -148,8 +148,8 @@ public class RolesPreRunner implements CommandLineRunner {
 
                 ROLE_AUTH.VIEW_ASSET + "," +
 
-                ROLE_AUTH.ALL_STATION + "," +
-                ROLE_AUTH.VIEW_STATION;
+                ROLE_AUTH.ALL_STATION
+              ;
         updateRole(roles, AUTH_ROLE.HEADADMIN, permissionHEADADMIN);
 
         String permissionDEPUTYHEADADMIN = ROLE_AUTH.READ_USER + "," +
