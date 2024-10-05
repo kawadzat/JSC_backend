@@ -185,7 +185,7 @@ public class RolesPreRunner implements CommandLineRunner {
 
         String permissionRegistrar = ROLE_AUTH.READ_USER + "," +
                 ROLE_AUTH.VIEW_ASSET + "," +
-                ROLE_AUTH.VIEW_STATION + "," +
+
                 ROLE_AUTH.CHECK_ASSET + "," +
                 ROLE_AUTH.VIEW_STATION;
 
