@@ -25,7 +25,7 @@
     </style>
 
     <parameter name="COMPANY_ADDRESS" class="java.lang.String"/>
-    <parameter name="LOGO_PATH" class="java.io.InputStream"/>
+<!--    <parameter name="LOGO_PATH" class="java.lang.String"/>-->
 
     <field name="date" class="java.util.Date"/>
     <field name="initialRemarks" class="java.lang.String"/>
@@ -43,10 +43,10 @@
 
     <title>
         <band height="90" splitType="Stretch">
-            <image>
-                <reportElement x="20" y="10" width="60" height="60" uuid="14300744-9fde-477a-8258-2d07aaa01330"/>
-                <imageExpression><![CDATA[$P{LOGO_PATH}]]></imageExpression>
-            </image>
+<!--            <image>-->
+<!--                <reportElement x="20" y="10" width="60" height="60" uuid="14300744-9fde-477a-8258-2d07aaa01330"/>-->
+<!--                <imageExpression><![CDATA[$P{LOGO_PATH}]]></imageExpression>-->
+<!--            </image>-->
             <staticText>
                 <reportElement x="0" y="10" width="802" height="30" uuid="5c258340-8150-446b-847b-3469c281e72c"/>
                 <textElement textAlignment="Center">

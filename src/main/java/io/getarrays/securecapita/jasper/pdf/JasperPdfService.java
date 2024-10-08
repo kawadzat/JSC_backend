@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
+import javax.swing.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,8 +35,8 @@ public class JasperPdfService {
         JasperReport jasperReport = JasperCompileManager.compileReport(design);
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("COMPANY_ADDRESS", COMPANY_ADDRESS);
-        InputStream imgInputStream=getClass().getResourceAsStream(LOGO_PATH);
-        parameters.put("LOGO_PATH", imgInputStream);
+//        ImageIcon imageIcon = new ImageIcon(new ImageIcon(LOGO_PATH).getImage());
+//        parameters.put("LOGO_PATH", imageIcon.getImage());
         Logger.getLogger(getClass().getName()).info("Total records: " + jrDataSource.getRecordCount());
         int totalRecords = jrDataSource.getRecordCount();
         int pages = (int) Math.ceil((double) totalRecords / pageLimit);
