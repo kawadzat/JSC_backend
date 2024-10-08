@@ -25,7 +25,7 @@
     </style>
 
     <parameter name="COMPANY_ADDRESS" class="java.lang.String"/>
-    <parameter name="LOGO_PATH" class="java.lang.String"/>
+    <parameter name="LOGO_PATH" class="java.io.InputStream"/>
 
     <field name="date" class="java.util.Date"/>
     <field name="initialRemarks" class="java.lang.String"/>

@@ -3,7 +3,9 @@ package io.getarrays.securecapita.jasper.pdf;
 import lombok.RequiredArgsConstructor;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
@@ -16,6 +18,7 @@ import org.springframework.util.ResourceUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -26,10 +29,13 @@ public class JasperPdfService {
     private static final String COMPANY_ADDRESS = "1234 Street, City, Country";
 
     public ResponseEntity<?> generateAssetReport(String templateName, JRBeanCollectionDataSource jrDataSource, int pageLimit, String reportName) throws JRException, IOException {
-        JasperReport jasperReport = JasperCompileManager.compileReport(ResourceUtils.getFile(templateName).getAbsolutePath());
+        InputStream inputStream = getClass().getResourceAsStream(templateName);
+        JasperDesign design = JRXmlLoader.load(inputStream);
+        JasperReport jasperReport = JasperCompileManager.compileReport(design);
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("COMPANY_ADDRESS", COMPANY_ADDRESS);
-        parameters.put("LOGO_PATH", Objects.requireNonNull(getClass().getResource(LOGO_PATH)).getPath());
+        InputStream imgInputStream=getClass().getResourceAsStream(LOGO_PATH);
+        parameters.put("LOGO_PATH", imgInputStream);
         Logger.getLogger(getClass().getName()).info("Total records: " + jrDataSource.getRecordCount());
         int totalRecords = jrDataSource.getRecordCount();
         int pages = (int) Math.ceil((double) totalRecords / pageLimit);

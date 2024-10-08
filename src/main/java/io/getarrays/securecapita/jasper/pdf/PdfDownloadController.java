@@ -26,8 +26,8 @@ public class PdfDownloadController {
 
     private final AssertService assertService;
     private final DownloadTokenService downloadTokenService;
-    private static final String ASSET_TEMPLATE = "classpath:jasper/assettemplate.jrxml";
-    private static final String STATION_ASSET_TEMPLATE = "classpath:jasper/specificassettemplate.jrxml";
+    private static final String ASSET_TEMPLATE = "/jasper/assettemplate.jrxml";
+    private static final String STATION_ASSET_TEMPLATE = "/jasper/specificassettemplate.jrxml";
 
     private static final String ASSET_REPORT_NAME = "assetreport.pdf";
     private static final String STATION_ASSET_REPORT_NAME = "stationassetreport.pdf";
