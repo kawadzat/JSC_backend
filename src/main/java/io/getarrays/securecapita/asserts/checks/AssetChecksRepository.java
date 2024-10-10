@@ -13,6 +13,9 @@ import java.util.List;
 @Repository
 public interface AssetChecksRepository extends JpaRepository<AssetCheck, Long> {
 
+
+
+
     @Query("SELECT new io.getarrays.securecapita.asserts.checks.AssertChecksResponseDto(a.id, a.asset.assetDisc,a.asset.serialNumber, a.checkedBy.firstName, a.checkedBy.email, a.updatedDate) FROM AssetCheck a")
     Page<AssertChecksResponseDto> findAllChecks(PageRequest pageRequest);
 

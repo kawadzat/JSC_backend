@@ -169,5 +169,16 @@ public class AssertController {
         return assertService.getStatsToken();
     }
 
+
+
+    @GetMapping("/by-name/{name}")
+    public ResponseEntity<List<AssertEntity>> getAssertsByName(@PathVariable String name) {
+        List<AssertEntity> asserts = assertService.getAssertsByName(name);
+        if (asserts.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(asserts);
+    }
+
 }
 //lets on front end

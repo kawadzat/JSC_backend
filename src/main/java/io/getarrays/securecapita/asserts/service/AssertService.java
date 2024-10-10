@@ -269,4 +269,9 @@ public class AssertService implements AssertServiceInterface {
     public List<AssertEntity> getAssetPDFStation(Long stationId, String query) {
         return getAllAssertsByUserStation(stationId, query);
     }
+
+    public List<AssertEntity> getAssertsByName(String name) {
+
+        assertRepository. 
+    }
 }
