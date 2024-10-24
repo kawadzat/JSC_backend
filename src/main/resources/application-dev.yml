@@ -58,6 +58,6 @@ spring:
         url: Your Contact URL Here
 
   frontend:
-    url: https://processafr.com
+    url: http://localhost:4200
     resetUrl: /user/verify/password
 
