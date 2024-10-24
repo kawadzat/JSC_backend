@@ -43,8 +43,7 @@ public class SecureCapitaApplication {
 		UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration corsConfiguration = new CorsConfiguration();
 		corsConfiguration.setAllowCredentials(true);
-		corsConfiguration.setAllowedOrigins(List.of("https://processmanagement.tanawellnesscoaching.com","http://localhost:4200","http://172.18.5.36:9092", "http://localhost:3000", "http://securecapita.org"));
-		//corsConfiguration.setAllowedOrigins(Arrays.asList("*"));
+		corsConfiguration.setAllowedOrigins(List.of("https://processmanagement.tanawellnesscoaching.com","https://processafr.com","http://172.18.5.36:9092","http://localhost:4200", "http://localhost:3000", "http://securecapita.org"));
 		corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "Access-Control-Allow-Origin", "Content-Type",
 				"Accept", "Jwt-Token", "Authorization", "Origin", "Accept", "X-Requested-With",
 				"Access-Contro" +
