@@ -270,8 +270,15 @@ public class AssertService implements AssertServiceInterface {
         return getAllAssertsByUserStation(stationId, query);
     }
 
-    public List<AssertEntity> getAssertsByName(String name) {
 
-        assertRepository. 
+
+    public List<AssertEntity> getAllAssetsByassetDisc() {
+    List<AssertEntity>getAllAssetsByassetDisc=assertsJpaRepository.findAll();
+    return getAllAssetsByassetDisc;
+
     }
+
+
+
+
 }

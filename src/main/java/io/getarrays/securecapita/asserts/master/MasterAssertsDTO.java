@@ -12,4 +12,6 @@ public class MasterAssertsDTO {
     private Long currentYearTotal;
     private Long previousYearTotal;
     private String remark;
+
+    private int requiredLevel;
 }

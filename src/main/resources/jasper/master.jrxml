@@ -27,16 +27,14 @@
     <parameter name="COMPANY_ADDRESS" class="java.lang.String"/>
     <parameter name="LOGO_PATH" class="java.lang.String"/>
 
-    <field name="date" class="java.util.Date"/>
-    <field name="initialRemarks" class="java.lang.String"/>
-    <field name="assetDisc" class="java.lang.String"/>
-<!--    <field name="assetQty" class="java.lang.Integer"/>-->
-    <field name="serialNo" class="java.lang.String"/>
-    <field name="invoiceNo" class="java.lang.String"/>
-    <field name="location" class="java.lang.String"/>
-    <field name="assetType" class="java.lang.String"/>
-    <field name="preparedBy" class="java.lang.String"/>
 
+    <field name="Asset Description" class="java.lang.String"/>
+    <field name="Current Year" class="java.lang.String"/>
+<!--    <field name="assetQty" class="java.lang.Integer"/>-->
+    <field name="Previous Year" class="java.lang.String"/>
+    <field name="Surplus" class="java.lang.String"/>
+    <field name="Deficiency" class="java.lang.String"/>
+    <field name="Remarks" class="java.lang.String"/>
     <background>
         <band splitType="Stretch"/>
     </background>

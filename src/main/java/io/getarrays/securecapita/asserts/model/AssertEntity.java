@@ -40,7 +40,7 @@ public class AssertEntity extends Auditable<String> {
     private Timestamp date;
     @NotNull
     private String assetDisc;
-    @NotNull
+    @NotNull                                                                                     
     private String assetNumber;
     @NotNull
     private String serialNumber;
