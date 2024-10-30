@@ -64,6 +64,13 @@ public interface AssertsJpaRepository extends JpaRepository<AssertEntity, Long> 
             "GROUP BY a.assetDisc")
     List<AssetItemStat> findAssertItemStatsByAssetDiscForUser(@Param("userId") Long userId);
 
+    @Query("SELECT new io.getarrays.securecapita.dto.AssetItemStat(" +
+            "a.assetDisc, " +
+            "COUNT(DISTINCT a.id)) " +
+            "FROM AssertEntity a " +
+            "WHERE a.station.station_id = :stationId " +
+            "GROUP BY a.assetDisc")
+    List<AssetItemStat> findAssertItemStatsByStation(@Param("stationId") Long stationId);
     @Query("SELECT a FROM AssertEntity a WHERE a.assetDisc = :assetDisc")
     Optional<AssertEntity> findByName(@Param("assetDisc") String assetDisc);
 

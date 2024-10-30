@@ -2,6 +2,7 @@ package io.getarrays.securecapita.asserts.service;
 
 import io.getarrays.securecapita.asserts.model.AssertEntity;
 import io.getarrays.securecapita.asserts.model.Inspection;
+import io.getarrays.securecapita.asserts.model.SpecificationInput;
 import io.getarrays.securecapita.asserts.model.Station;
 import io.getarrays.securecapita.asserts.repo.AssertEntityRepository;
 import io.getarrays.securecapita.asserts.repo.AssertsJpaRepository;
@@ -22,9 +23,11 @@ import io.getarrays.securecapita.roles.prerunner.ROLE_AUTH;
 import io.getarrays.securecapita.userlogs.ActionType;
 import io.getarrays.securecapita.userlogs.UserLogService;
 import lombok.AllArgsConstructor;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -218,6 +221,17 @@ public class AssertService implements AssertServiceInterface {
         }
     }
 
+    public AssetsStats getStatsByStation(Long stationId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name()))) {
+            return getStatsForAllStations();
+        } else {
+            int totalAsserts = assertsJpaRepository.countAsserts(stationId);
+            List<AssetItemStat> assetsStats = assertsJpaRepository.findAssertItemStatsByStation(stationId);
+            return AssetsStats.builder().totalAsserts(totalAsserts).totalFixedAsserts(assertsJpaRepository.countFixedAsserts(stationId)).totalCurrentAsserts(assertsJpaRepository.countCurrentAsserts(stationId)).assetsStats(assetsStats).build();
+        }
+    }
+
     public AssetsStats getStatsForAllStations() {
         // Fetch the total fixed asserts and total current asserts
         int totalFixedAsserts = assertsJpaRepository.countFixedAsserts();
@@ -277,6 +291,38 @@ public class AssertService implements AssertServiceInterface {
     return getAllAssetsByassetDisc;
 
     }
+
+Specification<AssertEntity>getSpecification(){
+return (root, query, criteriaBuilder) -> {
+
+ return   criteriaBuilder.equal(root.get("name"),"momo");
+
+
+};
+}
+
+public List<AssertEntity>getAssertEntityByassetDisc(){
+
+
+   Specification<AssertEntity>specification      = getSpecification();
+
+  return  assertRepository.findAll(specification);
+
+}
+
+private Specification<AssertEntity>getSpecification(SpecificationInput specificationInput ){
+
+      return (root, query, criteriaBuilder) -> {
+      return
+
+criteriaBuilder.equal(root.get(specificationInput.getColumnName()),
+        specificationInput.getValue());   };}
+
+public List<AssertEntity>getAssertEnityData(SpecificationInput specificationInput){
+          Specification         <AssertEntity> specification=getSpecification(specificationInput);
+ return    assertRepository.findAll(specification);
+
+       }
 
 
 

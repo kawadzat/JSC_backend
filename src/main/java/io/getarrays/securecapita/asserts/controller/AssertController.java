@@ -2,6 +2,7 @@ package io.getarrays.securecapita.asserts.controller;
 
 import io.getarrays.securecapita.asserts.model.AssertEntity;
 import io.getarrays.securecapita.asserts.model.Inspection;
+import io.getarrays.securecapita.asserts.model.SpecificationInput;
 import io.getarrays.securecapita.asserts.service.AssertService;
 import io.getarrays.securecapita.domain.HttpResponse;
 import io.getarrays.securecapita.dto.UserDTO;
@@ -12,6 +13,7 @@ import io.getarrays.securecapita.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -25,6 +27,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+
 
 import static org.springframework.http.HttpStatus.OK;
 
@@ -184,10 +187,19 @@ public class AssertController {
     }
 
 
+@GetMapping
+    List<AssertEntity>getByassetDisc(){
+//    Specification<AssertEntity>specification=getSpecification();
+    return   assertService.getAllAssetsByassetDisc( );
+}
 
 
+@GetMapping("/ByEquals")
+List<AssertEntity>ByEquals(@RequestBody SpecificationInput  specificationInput){
 
+    return  null; //
+}
 
 
 }
-//lets on front end
+

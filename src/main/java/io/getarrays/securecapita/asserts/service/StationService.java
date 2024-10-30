@@ -141,7 +141,7 @@ public class StationService {
         if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name()))) {
             ArrayList<StationItemStat> stationItemStats = stationRepository.findAssertItemStatsByAssetDisc();
             stationItemStats.forEach(stationItemStat -> {
-                stationItemStat.setAssetsStats(assertService.getStats(stationItemStat.getStationId()));
+                stationItemStat.setAssetsStats(assertService.getStatsByStation(stationItemStat.getStationId()));
             });
             return ResponseEntity.ok(StationStats.builder()
                     .totalStations(stationRepository.count())
@@ -151,7 +151,7 @@ public class StationService {
             if (user.isStationAssigned()) {
                 List<StationItemStat> stationItemStats = stationRepository.findAssertItemStatsByUserStations(user.getId());
                 stationItemStats.forEach(stationItemStat -> {
-                    stationItemStat.setAssetsStats(assertService.getStats(stationItemStat.getStationId()));
+                    stationItemStat.setAssetsStats(assertService.getStatsByStation(stationItemStat.getStationId()));
                 });
                 return ResponseEntity.ok(StationStats.builder()
                         .totalStations(stationRepository.count())
