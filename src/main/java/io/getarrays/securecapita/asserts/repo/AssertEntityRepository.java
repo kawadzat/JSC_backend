@@ -117,6 +117,20 @@ public interface AssertEntityRepository extends PagingAndSortingRepository<Asser
     Optional<AssertEntity> findByAssetId(Long id);
 
 
+    @Query("SELECT a FROM AssertEntity a " +
+            "WHERE (:assetDisc IS NULL OR a.assetDisc LIKE CONCAT('%', :assetDisc, '%')) " +
+            "AND (:assetNumber IS NULL OR a.assetNumber LIKE CONCAT('%', :assetNumber, '%')) " +
+            "AND (:invoiceNumber IS NULL OR a.invoiceNumber LIKE CONCAT('%', :invoiceNumber, '%')) " +
+            "AND (:location IS NULL OR a.location LIKE CONCAT('%', :location, '%')) " +
+            "AND (:officeLocation IS NULL OR a.officeLocation.name LIKE CONCAT('%', :officeLocation, '%'))")
+    List<AssertEntity> searchAssets(
+            @Param("assetDisc") String assetDisc,
+            @Param("assetNumber") String assetNumber,
+            @Param("invoiceNumber") String invoiceNumber,
+            @Param("location") String location,
+            @Param("officeLocation") String officeLocation
+    );
+
 
 
    }

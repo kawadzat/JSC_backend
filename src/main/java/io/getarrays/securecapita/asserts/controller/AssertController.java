@@ -5,6 +5,7 @@ import io.getarrays.securecapita.asserts.model.Inspection;
 import io.getarrays.securecapita.asserts.model.SpecificationInput;
 import io.getarrays.securecapita.asserts.service.AssertService;
 import io.getarrays.securecapita.domain.HttpResponse;
+import io.getarrays.securecapita.dto.AssetSearchCriteriaDTO;
 import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.exception.CustomMessage;
 import io.getarrays.securecapita.jasper.pdf.JasperPdfService;
@@ -13,10 +14,8 @@ import io.getarrays.securecapita.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,7 +27,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -38,6 +36,7 @@ public class AssertController {
     private final UserService userService;
     private final AssertService assertService;
     private JasperPdfService jasperPdfService;
+
     @PostMapping("/create")
     public ResponseEntity<?> createAssert(@RequestBody @Validated AssertEntity newAssert) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -124,16 +123,16 @@ public class AssertController {
 //    }
 
     @GetMapping("/getByStation")
-    public ResponseEntity<?> getByStation(@RequestParam(name = "stationId", required = false) Long stationId,@RequestParam(name = "query", defaultValue = "",required = false) String query, @RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
+    public ResponseEntity<?> getByStation(@RequestParam(name = "stationId", required = false) Long stationId, @RequestParam(name = "query", defaultValue = "", required = false) String query, @RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (stationId != null) {
             if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.VIEW_ASSET.name()))) {
-                return assertService.getAllAssertsByStation(((UserDTO) authentication.getPrincipal()).getId(), stationId, query,PageRequest.of(page, size, Sort.by("lastModifiedDate").descending()));
+                return assertService.getAllAssertsByStation(((UserDTO) authentication.getPrincipal()).getId(), stationId, query, PageRequest.of(page, size, Sort.by("lastModifiedDate").descending()));
             } else {
-                return assertService.getAllAssertsByUserStation(((UserDTO) authentication.getPrincipal()).getId(), stationId,query, PageRequest.of(page, size, Sort.by("lastModifiedDate").descending()));
+                return assertService.getAllAssertsByUserStation(((UserDTO) authentication.getPrincipal()).getId(), stationId, query, PageRequest.of(page, size, Sort.by("lastModifiedDate").descending()));
             }
         } else {
-            return assertService.getAllAssertsByUserStation(((UserDTO) authentication.getPrincipal()).getId(), query,PageRequest.of(page, size, Sort.by("lastModifiedDate").descending()));
+            return assertService.getAllAssertsByUserStation(((UserDTO) authentication.getPrincipal()).getId(), query, PageRequest.of(page, size, Sort.by("lastModifiedDate").descending()));
         }
     }
 
@@ -173,33 +172,32 @@ public class AssertController {
     }
 
 
-
-
-
-
-
     @GetMapping("/getAllBydescript")
-    public List<AssertEntity> getAllAssetsByassetDisc(){
+    public List<AssertEntity> getAllAssetsByassetDisc() {
 
-        List<AssertEntity>  listOfAllAssetsByDisc =  assertService.getAllAssetsByassetDisc()  ;      // userServiceObject.getAllUsers();
+        List<AssertEntity> listOfAllAssetsByDisc = assertService.getAllAssetsByassetDisc();      // userServiceObject.getAllUsers();
 
-        return  listOfAllAssetsByDisc ;
+        return listOfAllAssetsByDisc;
     }
 
 
-@GetMapping
-    List<AssertEntity>getByassetDisc(){
+    @GetMapping
+    List<AssertEntity> getByassetDisc() {
 //    Specification<AssertEntity>specification=getSpecification();
-    return   assertService.getAllAssetsByassetDisc( );
-}
+        return assertService.getAllAssetsByassetDisc();
+    }
 
 
-@GetMapping("/ByEquals")
-List<AssertEntity>ByEquals(@RequestBody SpecificationInput  specificationInput){
+    @GetMapping("/ByEquals")
+    List<AssertEntity> ByEquals(@RequestBody SpecificationInput specificationInput) {
 
-    return  null; //
-}
+        return null; //
+    }
 
 
+    @PostMapping("/search-assets")
+    List<AssertEntity> searchAsserts(@RequestBody AssetSearchCriteriaDTO criteria) {
+        return assertService.searchAsserts(criteria);
+    }
 }
 

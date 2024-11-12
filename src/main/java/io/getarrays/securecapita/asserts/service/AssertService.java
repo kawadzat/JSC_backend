@@ -10,6 +10,7 @@ import io.getarrays.securecapita.asserts.repo.InspectionRepository;
 import io.getarrays.securecapita.asserts.repo.StationRepository;
 import io.getarrays.securecapita.domain.User;
 import io.getarrays.securecapita.dto.AssetItemStat;
+import io.getarrays.securecapita.dto.AssetSearchCriteriaDTO;
 import io.getarrays.securecapita.dto.AssetsStats;
 import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.exception.CustomMessage;
@@ -180,6 +181,17 @@ public class AssertService implements AssertServiceInterface {
             }
             return ResponseEntity.badRequest().body(new CustomMessage("You are not authorized to get stats for any station."));
         }
+    }
+
+    @Override
+    public List<AssertEntity> searchAsserts(AssetSearchCriteriaDTO criteria) {
+        return assertEntityRepository.searchAssets(
+                criteria.getAssetDisc(),
+                criteria.getAssetNumber(),
+                criteria.getInvoiceNumber(),
+                criteria.getLocation(),
+                criteria.getOfficeLocation()
+        );
     }
 
     public ResponseEntity<?> getStats(User user) {

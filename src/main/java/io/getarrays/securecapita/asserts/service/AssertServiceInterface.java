@@ -2,8 +2,11 @@ package io.getarrays.securecapita.asserts.service;
 
 import io.getarrays.securecapita.asserts.model.AssertEntity;
 import io.getarrays.securecapita.asserts.model.Inspection;
+import io.getarrays.securecapita.dto.AssetSearchCriteriaDTO;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 
 public interface AssertServiceInterface {
@@ -23,4 +26,6 @@ public interface AssertServiceInterface {
     ResponseEntity<?> getAllAssertsByUserStation(Long userId, String query,PageRequest pageRequest);
 
     ResponseEntity<?> getStats();
+
+    List<AssertEntity> searchAsserts(AssetSearchCriteriaDTO criteria);
 }
