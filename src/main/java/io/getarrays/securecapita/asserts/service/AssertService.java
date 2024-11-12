@@ -325,12 +325,13 @@ public List<AssertEntity>getAssertEntityByassetDisc(){
 private Specification<AssertEntity>getSpecification(SpecificationInput specificationInput ){
 
       return (root, query, criteriaBuilder) -> {
-      return
-
-criteriaBuilder.equal(root.get(specificationInput.getColumnName()),
+      return  criteriaBuilder.equal(root.get(specificationInput.getColumnName()),
         specificationInput.getValue());   };}
 
-public List<AssertEntity>getAssertEnityData(SpecificationInput specificationInput){
+
+
+
+public List<AssertEntity>getAssertEntityData(SpecificationInput specificationInput){
           Specification         <AssertEntity> specification=getSpecification(specificationInput);
  return    assertRepository.findAll(specification);
 

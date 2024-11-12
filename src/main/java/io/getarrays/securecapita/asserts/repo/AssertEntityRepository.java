@@ -108,6 +108,15 @@ public interface AssertEntityRepository extends PagingAndSortingRepository<Asser
             @Param("stationId") Long stationId
     );
 
+//    @Query("SELECT DISTINCT a FROM AssertEntity a " +
+//            "JOIN a.station s " +
+//            "JOIN UserStation us ON us.station = s " +
+//            "WHERE 1 = 1 AND (:assetNumber IS NULL or a.assetNumber = %:assetNumber%)")
+//    Optional<List<AssertEntity>> getAssetEntityBySearch(
+//            @Param("assetNumber") String assetNumber,
+//
+//    );
+
 
     @Query("SELECT new io.getarrays.securecapita.asserts.model.AssertResponseDto(a.id, a.assetDisc,a.assetNumber) FROM AssertEntity a where a.station.station_id=:stationId")
     List<AssertResponseDto> getAllAssertsByStation(Long stationId);

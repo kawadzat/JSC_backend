@@ -187,16 +187,18 @@ public class AssertController {
         return assertService.getAllAssetsByassetDisc();
     }
 
-
+    //usage>?
     @GetMapping("/ByEquals")
-    List<AssertEntity> ByEquals(@RequestBody SpecificationInput specificationInput) {
+    List<AssertEntity> ByEqual(@RequestBody SpecificationInput specificationInput) {
 
-        return null; //
+        return assertService.getAssertEntityData(specificationInput);
+
     }
 
 
     @PostMapping("/search-assets")
     List<AssertEntity> searchAsserts(@RequestBody AssetSearchCriteriaDTO criteria) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return assertService.searchAsserts(criteria);
     }
 }
