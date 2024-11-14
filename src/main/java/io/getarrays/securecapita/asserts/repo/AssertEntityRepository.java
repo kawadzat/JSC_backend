@@ -13,6 +13,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -131,13 +132,15 @@ public interface AssertEntityRepository extends PagingAndSortingRepository<Asser
             "AND (:assetNumber IS NULL OR a.assetNumber LIKE CONCAT('%', :assetNumber, '%')) " +
             "AND (:invoiceNumber IS NULL OR a.invoiceNumber LIKE CONCAT('%', :invoiceNumber, '%')) " +
             "AND (:location IS NULL OR a.location LIKE CONCAT('%', :location, '%')) " +
-            "AND (:officeLocation IS NULL OR a.officeLocation.name LIKE CONCAT('%', :officeLocation, '%'))")
+            "AND (:officeLocation IS NULL OR a.officeLocation.name LIKE CONCAT('%', :officeLocation, '%')) " +
+            "AND (:dateOn IS NULL OR date(a.date) = date(:dateOn))")
     List<AssertEntity> searchAssets(
             @Param("assetDisc") String assetDisc,
             @Param("assetNumber") String assetNumber,
             @Param("invoiceNumber") String invoiceNumber,
             @Param("location") String location,
-            @Param("officeLocation") String officeLocation
+            @Param("officeLocation") String officeLocation,
+            @Param("dateOn") Date date
     );
 
 

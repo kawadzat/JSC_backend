@@ -190,7 +190,8 @@ public class AssertService implements AssertServiceInterface {
                 criteria.getAssetNumber(),
                 criteria.getInvoiceNumber(),
                 criteria.getLocation(),
-                criteria.getOfficeLocation()
+                criteria.getOfficeLocation(),
+                criteria.getDate()
         );
     }
 

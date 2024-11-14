@@ -57,7 +57,7 @@ public class AssertEntity extends Auditable<String> {
     private OfficeLocation officeLocation;
 
     @NotNull
-    private String initialRemarks;
+    private String initialRemarks;//new /or used another fied we left
 
     @OneToMany(mappedBy = "assertEntity", cascade = ALL)
     @JsonManagedReference
