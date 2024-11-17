@@ -21,6 +21,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -197,8 +198,7 @@ public class AssertController {
 
 
     @PostMapping("/search-assets")
-    List<AssertEntity> searchAsserts(@RequestBody AssetSearchCriteriaDTO criteria) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    Page<AssertEntity> searchAsserts(@RequestBody AssetSearchCriteriaDTO criteria) {
         return assertService.searchAsserts(criteria);
     }
 }

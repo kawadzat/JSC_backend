@@ -13,4 +13,11 @@ public class AssetSearchCriteriaDTO {
     private String officeLocation;
 
     private Date date;
+
+    private String initialRemarks;
+
+    private String assetType;
+
+    private int limit;
+    private int offset;
 }

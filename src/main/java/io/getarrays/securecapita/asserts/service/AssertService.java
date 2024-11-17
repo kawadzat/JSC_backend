@@ -27,6 +27,7 @@ import lombok.AllArgsConstructor;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
@@ -184,14 +185,19 @@ public class AssertService implements AssertServiceInterface {
     }
 
     @Override
-    public List<AssertEntity> searchAsserts(AssetSearchCriteriaDTO criteria) {
+    public Page<AssertEntity> searchAsserts(AssetSearchCriteriaDTO criteria) {
+        int page = criteria.getOffset() / criteria.getLimit();
+        Pageable pageable = PageRequest.of(page, criteria.getLimit());
         return assertEntityRepository.searchAssets(
                 criteria.getAssetDisc(),
                 criteria.getAssetNumber(),
                 criteria.getInvoiceNumber(),
                 criteria.getLocation(),
                 criteria.getOfficeLocation(),
-                criteria.getDate()
+                criteria.getDate(),
+                criteria.getInitialRemarks(),
+                criteria.getAssetType(),
+                pageable
         );
     }
 
