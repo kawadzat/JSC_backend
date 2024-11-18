@@ -29,8 +29,7 @@ public interface AssertEntityRepository extends PagingAndSortingRepository<Asser
             " OR LOWER(a.invoiceNumber) LIKE %:query% " +
             " OR LOWER(a.assertType) LIKE %:query% " +
             " OR LOWER(a.location) LIKE %:query% " +
-            " OR LOWER(a.officeLocation.name) LIKE %:query% " +
-//            " OR a.quantity LIKE %:query% " +
+            " OR ( :query IS NULL OR LOWER(REPLACE(TRIM(a.officeLocation.name), ' ', '')) LIKE LOWER(REPLACE(CONCAT('%', :query, '%'), ' ', ''))) " +
             " OR LOWER(a.initialRemarks) LIKE %:query% )")
     Page<AssertEntity> getAllAssertsByStationPage(@Param("stationId") Long stationId,
                                                   @Param("query") String query,
@@ -46,8 +45,7 @@ public interface AssertEntityRepository extends PagingAndSortingRepository<Asser
             " OR LOWER(a.invoiceNumber) LIKE %:query% " +
             " OR LOWER(a.assertType) LIKE %:query% " +
             " OR LOWER(a.location) LIKE %:query% " +
-            " OR LOWER(a.officeLocation.name) LIKE %:query% " +
-//            " OR a.quantity LIKE %:query% " +
+            " OR (:query IS NULL OR LOWER(REPLACE(TRIM(a.officeLocation.name), ' ', '')) LIKE LOWER(REPLACE(CONCAT('%', :query, '%'), ' ', ''))) " +
             " OR LOWER(a.initialRemarks) LIKE %:query% )")
     Page<AssertEntity> getAssertsByUserStationPaged(
             @Param("userId") Long userId,
@@ -66,7 +64,7 @@ public interface AssertEntityRepository extends PagingAndSortingRepository<Asser
             " OR LOWER(a.invoiceNumber) LIKE %:query% " +
             " OR LOWER(a.assertType) LIKE %:query% " +
             " OR LOWER(a.location) LIKE %:query% " +
-            " OR LOWER(a.officeLocation.name) LIKE %:query% " +
+            " OR (:query IS NULL OR LOWER(REPLACE(TRIM(a.officeLocation.name), ' ', '')) LIKE LOWER(REPLACE(CONCAT('%', :query, '%'), ' ', ''))) " +
             " OR LOWER(a.initialRemarks) LIKE %:query% ))")
     List<AssertEntity> getAssertsByUserStation(
             @Param("userId") Long userId,
@@ -84,7 +82,7 @@ public interface AssertEntityRepository extends PagingAndSortingRepository<Asser
             " OR LOWER(a.invoiceNumber) LIKE %:query% " +
             " OR LOWER(a.assertType) LIKE %:query% " +
             " OR LOWER(a.location) LIKE %:query% " +
-            " OR LOWER(a.officeLocation.name) LIKE %:query% " +
+            " OR (:query IS NULL OR LOWER(REPLACE(TRIM(a.officeLocation.name), ' ', '')) LIKE LOWER(REPLACE(CONCAT('%', :query, '%'), ' ', ''))) " +
             " OR LOWER(a.initialRemarks) LIKE %:query% ))")
     List<AssertEntity> getAssertsByStation(
             @Param("stationId") Long stationId,
@@ -132,7 +130,7 @@ public interface AssertEntityRepository extends PagingAndSortingRepository<Asser
             "AND (:assetNumber IS NULL OR a.assetNumber LIKE CONCAT('%', :assetNumber, '%')) " +
             "AND (:invoiceNumber IS NULL OR a.invoiceNumber LIKE CONCAT('%', :invoiceNumber, '%')) " +
             "AND (:location IS NULL OR a.location LIKE CONCAT('%', :location, '%')) " +
-            "AND (:officeLocation IS NULL OR a.officeLocation.name LIKE CONCAT('%', :officeLocation, '%'))  " +
+            "AND (:officeLocation IS NULL OR LOWER(REPLACE(TRIM(a.officeLocation.name), ' ', '')) LIKE LOWER(REPLACE(CONCAT('%', :officeLocation, '%'), ' ', ''))) " +
             "AND (:dateOn IS NULL OR date(a.date) = date(:dateOn)) "+
             "AND (:initialRemarks IS NULL OR a.initialRemarks = :initialRemarks) " +
             "AND (:assetType IS NULL OR a.assertType = :assetType)")
