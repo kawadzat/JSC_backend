@@ -31,6 +31,22 @@ public interface AssertsJpaRepository extends JpaRepository<AssertEntity, Long> 
 
     @Query("SELECT COUNT(a) FROM AssertEntity a WHERE LOWER(a.assertType) = 'current'")
     int countCurrentAsserts();
+//bad asserts
+    @Query("SELECT COUNT(a) FROM AssertEntity a WHERE LOWER(a.initialRemarks) = 'bad'")
+    int countBadAsserts();
+
+
+
+
+
+
+
+
+
+
+
+    @Query("SELECT COUNT(a) FROM AssertEntity a WHERE LOWER(a.assertType) = 'current'")
+    int countCurrentAssertsPerStation();
 
     @Query("SELECT COUNT(a) FROM AssertEntity a WHERE LOWER(a.assertType) = 'current' AND a.station.station_id=:stationId")
     int countCurrentAsserts(Long stationId);
@@ -82,6 +98,11 @@ public interface AssertsJpaRepository extends JpaRepository<AssertEntity, Long> 
 
     @Query("SELECT COUNT(a) FROM AssertEntity a WHERE a.station.station_id=:stationId")
     int countAsserts(Long stationId);
+
+
+
+
+
 
     @Query("SELECT a FROM AssertEntity a WHERE a.assetNumber = :assetNumber and a.station.station_id=:selectedStationID")
     Optional<AssertEntity> findByAssetAndStation(String assetNumber, Long selectedStationID);

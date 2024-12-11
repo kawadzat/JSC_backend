@@ -60,4 +60,14 @@ spring:
   frontend:
     url: http://localhost:4200
     resetUrl: /user/verify/password
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      base-path: /admin
+
+infor:
+  app-name: JSC Administration App
+
 

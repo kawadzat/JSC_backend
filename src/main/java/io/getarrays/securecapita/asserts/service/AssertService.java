@@ -52,6 +52,13 @@ public class AssertService implements AssertServiceInterface {
     private final UserRepository1 userRepository1;
     private final OfficeLocationRepository officeLocationRepository;
 
+
+
+
+
+
+
+
     /* updating the user */
     public AssertEntity updateAssertEntity(AssertEntity assertEntity) {
 
@@ -343,6 +350,13 @@ public List<AssertEntity>getAssertEntityData(SpecificationInput specificationInp
  return    assertRepository.findAll(specification);
 
        }
+
+
+
+  
+
+
+
 
 
 

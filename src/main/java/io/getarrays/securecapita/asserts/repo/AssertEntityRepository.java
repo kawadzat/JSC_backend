@@ -19,6 +19,8 @@ import java.util.Optional;
 
 @Repository
 public interface AssertEntityRepository extends PagingAndSortingRepository<AssertEntity, Long>, JpaRepository<AssertEntity, Long>, ListCrudRepository<AssertEntity, Long>, JpaSpecificationExecutor<AssertEntity> {
+    @Query("SELECT COUNT(a) FROM AssertEntity a WHERE LOWER(a.initialRemarks) = 'bad'")
+    int countBadAsserts();
 
     //    @Query("select  from Assert where a.stationName=:n" )
 //    List<AssertEntity> getAllAssertsByStation(@Param("n")String stationName);
