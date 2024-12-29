@@ -17,23 +17,27 @@ import java.util.Optional;
 @Repository
 public interface AssertsJpaRepository extends JpaRepository<AssertEntity, Long> {
     @Query("SELECT COUNT(a) FROM AssertEntity a WHERE LOWER(a.assertType) = 'fixed'")
-    int countFixedAsserts();
+    long countFixedAsserts();
 
     @Query("SELECT COUNT(a) FROM AssertEntity a WHERE LOWER(a.assertType) = 'fixed' AND a.station.station_id=:stationId")
-    int countFixedAsserts(Long stationId);
+    long countFixedAsserts(Long stationId);
 
     @Query("SELECT COUNT(DISTINCT a) FROM AssertEntity a " +
             "JOIN a.station s " +
             "JOIN UserStation us ON us.station = s " +
             "WHERE LOWER(a.assertType) = 'fixed' AND us.user.id = :userId")
-    int countFixedAssertsForUser(@Param("userId") Long userId);
+    long countFixedAssertsForUser(@Param("userId") Long userId);
 
 
     @Query("SELECT COUNT(a) FROM AssertEntity a WHERE LOWER(a.assertType) = 'current'")
-    int countCurrentAsserts();
+    long countCurrentAsserts();
+
+    @Query("SELECT COUNT(a) FROM AssertEntity a WHERE movable = true")
+    long countMovableAsserts();
+
 //bad asserts
     @Query("SELECT COUNT(a) FROM AssertEntity a WHERE LOWER(a.initialRemarks) = 'bad'")
-    int countBadAsserts();
+    long countBadAsserts();
 
 
 

@@ -8,8 +8,6 @@ import static jakarta.persistence.GenerationType.AUTO;
 
 @Getter
 @Setter
-
-
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
@@ -21,5 +19,7 @@ public class Province {
     @GeneratedValue(strategy = AUTO)
     private Long id;
     private String name;
-
+    
+    @Column(name = "station_id")
+    private Long stationId;
 }

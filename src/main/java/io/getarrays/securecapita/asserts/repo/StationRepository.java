@@ -19,6 +19,9 @@ import java.util.List;
 @Repository
 public interface StationRepository extends JpaRepository<Station, Long> {
 
+    @Query("SELECT s FROM Station s WHERE s.province.id = :provinceId")
+    List<Station> findStationsByProvinceId(@Param("provinceId") Long provinceId);
+
     @Query("SELECT s FROM Station s JOIN s.users u WHERE u.id = :userId")
     List<Station> findAllStation(Long userId);
 

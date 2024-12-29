@@ -42,6 +42,11 @@ public class AssertEntity extends Auditable<String> {
     private String assetDisc;
     @NotNull                                                                                     
     private String assetNumber;
+
+    @NotNull
+    @Column(columnDefinition = "default true")
+    private boolean movable;
+
     @NotNull
     private String serialNumber;
     //add all details, station, and only can filter from frontend

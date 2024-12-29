@@ -20,5 +20,6 @@ public class AssetsStats {
     private long totalAsserts;
     private long totalFixedAsserts;
     private long totalCurrentAsserts;
+    private long totalMovableAsserts;
     private List<AssetItemStat> assetsStats;
 }

@@ -84,4 +84,9 @@ public class StationController {
     public ResponseEntity<?> getStationStats() {
         return stationService.getStationStats();
     }
+
+    @GetMapping("/by-province/{provinceId}")
+    public ResponseEntity<List<Station>> getStationsByProvince(@PathVariable Long provinceId) {
+        return stationService.getStationsByProvince(provinceId);
+    }
 }

@@ -22,6 +22,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -196,5 +198,33 @@ public class StationService {
             }
         }
         return ResponseEntity.badRequest().body(new CustomMessage("Not authorized for stats."));
+    }
+
+    public ResponseEntity<List<Station>> getStationsByProvince(Long provinceId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDTO user = (UserDTO) authentication.getPrincipal();
+        
+        // Check if user has ALL_STATION permission
+        boolean hasAllStationPermission = authentication.getAuthorities().stream()
+            .anyMatch(auth -> auth.getAuthority().contains(ROLE_AUTH.ALL_STATION.name()));
+        
+        // Get all stations for the given province
+        List<Station> stationsByProvince = stationRepository.findStationsByProvinceId(provinceId);
+        
+        if (hasAllStationPermission) {
+            // Return all stations in the province for users with ALL_STATION permission
+            return ResponseEntity.ok(stationsByProvince);
+        }
+        
+        // For other users, return stations they are assigned to in this province
+        List<Long> userStationIds = Arrays.stream(user.getStation().split(","))
+            .map(Long::parseLong)
+            .collect(Collectors.toList());
+        
+        List<Station> filteredStations = stationsByProvince.stream()
+            .filter(station -> userStationIds.contains(station.getStation_id()))
+            .collect(Collectors.toList());
+        
+        return ResponseEntity.ok(filteredStations);
     }
 }

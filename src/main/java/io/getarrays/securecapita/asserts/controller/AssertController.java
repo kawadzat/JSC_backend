@@ -201,5 +201,19 @@ public class AssertController {
     Page<AssertEntity> searchAsserts(@RequestBody AssetSearchCriteriaDTO criteria) {
         return assertService.searchAsserts(criteria);
     }
+
+    //change movable status of the asset
+    @PutMapping("/change-movable-status/{id}")
+    public ResponseEntity<?> changeMovableStatus(@PathVariable("id") Long assertEntityId,@RequestBody AssertEntity assertEntity) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.CREATE_ASSET.name()))) {
+            AssertEntity oldAssertEntity = assertService.getAssertEntityById(assertEntityId);
+            oldAssertEntity.setMovable(assertEntity.isMovable());
+            AssertEntity updatedAssertEntity = assertService.updateAssertEntity(oldAssertEntity);
+            return ResponseEntity.ok(new CustomMessage("Movable status changed successfully.",updatedAssertEntity));
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
+
+    }
 }
 

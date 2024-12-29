@@ -174,15 +174,16 @@ public class AssertService implements AssertServiceInterface {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name()))) {
             // Fetch the total fixed asserts and total current asserts
-            int totalFixedAsserts = assertsJpaRepository.countFixedAsserts();
-            int totalCurrentAsserts = assertsJpaRepository.countCurrentAsserts();
+            long totalFixedAsserts = assertsJpaRepository.countFixedAsserts();
+            long totalCurrentAsserts = assertsJpaRepository.countCurrentAsserts();
+            long totalMovableAsserts=assertsJpaRepository.countMovableAsserts();
 
             // Fetch asset statistics
             ArrayList<AssetItemStat> assetsStats = assertsJpaRepository.findAssertItemStatsByAssetDisc();
             userLogService.addLog(ActionType.VIEW, "checked stats of asserts.");
 
             // Return a new Stats object with the calculated totals and fetched asset statistics
-            return ResponseEntity.ok(AssetsStats.builder().totalAsserts(assertsJpaRepository.count()).totalFixedAsserts(totalFixedAsserts).totalCurrentAsserts(totalCurrentAsserts).assetsStats(assetsStats).build());
+            return ResponseEntity.ok(AssetsStats.builder().totalMovableAsserts(totalMovableAsserts).totalAsserts(assertsJpaRepository.count()).totalFixedAsserts(totalFixedAsserts).totalCurrentAsserts(totalCurrentAsserts).assetsStats(assetsStats).build());
         } else {
             if (user.isStationAssigned()) {
                 return ResponseEntity.ok(getStats(user.getId()));
@@ -212,15 +213,15 @@ public class AssertService implements AssertServiceInterface {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name()))) {
             // Fetch the total fixed asserts and total current asserts
-            int totalFixedAsserts = assertsJpaRepository.countFixedAsserts();
-            int totalCurrentAsserts = assertsJpaRepository.countCurrentAsserts();
-
+            long totalFixedAsserts = assertsJpaRepository.countFixedAsserts();
+            long totalCurrentAsserts = assertsJpaRepository.countCurrentAsserts();
+            long totalMovableAsserts=assertsJpaRepository.countMovableAsserts();
             // Fetch asset statistics
             ArrayList<AssetItemStat> assetsStats = assertsJpaRepository.findAssertItemStatsByAssetDisc();
             userLogService.addLog(ActionType.VIEW, "checked stats of asserts.");
 
             // Return a new Stats object with the calculated totals and fetched asset statistics
-            return ResponseEntity.ok(AssetsStats.builder().totalAsserts(assertsJpaRepository.count()).totalFixedAsserts(totalFixedAsserts).totalCurrentAsserts(totalCurrentAsserts).assetsStats(assetsStats).build());
+            return ResponseEntity.ok(AssetsStats.builder().totalMovableAsserts(totalMovableAsserts).totalAsserts(assertsJpaRepository.count()).totalFixedAsserts(totalFixedAsserts).totalCurrentAsserts(totalCurrentAsserts).assetsStats(assetsStats).build());
         } else {
             if (user.isStationAssigned()) {
                 return ResponseEntity.ok(getStats(user.getId()));
@@ -235,15 +236,16 @@ public class AssertService implements AssertServiceInterface {
             return getStatsForAllStations();
         } else {
             // Fetch the total fixed asserts and total current asserts
-            int totalFixedAsserts = assertsJpaRepository.countFixedAssertsForUser(userId);
-            int totalCurrentAsserts = assertsJpaRepository.countCurrentAssertsForUser(userId);
+            long totalFixedAsserts = assertsJpaRepository.countFixedAssertsForUser(userId);
+            long totalCurrentAsserts = assertsJpaRepository.countCurrentAssertsForUser(userId);
+            long totalMovableAsserts=assertsJpaRepository.countMovableAsserts();
 
             // Fetch asset statistics
             List<AssetItemStat> assetsStats = assertsJpaRepository.findAssertItemStatsByAssetDiscForUser(userId);
 //        userLogService.addLog(ActionType.VIEW, "checked stats of asserts.");
 
             // Return a new Stats object with the calculated totals and fetched asset statistics
-            return AssetsStats.builder().totalAsserts(assertsJpaRepository.countAssertsForUserStations(userId)).totalFixedAsserts(totalFixedAsserts).totalCurrentAsserts(totalCurrentAsserts).assetsStats(assetsStats).build();
+            return AssetsStats.builder().totalMovableAsserts(totalMovableAsserts).totalAsserts(assertsJpaRepository.countAssertsForUserStations(userId)).totalFixedAsserts(totalFixedAsserts).totalCurrentAsserts(totalCurrentAsserts).assetsStats(assetsStats).build();
         }
     }
 
@@ -260,12 +262,12 @@ public class AssertService implements AssertServiceInterface {
 
     public AssetsStats getStatsForAllStations() {
         // Fetch the total fixed asserts and total current asserts
-        int totalFixedAsserts = assertsJpaRepository.countFixedAsserts();
-        int totalCurrentAsserts = assertsJpaRepository.countCurrentAsserts();
-
+        long totalFixedAsserts = assertsJpaRepository.countFixedAsserts();
+        long totalCurrentAsserts = assertsJpaRepository.countCurrentAsserts();
+        long totalMovableAsserts=assertsJpaRepository.countMovableAsserts();
         // Fetch asset statistics
         List<AssetItemStat> assetsStats = assertsJpaRepository.findAssertItemStatsByAssetDisc();
-        return AssetsStats.builder().totalAsserts(assertsJpaRepository.count()).totalFixedAsserts(totalFixedAsserts).totalCurrentAsserts(totalCurrentAsserts).assetsStats(assetsStats).build();
+        return AssetsStats.builder().totalMovableAsserts(totalMovableAsserts).totalAsserts(assertsJpaRepository.count()).totalFixedAsserts(totalFixedAsserts).totalCurrentAsserts(totalCurrentAsserts).assetsStats(assetsStats).build();
     }
 
 //    public ResponseEntity<?> getAssertsForOwnStation(int page, int size) {
