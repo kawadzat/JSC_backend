@@ -27,7 +27,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-
+//assert/getall
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -37,6 +37,31 @@ public class AssertController {
     private final UserService userService;
     private final AssertService assertService;
     private JasperPdfService jasperPdfService;
+
+    @GetMapping("/allasserts")
+    public ResponseEntity<List<AssertEntity>> getAllAssertEntities() {
+        try {
+            List<AssertEntity> entities = assertService.getAllAssertEntities();
+            return ResponseEntity.ok(entities);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(null);
+        }
+    }
+//assert/movable
+    @GetMapping("/movable")
+    public ResponseEntity<List<AssertEntity>> getMovableAssets() {
+        List<AssertEntity> movableAssets = assertService.findAllMovableAssets();
+
+        if (movableAssets.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(movableAssets);
+    }
+
+
+
+
 
     @PostMapping("/create")
     public ResponseEntity<?> createAssert(@RequestBody @Validated AssertEntity newAssert) throws Exception {

@@ -58,6 +58,12 @@ public class SecurityConfig {
         http.authorizeHttpRequests().requestMatchers("/api/v1/MailingList/create/**","/api/v1/mailinglist/delete/**").hasAnyAuthority(ROLE_AUTH.CREATE_MAILLIST.name());
         http.authorizeHttpRequests().requestMatchers("/station/check/**").hasAnyAuthority(ROLE_AUTH.CHECK_ASSET.name());
         http.authorizeHttpRequests().requestMatchers("/assert/confirm/**").hasAnyAuthority(ROLE_AUTH.CONFIRM_ASSET.name());
+        http.authorizeHttpRequests().requestMatchers("/assert/movable/**");
+
+        http.authorizeHttpRequests().requestMatchers("/assert/allaserts/**");
+
+
+
 
         http.exceptionHandling().accessDeniedHandler(customAccessDeniedHandler).authenticationEntryPoint(customAuthenticationEntryPoint);
         http.authorizeHttpRequests().anyRequest().authenticated();

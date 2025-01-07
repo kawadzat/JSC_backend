@@ -19,6 +19,13 @@ import java.util.Optional;
 
 @Repository
 public interface AssertEntityRepository extends PagingAndSortingRepository<AssertEntity, Long>, JpaRepository<AssertEntity, Long>, ListCrudRepository<AssertEntity, Long>, JpaSpecificationExecutor<AssertEntity> {
+
+    @Query("SELECT a FROM AssertEntity a WHERE a.movable = true")
+    List<AssertEntity> findAllMovableAssets();
+
+
+
+
     @Query("SELECT COUNT(a) FROM AssertEntity a WHERE LOWER(a.initialRemarks) = 'bad'")
     int countBadAsserts();
 
@@ -150,4 +157,4 @@ public interface AssertEntityRepository extends PagingAndSortingRepository<Asser
 
 
 
-   }
+}

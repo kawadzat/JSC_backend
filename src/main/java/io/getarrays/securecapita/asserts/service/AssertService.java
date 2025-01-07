@@ -53,7 +53,9 @@ public class AssertService implements AssertServiceInterface {
     private final OfficeLocationRepository officeLocationRepository;
 
 
-
+    public List<AssertEntity> findAllMovableAssets() {
+        return assertRepository.findAllMovableAssets();
+    }
 
 
 
@@ -125,8 +127,15 @@ public class AssertService implements AssertServiceInterface {
         return null;
     }
 
+    public List<AssertEntity> getAllAssertEntities() {
+        return assertEntityRepository.findAll();}
 
-    public Page<AssertEntity> getAsserts(int page, int size) {
+
+
+
+
+
+        public Page<AssertEntity> getAsserts(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("lastModifiedDate").descending());
 
         return assertRepository.findAll(pageRequest);
@@ -136,6 +145,11 @@ public class AssertService implements AssertServiceInterface {
     public ResponseEntity<?> getAllAssertsByStation(Long userId, Long stationId, String query, PageRequest pageRequest) {
         return ResponseEntity.ok(assertRepository.getAllAssertsByStationPage(stationId, query, pageRequest));
     }
+
+
+
+
+
 
     @Override
     public ResponseEntity<?> getAllAssertsByUserStation(Long userId, Long stationId, String query, PageRequest pageRequest) {
