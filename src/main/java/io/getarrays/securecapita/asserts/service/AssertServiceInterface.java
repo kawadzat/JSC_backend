@@ -2,6 +2,7 @@ package io.getarrays.securecapita.asserts.service;
 
 import io.getarrays.securecapita.asserts.model.AssertEntity;
 import io.getarrays.securecapita.asserts.model.Inspection;
+import io.getarrays.securecapita.domain.User;
 import io.getarrays.securecapita.dto.AssetSearchCriteriaDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,4 +30,6 @@ public interface AssertServiceInterface {
     ResponseEntity<?> getStats();
 
     Page<AssertEntity> searchAsserts(AssetSearchCriteriaDTO criteria);
+
+    long countStationsAssignedToUser(User currentUser);
 }

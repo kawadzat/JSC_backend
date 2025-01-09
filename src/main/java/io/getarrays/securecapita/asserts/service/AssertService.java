@@ -53,7 +53,27 @@ public class AssertService implements AssertServiceInterface {
     private final OfficeLocationRepository officeLocationRepository;
 
 
-    public List<AssertEntity> findAllMovableAssets() {
+
+
+
+
+    public long countAssertsForUser(Long userId) {
+        User user = userRepository1.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        return assertRepository.countAsserts(user);}
+
+
+
+
+
+
+
+
+
+
+
+        public List<AssertEntity> findAllMovableAssets() {
         return assertRepository.findAllMovableAssets();
     }
 
@@ -223,6 +243,11 @@ public class AssertService implements AssertServiceInterface {
         );
     }
 
+    @Override
+    public long countStationsAssignedToUser(User currentUser) {
+        return assertRepository.countStationsAssignedToUser(currentUser);
+    }
+
     public ResponseEntity<?> getStats(User user) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name()))) {
@@ -366,12 +391,6 @@ public List<AssertEntity>getAssertEntityData(SpecificationInput specificationInp
  return    assertRepository.findAll(specification);
 
        }
-
-
-
-  
-
-
 
 
 

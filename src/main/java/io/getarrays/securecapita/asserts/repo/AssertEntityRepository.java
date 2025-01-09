@@ -2,6 +2,7 @@ package io.getarrays.securecapita.asserts.repo;
 
 import io.getarrays.securecapita.asserts.model.AssertEntity;
 import io.getarrays.securecapita.asserts.model.AssertResponseDto;
+import io.getarrays.securecapita.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -20,9 +21,18 @@ import java.util.Optional;
 @Repository
 public interface AssertEntityRepository extends PagingAndSortingRepository<AssertEntity, Long>, JpaRepository<AssertEntity, Long>, ListCrudRepository<AssertEntity, Long>, JpaSpecificationExecutor<AssertEntity> {
 
+    @Query("SELECT COUNT(DISTINCT ae.station) FROM AssertEntity ae WHERE ae.user = :currentUser")
+    long countStationsAssignedToUser(@Param("currentUser") User currentUser);
+
+
     @Query("SELECT a FROM AssertEntity a WHERE a.movable = true")
     List<AssertEntity> findAllMovableAssets();
 
+    @Query("SELECT COUNT(a) FROM AssertEntity a " +
+            "JOIN a.station s " +
+            "JOIN UserStation us ON us.station = s " +
+            "WHERE us.user = :user")
+    long countAsserts(@Param("user") User user);
 
 
 

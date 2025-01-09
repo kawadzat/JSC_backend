@@ -5,6 +5,7 @@ import io.getarrays.securecapita.asserts.model.Inspection;
 import io.getarrays.securecapita.asserts.model.SpecificationInput;
 import io.getarrays.securecapita.asserts.service.AssertService;
 import io.getarrays.securecapita.domain.HttpResponse;
+import io.getarrays.securecapita.domain.User;
 import io.getarrays.securecapita.dto.AssetSearchCriteriaDTO;
 import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.exception.CustomMessage;
@@ -37,6 +38,13 @@ public class AssertController {
     private final UserService userService;
     private final AssertService assertService;
     private JasperPdfService jasperPdfService;
+
+
+    @GetMapping("/userstations")
+    public ResponseEntity<Long> countStationsAssignedToUser(@AuthenticationPrincipal User currentUser) {
+        long stationCount = assertService.countStationsAssignedToUser(currentUser);
+        return ResponseEntity.ok(stationCount);
+    }
 
     @GetMapping("/allasserts")
     public ResponseEntity<List<AssertEntity>> getAllAssertEntities() {
