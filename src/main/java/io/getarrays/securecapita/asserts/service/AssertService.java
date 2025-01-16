@@ -36,6 +36,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -245,8 +246,77 @@ public class AssertService implements AssertServiceInterface {
 
     @Override
     public long countStationsAssignedToUser(User currentUser) {
-        return assertRepository.countStationsAssignedToUser(currentUser);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name()))) {
+            return stationRepository.getAllCount();
+        } else{
+            User user = userRepository1.findById(((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get();
+            return user.getStations().size();
+        }
     }
+
+//    @Override
+//    public List findAllAssertsOfStationsAssignedToUser(User currentUser) {
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.ALL_STATION.name()))) {
+//            return assertEntityRepository.findAll();
+//
+//    }
+
+//is this correct what needs to be corrected
+    @Override
+    public List<AssertEntity> findAllAssertsOfStationsAssignedToUser(User currentUser) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            // Check if the user has the ALL_STATION authority
+            boolean hasAllStationRole = authentication.getAuthorities().stream()
+                    .anyMatch(authority -> authority.getAuthority().equals(ROLE_AUTH.ALL_STATION));
+
+            if (hasAllStationRole) {
+                // Return all asserts if the user has the ALL_STATION role
+                return assertEntityRepository.findAll();
+            } else {
+                // If not ALL_STATION, return an empty list
+                return Collections.emptyList();
+            }
+        }
+
+        // If authentication fails, return an empty list
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List findAllMovableAssertsOfStationsAssignedToUser(User currentUser) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            // Check if the user has the ALL_STATION authority
+            boolean hasAllStationRole = authentication.getAuthorities().stream()
+                    .anyMatch(authority -> authority.getAuthority().equals(ROLE_AUTH.ALL_STATION));
+
+            if (hasAllStationRole) {
+                // Return all asserts if the user has the ALL_STATION role
+                return assertEntityRepository.findAll();
+            } else {
+                // If not ALL_STATION, return an empty list
+                return Collections.emptyList();
+            }
+        }
+
+        // If authentication fails, return an empty list
+        return Collections.emptyList();
+    }
+
+
+    public Page<AssertEntity> getAssertsOfStationsAssignedToUser(User currentUser, Pageable pageable) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        return assertsJpaRepository.findAllAssertsOfStationsAssignedToUser(pageable, currentUser);
+    }
+
 
     public ResponseEntity<?> getStats(User user) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

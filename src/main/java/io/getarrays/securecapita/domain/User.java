@@ -7,10 +7,7 @@ import io.getarrays.securecapita.stationsassignment.UserStation;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.Hibernate;
 
 import java.sql.Timestamp;
@@ -27,7 +24,8 @@ import java.util.Set;
  * @since 8/22/2022
  */
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -78,8 +76,14 @@ public class User {
     @Builder.Default
     @JsonIgnore
     private List<UserStation> stations = new ArrayList<>();
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "userId")
-    @Builder.Default
+
+//    @ManyToMany(fetch = FetchType.EAGER)
+//    @JoinTable(
+//            name = "users_roles",
+//            joinColumns = @JoinColumn(name = "user_id"),
+//            inverseJoinColumns = @JoinColumn(name = "role_id")
+//    )
+@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<UserRole> roles = new HashSet<>();
 
     public void addRole(UserRole role) {

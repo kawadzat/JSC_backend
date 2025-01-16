@@ -29,7 +29,7 @@ public class PurchaseRequestProduct {
     private int quantity;
 
     @ManyToOne
-    @JoinColumn(name = "purchaseRequest_id", nullable = false)
+    @JoinColumn(name = "purchase_request_id", nullable = false)
     private PurchaseRequest purchaseRequest;
 
 }

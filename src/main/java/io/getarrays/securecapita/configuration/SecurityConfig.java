@@ -50,7 +50,7 @@ public class SecurityConfig {
         http.sessionManagement().sessionCreationPolicy(STATELESS);
         http.authorizeHttpRequests().requestMatchers(PUBLIC_URLS).permitAll();
         http.authorizeHttpRequests().requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll();
-        http.authorizeHttpRequests().requestMatchers("/api/v1/admin/roles/**").hasAnyAuthority(ROLE_AUTH.ASSIGN_ROLE.name());
+        http.authorizeHttpRequests().requestMatchers("/user/register/**","/api/v1/admin/roles/**").hasAnyAuthority(ROLE_AUTH.ASSIGN_ROLE.name());
 
         http.authorizeHttpRequests().requestMatchers("/user/delete/**","/user/users/**","/user/list/**","/user/update/**","/user/assignStationToUser/**","/api/v1/user/station/**").hasAnyAuthority(ROLE_AUTH.UPDATE_USER.name());
 //        http.authorizeHttpRequests().requestMatchers(DELETE, "/purchaseRequisition/delete/**").hasAnyAuthority("DELETE:purchaseRequisition");

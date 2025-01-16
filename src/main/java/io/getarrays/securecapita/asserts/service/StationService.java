@@ -156,7 +156,7 @@ public class StationService {
                     stationItemStat.setAssetsStats(assertService.getStatsByStation(stationItemStat.getStationId()));
                 });
                 return ResponseEntity.ok(StationStats.builder()
-                        .totalStations(stationRepository.count())
+                        .totalStations(user.getStations().size())
                         .stationItemStats(stationItemStats)
                         .build());
             }

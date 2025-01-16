@@ -30,7 +30,7 @@ public class RolesPreRunner implements CommandLineRunner {
         ArrayList<User> noRoleUsers = userRepository1.findUsersWithNoRoles();
         Optional<Role> role = roles.stream().filter(r -> r.getName().equals(AUTH_ROLE.USER.name())).findFirst();
         for (User user : noRoleUsers) {
-            UserRole userRole = UserRole.builder().userId(user.getId()).active(true).role(role.orElseGet(() -> roles.get(0))).createdDate(new Timestamp(System.currentTimeMillis())).build();
+            UserRole userRole = UserRole.builder().user(user).active(true).role(role.orElseGet(() -> roles.get(0))).createdDate(new Timestamp(System.currentTimeMillis())).build();
             user.addRole(userRoleRepository.save(userRole));
         }
         userRepository1.saveAll(noRoleUsers);

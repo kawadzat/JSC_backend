@@ -32,4 +32,8 @@ public interface AssertServiceInterface {
     Page<AssertEntity> searchAsserts(AssetSearchCriteriaDTO criteria);
 
     long countStationsAssignedToUser(User currentUser);
+
+    List  findAllAssertsOfStationsAssignedToUser(User currentUser);
+    List  findAllMovableAssertsOfStationsAssignedToUser(User currentUser);
+
 }

@@ -25,6 +25,8 @@ public interface StationRepository extends JpaRepository<Station, Long> {
     @Query("SELECT s FROM Station s JOIN s.users u WHERE u.id = :userId")
     List<Station> findAllStation(Long userId);
 
+    @Query("SELECT COUNT(DISTINCT station_id) FROM Station")
+    long getAllCount();
 
     @Transactional
     @Modifying

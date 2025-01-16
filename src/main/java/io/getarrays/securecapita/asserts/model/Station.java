@@ -42,7 +42,13 @@ public class Station {
     @Builder.Default
     @JsonIgnore
     private Set<OfficeLocation> locations = new HashSet<>();
+
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "station_users",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "station_id")
+    )
     @JsonIgnore
     private Set<User> users = new HashSet<>();
 

@@ -3,6 +3,7 @@ package io.getarrays.securecapita.service.implementation;
 import io.getarrays.securecapita.domain.HttpResponse;
 import io.getarrays.securecapita.domain.Role;
 import io.getarrays.securecapita.domain.User;
+import io.getarrays.securecapita.domain.UserRegisterDto;
 import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.exception.CustomMessage;
 import io.getarrays.securecapita.form.UpdateForm;
@@ -65,23 +66,28 @@ public class UserServiceImpl implements UserService {
 //    }
 
     @Override
-    public ResponseEntity<?> createUser(User user) {
+    public ResponseEntity<?> createUser(UserRegisterDto userDto) {
         // Check if the user already exists by username
-        Optional<User> existingUser = userRepository1.findByEmail(user.getEmail());
+        Optional<User> existingUser = userRepository1.findByEmail(userDto.getEmail());
         if (existingUser.isPresent()) {
-            return ResponseEntity.status(422).body(new CustomMessage("A user with the email '" + user.getEmail() + "' already exists."));
+            return ResponseEntity.status(422).body(new CustomMessage("A user with the email '" + userDto.getEmail() + "' already exists."));
         }
 
         List<Role> roles = roleRepository1.findAll();
         Optional<Role> role = roles.stream().filter(r -> r.getName().equals("USER")).findFirst();
         UserRole userRole = UserRole.builder().active(true).role(role.orElseGet(() -> roles.get(0))).createdDate(new Timestamp(System.currentTimeMillis())).build();
+        User user=new User();
+        user.setEmail(userDto.getEmail());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setPassword(userDto.getPassword());
         user.setNotLocked(true);
         user.setUsingMfa(false);
         user.setEnabled(true);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setCreatedAt(LocalDateTime.now());
         User savedUser = userRepository1.save(user);
-        userRole.setUserId(savedUser.getId());
+        userRole.setUser(savedUser);
         savedUser.addRole(userRoleRepository.save(userRole));
         return ResponseEntity.ok(
                 HttpResponse.builder()
@@ -150,7 +156,7 @@ public class UserServiceImpl implements UserService {
         user.expireAllRoles();
         userRoleRepository.deleteAll(user.getRoles());
         user.removeAllRole();
-        UserRole userRole = UserRole.builder().userId(userId).active(true).createdDate(new Timestamp(System.currentTimeMillis())).role(roleOptional.get()).build();
+        UserRole userRole = UserRole.builder().user(user).active(true).createdDate(new Timestamp(System.currentTimeMillis())).role(roleOptional.get()).build();
         user.addRole(userRoleRepository.save(userRole));
         userRepository1.save(user);
         return ResponseEntity.ok(new CustomMessage("Role updated for User: " + user.getFirstName()));

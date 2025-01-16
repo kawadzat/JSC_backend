@@ -29,7 +29,7 @@ import static jakarta.persistence.FetchType.EAGER;
 @Entity
 @NoArgsConstructor
 @NamedEntityGraph(name = "assert-entity-graph")
-@Table(name = "assert")
+@Table(name = "`assert`")
 public class AssertEntity extends Auditable<String> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -44,7 +44,7 @@ public class AssertEntity extends Auditable<String> {
     private String assetNumber;
 
     @NotNull
-    @Column(columnDefinition = "default true")
+    @Column(columnDefinition = "TINYINT(1) DEFAULT 1")
     private boolean movable;
 
     @NotNull

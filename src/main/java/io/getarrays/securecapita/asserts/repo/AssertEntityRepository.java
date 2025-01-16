@@ -20,8 +20,9 @@ import java.util.Optional;
 
 @Repository
 public interface AssertEntityRepository extends PagingAndSortingRepository<AssertEntity, Long>, JpaRepository<AssertEntity, Long>, ListCrudRepository<AssertEntity, Long>, JpaSpecificationExecutor<AssertEntity> {
+//here
 
-    @Query("SELECT COUNT(DISTINCT ae.station) FROM AssertEntity ae WHERE ae.user = :currentUser")
+    @Query("SELECT COUNT(DISTINCT ae.station) FROM AssertEntity ae JOIN ae.station st WHERE :currentUser MEMBER OF st.users")
     long countStationsAssignedToUser(@Param("currentUser") User currentUser);
 
 
@@ -164,7 +165,6 @@ public interface AssertEntityRepository extends PagingAndSortingRepository<Asser
             @Param("assetType") String assetType,
             Pageable pageable
     );
-
 
 
 }

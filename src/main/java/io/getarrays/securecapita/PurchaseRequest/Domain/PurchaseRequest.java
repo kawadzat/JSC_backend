@@ -42,7 +42,7 @@ public class PurchaseRequest extends Auditable<String> {
     @Nonnull
     private String status;
 
-    @OneToMany(mappedBy = "purchaseRequest")
+    @OneToMany(mappedBy = "purchaseRequest", cascade = CascadeType.ALL)
     private List<PurchaseRequestProduct> purchaseRequestProducts;
 
     @ManyToOne

@@ -4,6 +4,7 @@ import io.getarrays.securecapita.asserts.model.Station;
 import io.getarrays.securecapita.domain.HttpResponse;
 import io.getarrays.securecapita.domain.Role;
 import io.getarrays.securecapita.domain.User;
+import io.getarrays.securecapita.domain.UserRegisterDto;
 import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.form.UpdateForm;
 import io.getarrays.securecapita.resource.ResetPasswordDto;
@@ -20,7 +21,7 @@ import java.util.Collection;
  */
 public interface UserService {
 
-    ResponseEntity<?> createUser(User user);
+    ResponseEntity<?> createUser(UserRegisterDto user);
 
 
 //    int getNumberOfpgaes(int pageSize);

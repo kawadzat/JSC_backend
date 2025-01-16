@@ -2,8 +2,11 @@ package io.getarrays.securecapita.asserts.repo;
 
 import io.getarrays.securecapita.asserts.master.MasterAssertsDTO;
 import io.getarrays.securecapita.asserts.model.AssertEntity;
+import io.getarrays.securecapita.domain.User;
 import io.getarrays.securecapita.dto.AssetItemStat;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,6 +19,17 @@ import java.util.Optional;
 
 @Repository
 public interface AssertsJpaRepository extends JpaRepository<AssertEntity, Long> {
+//find want to get all asserts of stations assigned to logged in user
+//this end point
+    @Query("SELECT ae FROM AssertEntity ae JOIN ae.station st WHERE :currentUser MEMBER OF st.users ORDER BY ae.id")
+    Page<AssertEntity> findAllAssertsOfStationsAssignedToUser(Pageable pageable, @Param("currentUser") User currentUser);
+//
+//    @Query("SELECT ae FROM AssertEntity ae WHERE ae.user = :currentUser ORDER BY ae.id")
+//    Page<AssertEntity> findAllMovableAssertsOfStationsAssignedToUser(Pageable pageable, @Param("currentUser") User currentUser);
+//
+//    @Query("SELECT ae FROM AssertEntity ae WHERE ae.user = :currentUser ORDER BY ae.id")
+//    Page<AssertEntity> findAllIMovableAssertsOfStationsAssignedToUser(Pageable pageable, @Param("currentUser") User currentUser);
+
     @Query("SELECT COUNT(a) FROM AssertEntity a WHERE LOWER(a.assertType) = 'fixed'")
     long countFixedAsserts();
 
@@ -38,11 +52,6 @@ public interface AssertsJpaRepository extends JpaRepository<AssertEntity, Long> 
 //bad asserts
     @Query("SELECT COUNT(a) FROM AssertEntity a WHERE LOWER(a.initialRemarks) = 'bad'")
     long countBadAsserts();
-
-
-
-
-
 
 
 

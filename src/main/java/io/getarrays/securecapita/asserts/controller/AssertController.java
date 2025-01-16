@@ -23,6 +23,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -39,7 +41,62 @@ public class AssertController {
     private final AssertService assertService;
     private JasperPdfService jasperPdfService;
 
+    private static final Logger logger = LoggerFactory.getLogger(AssertController.class);
 
+
+//    @GetMapping("/UserAssertsAll")
+//    public ResponseEntity<List<AssertEntity>> getAllAssertsOfStationsAssignedToUser() {
+//        try {
+//            List<AssertEntity> asserts = assertService.findAllAssertsOfStationsAssignedToUser();
+//
+//            if (!asserts.isEmpty()) {
+//                return ResponseEntity.ok(asserts);
+//            } else {
+//                return ResponseEntity.noContent().build();
+//            }
+//        } catch (Exception e) {
+//            logger.error("Error fetching asserts", e);
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        }
+//    }
+
+
+    @GetMapping("/UserAssertsAll")
+    public ResponseEntity<List<AssertEntity>> getAllAssertsOfStationsAssignedToUser(@RequestParam(required = false) User currentUser) {
+        try {
+            List<AssertEntity> asserts;
+
+            if (currentUser != null) {
+                asserts = assertService.findAllAssertsOfStationsAssignedToUser(currentUser);
+            } else {
+                // If no user is provided, get all asserts
+                asserts = assertService.findAllAssertsOfStationsAssignedToUser(currentUser);
+            }
+
+            if (!asserts.isEmpty()) {
+                logger.info("Found {} asserts", asserts.size());
+                return ResponseEntity.ok(asserts);
+            } else {
+                logger.debug("No asserts found");
+                return ResponseEntity.noContent().build();
+            }
+        } catch (Exception e) {
+            logger.error("Error fetching asserts", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+//is this  correct counting number of stations assigned to logged in user
     @GetMapping("/userstations")
     public ResponseEntity<Long> countStationsAssignedToUser(@AuthenticationPrincipal User currentUser) {
         long stationCount = assertService.countStationsAssignedToUser(currentUser);
@@ -59,10 +116,6 @@ public class AssertController {
     @GetMapping("/movable")
     public ResponseEntity<List<AssertEntity>> getMovableAssets() {
         List<AssertEntity> movableAssets = assertService.findAllMovableAssets();
-
-        if (movableAssets.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
 
         return ResponseEntity.ok(movableAssets);
     }

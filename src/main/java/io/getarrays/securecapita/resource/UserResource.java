@@ -3,6 +3,7 @@ package io.getarrays.securecapita.resource;
 import io.getarrays.securecapita.domain.HttpResponse;
 import io.getarrays.securecapita.domain.User;
 import io.getarrays.securecapita.domain.UserPrincipal;
+import io.getarrays.securecapita.domain.UserRegisterDto;
 import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.event.NewUserEvent;
 import io.getarrays.securecapita.exception.ApiException;
@@ -122,8 +123,8 @@ public class UserResource {
 //        return ResponseEntity.ok(numberOfPages);
 //    }
     @PostMapping("/register")
-    public ResponseEntity<?> saveUser(@RequestBody @Valid User user) {
-        return userService.createUser(user);
+    public ResponseEntity<?> saveUser(@RequestBody @Valid UserRegisterDto userDto) {
+        return userService.createUser(userDto);
     }
 
 

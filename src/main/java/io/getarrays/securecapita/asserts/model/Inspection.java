@@ -40,7 +40,7 @@ public class Inspection extends Auditable<String> {
 
 
     @ManyToOne
-    @JoinColumn(name = "assert_id")
+    @JoinColumn(name = "assert_id", nullable = false)
     @JsonBackReference
     private AssertEntity assertEntity;
 

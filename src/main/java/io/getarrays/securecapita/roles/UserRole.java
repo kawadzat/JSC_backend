@@ -1,5 +1,6 @@
 package io.getarrays.securecapita.roles;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.getarrays.securecapita.domain.Role;
 import io.getarrays.securecapita.domain.User;
@@ -23,10 +24,14 @@ public class UserRole {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(name = "user_id")
-    private Long userId;
 
     @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "role_id")
     private Role role;
 
