@@ -1,5 +1,6 @@
 package io.getarrays.securecapita.asserts.repo;
 
+import io.getarrays.securecapita.asserts.dto.StationAssertsDto;
 import io.getarrays.securecapita.asserts.model.AssertEntity;
 import io.getarrays.securecapita.asserts.model.AssertResponseDto;
 import io.getarrays.securecapita.domain.User;
@@ -165,6 +166,15 @@ public interface AssertEntityRepository extends PagingAndSortingRepository<Asser
             @Param("assetType") String assetType,
             Pageable pageable
     );
+
+    @Query("SELECT DISTINCT a FROM AssertEntity a " +
+            "JOIN a.station s " +
+            "JOIN UserStation us ON us.station = s " +
+            "WHERE us.user.id = :userId " +
+            "AND (:movable IS NULL OR " +
+            "(a.movable = :movable OR (:movable = false AND a.movable IS NULL)))")
+    List<AssertEntity> findUserAsserts(@Param("userId") Long userId, @Param("movable") Boolean movable);
+
 
 
 }

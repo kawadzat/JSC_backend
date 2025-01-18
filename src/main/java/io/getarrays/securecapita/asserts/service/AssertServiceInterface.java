@@ -4,6 +4,7 @@ import io.getarrays.securecapita.asserts.model.AssertEntity;
 import io.getarrays.securecapita.asserts.model.Inspection;
 import io.getarrays.securecapita.domain.User;
 import io.getarrays.securecapita.dto.AssetSearchCriteriaDTO;
+import io.getarrays.securecapita.dto.UserDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public interface AssertServiceInterface {
 
     long countStationsAssignedToUser(User currentUser);
 
-    List  findAllAssertsOfStationsAssignedToUser(User currentUser);
     List  findAllMovableAssertsOfStationsAssignedToUser(User currentUser);
+    List  getAllAssertsOfUserGroupedByStation(UserDTO currentUser, Boolean moveable);
 
 }

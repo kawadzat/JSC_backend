@@ -20,12 +20,17 @@ public class UserStation {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
     @ManyToOne
     private User assignedBy;
+
     @ManyToOne
+    @JoinColumn(name = "station_id")
     private Station station;
+
     private Timestamp createdDate;
 }
