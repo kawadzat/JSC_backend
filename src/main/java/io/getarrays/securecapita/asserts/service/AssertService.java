@@ -465,7 +465,12 @@ public List<AssertEntity>getAssertEntityData(SpecificationInput specificationInp
 
        }
 
+    @Override
+    public List<AssertEntity> findAllAssertsOfCurrentUser(UserDTO currentUser, Boolean movable) {
+        // Fetch the user's asserts
+        return assertEntityRepository.findUserAsserts(currentUser.getId(), movable);
 
+    }
 
 
 
