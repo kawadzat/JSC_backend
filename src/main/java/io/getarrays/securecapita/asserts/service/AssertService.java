@@ -267,27 +267,8 @@ public class AssertService implements AssertServiceInterface {
 //is this correct what needs to be corrected
 @Override
 public List<StationAssertsDto> getAllAssertsOfUserGroupedByStation(UserDTO currentUser, Boolean movable) {
-    // Fetch the user's asserts
     final List<AssertEntity> assertEntities = assertEntityRepository.findUserAsserts(currentUser.getId(), movable);
-
-    if (assertEntities == null || assertEntities.isEmpty()) {
-        // Return an empty list if no asserts are found
-        return Collections.emptyList();
-    }
-
-    // Group asserts by station ID, filtering out entities with null Station
-    final Map<Long, List<AssertEntity>> groupedByStation = assertEntities.stream()
-            .filter(entity -> entity.getStation() != null) // Exclude entities without a Station
-            .collect(Collectors.groupingBy(entity -> entity.getStation().getStation_id()));
-
-    return groupedByStation.entrySet().stream()
-            .map(entry -> {
-                final Long stationId = entry.getKey();
-                final List<AssertEntity> asserts = entry.getValue();
-                final String stationName = asserts.get(0).getStation().getStationName();
-                 return new StationAssertsDto(stationId, stationName, asserts.size(), asserts);
-            })
-            .collect(Collectors.toList());
+    return groupByAssertsByStation(assertEntities);
 }
 
 
@@ -472,6 +453,30 @@ public List<AssertEntity>getAssertEntityData(SpecificationInput specificationInp
 
     }
 
+    @Override
+    public List<StationAssertsDto> getAllAssertsGroupedByStation(Boolean movable) {
+        final List<AssertEntity> assertEntities = assertEntityRepository.findByMoveable(movable);
+        return groupByAssertsByStation(assertEntities);
+    }
 
+    private List<StationAssertsDto> groupByAssertsByStation(List<AssertEntity> assertEntities){
+        if (assertEntities == null || assertEntities.isEmpty()) {
+            // Return an empty list if no asserts are found
+            return Collections.emptyList();
+        }
+        // Group asserts by station ID, filtering out entities with null Station
+        final Map<Long, List<AssertEntity>> groupedByStation = assertEntities.stream()
+                .filter(entity -> entity.getStation() != null) // Exclude entities without a Station
+                .collect(Collectors.groupingBy(entity -> entity.getStation().getStation_id()));
+
+        return groupedByStation.entrySet().stream()
+                .map(entry -> {
+                    final Long stationId = entry.getKey();
+                    final List<AssertEntity> asserts = entry.getValue();
+                    final String stationName = asserts.get(0).getStation().getStationName();
+                    return new StationAssertsDto(stationId, stationName, asserts.size(), asserts);
+                })
+                .collect(Collectors.toList());
+    }
 
 }

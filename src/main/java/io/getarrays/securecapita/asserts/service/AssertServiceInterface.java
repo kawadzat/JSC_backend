@@ -37,5 +37,6 @@ public interface AssertServiceInterface {
     List  findAllMovableAssertsOfStationsAssignedToUser(User currentUser);
     List  getAllAssertsOfUserGroupedByStation(UserDTO currentUser, Boolean moveable);
     List  findAllAssertsOfCurrentUser(UserDTO currentUser, Boolean moveable);
+    List  getAllAssertsGroupedByStation(Boolean moveable);
 
 }

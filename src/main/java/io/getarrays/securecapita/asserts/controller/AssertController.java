@@ -311,5 +311,22 @@ public class AssertController {
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
     }
+
+    @GetMapping("/AllGroupedByStation")
+    public ResponseEntity<Object> getAllAssertsGroupedByStation(@RequestParam(name = "movable", required = false) Boolean movable) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.READ_USER.name()))) {
+            try {
+                List<StationAssertsDto> asserts = assertService.getAllAssertsGroupedByStation(movable);
+
+                return ResponseEntity.ok(asserts);
+
+            } catch (Exception e) {
+                logger.error("Error fetching asserts", e);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
+    }
 }
 
