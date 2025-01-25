@@ -1,5 +1,6 @@
 package io.getarrays.securecapita.asserts.service;
 
+import io.getarrays.securecapita.asserts.dto.StationAssertsDto;
 import io.getarrays.securecapita.asserts.model.AssertEntity;
 import io.getarrays.securecapita.asserts.model.Inspection;
 import io.getarrays.securecapita.asserts.model.SpecificationInput;
@@ -35,10 +36,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -266,27 +265,12 @@ public class AssertService implements AssertServiceInterface {
 //    }
 
 //is this correct what needs to be corrected
-    @Override
-    public List<AssertEntity> findAllAssertsOfStationsAssignedToUser(User currentUser) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+@Override
+public List<StationAssertsDto> getAllAssertsOfUserGroupedByStation(UserDTO currentUser, Boolean movable) {
+    final List<AssertEntity> assertEntities = assertEntityRepository.findUserAsserts(currentUser.getId(), movable);
+    return groupByAssertsByStation(assertEntities);
+}
 
-        if (authentication != null && authentication.isAuthenticated()) {
-            // Check if the user has the ALL_STATION authority
-            boolean hasAllStationRole = authentication.getAuthorities().stream()
-                    .anyMatch(authority -> authority.getAuthority().equals(ROLE_AUTH.ALL_STATION));
-
-            if (hasAllStationRole) {
-                // Return all asserts if the user has the ALL_STATION role
-                return assertEntityRepository.findAll();
-            } else {
-                // If not ALL_STATION, return an empty list
-                return Collections.emptyList();
-            }
-        }
-
-        // If authentication fails, return an empty list
-        return Collections.emptyList();
-    }
 
     @Override
     public List findAllMovableAssertsOfStationsAssignedToUser(User currentUser) {
@@ -462,8 +446,37 @@ public List<AssertEntity>getAssertEntityData(SpecificationInput specificationInp
 
        }
 
+    @Override
+    public List<AssertEntity> findAllAssertsOfCurrentUser(UserDTO currentUser, Boolean movable) {
+        // Fetch the user's asserts
+        return assertEntityRepository.findUserAsserts(currentUser.getId(), movable);
 
+    }
 
+    @Override
+    public List<StationAssertsDto> getAllAssertsGroupedByStation(Boolean movable) {
+        final List<AssertEntity> assertEntities = assertEntityRepository.findByMoveable(movable);
+        return groupByAssertsByStation(assertEntities);
+    }
 
+    private List<StationAssertsDto> groupByAssertsByStation(List<AssertEntity> assertEntities){
+        if (assertEntities == null || assertEntities.isEmpty()) {
+            // Return an empty list if no asserts are found
+            return Collections.emptyList();
+        }
+        // Group asserts by station ID, filtering out entities with null Station
+        final Map<Long, List<AssertEntity>> groupedByStation = assertEntities.stream()
+                .filter(entity -> entity.getStation() != null) // Exclude entities without a Station
+                .collect(Collectors.groupingBy(entity -> entity.getStation().getStation_id()));
+
+        return groupedByStation.entrySet().stream()
+                .map(entry -> {
+                    final Long stationId = entry.getKey();
+                    final List<AssertEntity> asserts = entry.getValue();
+                    final String stationName = asserts.get(0).getStation().getStationName();
+                    return new StationAssertsDto(stationId, stationName, asserts.size(), asserts);
+                })
+                .collect(Collectors.toList());
+    }
 
 }

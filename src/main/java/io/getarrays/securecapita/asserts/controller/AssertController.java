@@ -1,5 +1,6 @@
 package io.getarrays.securecapita.asserts.controller;
 
+import io.getarrays.securecapita.asserts.dto.StationAssertsDto;
 import io.getarrays.securecapita.asserts.model.AssertEntity;
 import io.getarrays.securecapita.asserts.model.Inspection;
 import io.getarrays.securecapita.asserts.model.SpecificationInput;
@@ -61,29 +62,21 @@ public class AssertController {
 //    }
 
 
-    @GetMapping("/UserAssertsAll")
-    public ResponseEntity<List<AssertEntity>> getAllAssertsOfStationsAssignedToUser(@RequestParam(required = false) User currentUser) {
-        try {
-            List<AssertEntity> asserts;
+    @GetMapping("/UserAssertsAllGroupedByStation")
+    public ResponseEntity<Object> getAllAssertsOfUserGroupedByStation(@AuthenticationPrincipal UserDTO currentUser, @RequestParam(name = "movable", required = false) Boolean movable) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.READ_USER.name()))) {
+            try {
+                List<StationAssertsDto> asserts = assertService.getAllAssertsOfUserGroupedByStation(currentUser, movable);
 
-            if (currentUser != null) {
-                asserts = assertService.findAllAssertsOfStationsAssignedToUser(currentUser);
-            } else {
-                // If no user is provided, get all asserts
-                asserts = assertService.findAllAssertsOfStationsAssignedToUser(currentUser);
-            }
-
-            if (!asserts.isEmpty()) {
-                logger.info("Found {} asserts", asserts.size());
                 return ResponseEntity.ok(asserts);
-            } else {
-                logger.debug("No asserts found");
-                return ResponseEntity.noContent().build();
+
+            } catch (Exception e) {
+                logger.error("Error fetching asserts", e);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             }
-        } catch (Exception e) {
-            logger.error("Error fetching asserts", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
     }
 
 
@@ -300,6 +293,40 @@ public class AssertController {
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
 
+    }
+
+    @GetMapping("/UserAssertsAll")
+    public ResponseEntity<Object> getAllAssertsOfStationsAssignedToUser(@AuthenticationPrincipal UserDTO currentUser, @RequestParam(name = "movable", required = false) Boolean movable) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.READ_USER.name()))) {
+            try {
+                List<AssertEntity> asserts = assertService.findAllAssertsOfCurrentUser(currentUser, movable);
+
+                return ResponseEntity.ok(asserts);
+
+            } catch (Exception e) {
+                logger.error("Error fetching asserts", e);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
+    }
+
+    @GetMapping("/AllGroupedByStation")
+    public ResponseEntity<Object> getAllAssertsGroupedByStation(@RequestParam(name = "movable", required = false) Boolean movable) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.READ_USER.name()))) {
+            try {
+                List<StationAssertsDto> asserts = assertService.getAllAssertsGroupedByStation(movable);
+
+                return ResponseEntity.ok(asserts);
+
+            } catch (Exception e) {
+                logger.error("Error fetching asserts", e);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
     }
 }
 
