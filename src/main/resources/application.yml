@@ -9,20 +9,20 @@ spring:
 #  profiles:
 #    active: dev
   datasource:
-    url: jdbc:mysql://localhost:3307/securecapita
+    url: jdbc:mysql://localhost:3306/securecapita
     password:
     username: root
     initialization-mode: never
   jpa:
-    database-platform: org.hibernate.dialect.MySQLDialect
-    generate-ddl: false
+    database-platform: org.hibernate.dialect.MySQL8DBDialect
+    generate-ddl: true
     show-sql: false
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
         globally_quoted_indentifiers: true
-        dialect: org.hibernate.dialect.MySQLDialect
+        dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
     spring:
       servlet:
