@@ -25,6 +25,8 @@ public interface AssertEntityRepository extends PagingAndSortingRepository<Asser
     @Query("SELECT COUNT(DISTINCT ae.station) FROM AssertEntity ae JOIN ae.station st WHERE :currentUser MEMBER OF st.users")
     long countStationsAssignedToUser(@Param("currentUser") User currentUser);
 
+    //countStationsAssignedToUser lets take out the all asserts and group them according to station
+//
 
     @Query("SELECT a FROM AssertEntity a WHERE a.movable = true")
     List<AssertEntity> findAllMovableAssets();
