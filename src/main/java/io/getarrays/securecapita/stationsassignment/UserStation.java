@@ -29,7 +29,6 @@ public class UserStation {
     private User assignedBy;
 
     @ManyToOne
-    @JoinColumn(name = "station_id")
     private Station station;
 
     private Timestamp createdDate;
