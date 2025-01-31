@@ -1,5 +1,6 @@
 package io.getarrays.securecapita.asserts.controller;
 
+import io.getarrays.securecapita.asserts.dto.AssertsResponseDto;
 import io.getarrays.securecapita.asserts.dto.StationAssertsDto;
 import io.getarrays.securecapita.asserts.model.AssertEntity;
 import io.getarrays.securecapita.asserts.model.Inspection;
@@ -68,7 +69,7 @@ public class AssertController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.READ_USER.name()))) {
             try {
-                List<StationAssertsDto> asserts = assertService.getAllAssertsOfUserGroupedByStation(currentUser, movable);
+                AssertsResponseDto asserts = assertService.getAllAssertsOfUserGroupedByStation(currentUser, movable);
 
                 return ResponseEntity.ok(asserts);
 
@@ -318,7 +319,7 @@ public class AssertController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.READ_USER.name()))) {
             try {
-                List<StationAssertsDto> asserts = assertService.getAllAssertsGroupedByStation(movable);
+                AssertsResponseDto asserts = assertService.getAllAssertsGroupedByStation(movable);
 
                 return ResponseEntity.ok(asserts);
 

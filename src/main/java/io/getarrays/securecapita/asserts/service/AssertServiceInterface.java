@@ -1,5 +1,6 @@
 package io.getarrays.securecapita.asserts.service;
 
+import io.getarrays.securecapita.asserts.dto.AssertsResponseDto;
 import io.getarrays.securecapita.asserts.model.AssertEntity;
 import io.getarrays.securecapita.asserts.model.Inspection;
 import io.getarrays.securecapita.domain.User;
@@ -36,8 +37,8 @@ public interface AssertServiceInterface {
     long countStationsAssignedToUser(User currentUser);
 
     List  findAllMovableAssertsOfStationsAssignedToUser(User currentUser);
-    List  getAllAssertsOfUserGroupedByStation(UserDTO currentUser, Boolean moveable);
+    AssertsResponseDto  getAllAssertsOfUserGroupedByStation(UserDTO currentUser, Boolean moveable);
     List  findAllAssertsOfCurrentUser(UserDTO currentUser, Boolean moveable);
-    List  getAllAssertsGroupedByStation(Boolean moveable);
+    AssertsResponseDto getAllAssertsGroupedByStation(Boolean moveable);
     List<AssetItemStat> getUserAssertStats(UserDTO currentUser);
 }
