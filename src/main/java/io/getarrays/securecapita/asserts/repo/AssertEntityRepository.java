@@ -180,5 +180,13 @@ public interface AssertEntityRepository extends PagingAndSortingRepository<Asser
             "(a.movable = :movable OR (:movable = false AND a.movable IS NULL)))")
     List<AssertEntity> findByMoveable(@Param("movable") Boolean movable);
 
+    @Query("SELECT COUNT(DISTINCT a) FROM AssertEntity a " +
+            "JOIN a.station s " +
+            "JOIN UserStation us ON us.station = s " +
+            "WHERE us.user.id = :userId " +
+            "AND (:movable IS NULL OR " +
+            "(a.movable = :movable OR (:movable = false AND a.movable IS NULL)))")
+    Long countUserAsserts(@Param("userId") Long userId, @Param("movable") Boolean movable);
+
 
 }

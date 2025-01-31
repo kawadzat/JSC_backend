@@ -7,6 +7,7 @@ import io.getarrays.securecapita.asserts.model.SpecificationInput;
 import io.getarrays.securecapita.asserts.service.AssertService;
 import io.getarrays.securecapita.domain.HttpResponse;
 import io.getarrays.securecapita.domain.User;
+import io.getarrays.securecapita.dto.AssetItemStat;
 import io.getarrays.securecapita.dto.AssetSearchCriteriaDTO;
 import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.exception.CustomMessage;
@@ -320,6 +321,23 @@ public class AssertController {
                 List<StationAssertsDto> asserts = assertService.getAllAssertsGroupedByStation(movable);
 
                 return ResponseEntity.ok(asserts);
+
+            } catch (Exception e) {
+                logger.error("Error fetching asserts", e);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
+    }
+
+    @GetMapping("/UserAssertStats")
+    public ResponseEntity<Object> getUserAssertStats(@AuthenticationPrincipal UserDTO currentUser) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.READ_USER.name()))) {
+            try {
+                List<AssetItemStat> stats = assertService.getUserAssertStats(currentUser);
+
+                return ResponseEntity.ok(stats);
 
             } catch (Exception e) {
                 logger.error("Error fetching asserts", e);

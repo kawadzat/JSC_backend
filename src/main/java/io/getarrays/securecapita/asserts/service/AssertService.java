@@ -10,10 +10,7 @@ import io.getarrays.securecapita.asserts.repo.AssertsJpaRepository;
 import io.getarrays.securecapita.asserts.repo.InspectionRepository;
 import io.getarrays.securecapita.asserts.repo.StationRepository;
 import io.getarrays.securecapita.domain.User;
-import io.getarrays.securecapita.dto.AssetItemStat;
-import io.getarrays.securecapita.dto.AssetSearchCriteriaDTO;
-import io.getarrays.securecapita.dto.AssetsStats;
-import io.getarrays.securecapita.dto.UserDTO;
+import io.getarrays.securecapita.dto.*;
 import io.getarrays.securecapita.exception.CustomMessage;
 import io.getarrays.securecapita.jasper.downloadtoken.DownloadToken;
 import io.getarrays.securecapita.jasper.downloadtoken.DownloadTokenRepository;
@@ -477,6 +474,15 @@ public List<AssertEntity>getAssertEntityData(SpecificationInput specificationInp
                     return new StationAssertsDto(stationId, stationName, asserts.size(), asserts);
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AssetItemStat> getUserAssertStats(UserDTO currentUser) {
+        List<AssetItemStat> stats = new ArrayList<>();
+        stats.add(new AssetItemStat("total", assertEntityRepository.countUserAsserts(currentUser.getId(), null)));
+        stats.add(new AssetItemStat("movable", assertEntityRepository.countUserAsserts(currentUser.getId(), true)));
+        stats.add(new AssetItemStat("immovable", assertEntityRepository.countUserAsserts(currentUser.getId(), false)));
+        return stats;
     }
 
 }
