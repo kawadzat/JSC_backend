@@ -11,6 +11,7 @@ import io.getarrays.securecapita.dto.StationItemStat;
 import io.getarrays.securecapita.dto.StationStats;
 import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.exception.CustomMessage;
+import io.getarrays.securecapita.exception.ResourceNotFoundException;
 import io.getarrays.securecapita.repository.implementation.UserRepository1;
 import io.getarrays.securecapita.roles.prerunner.ROLE_AUTH;
 import lombok.RequiredArgsConstructor;
@@ -226,5 +227,9 @@ public class StationService {
             .collect(Collectors.toList());
         
         return ResponseEntity.ok(filteredStations);
+    }
+
+    public Station findStationByIdOrThrow(Long id) {
+        return stationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Station not found with id " + id));
     }
 }

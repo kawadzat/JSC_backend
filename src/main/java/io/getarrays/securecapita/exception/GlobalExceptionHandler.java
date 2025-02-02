@@ -173,6 +173,32 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errors);
     }
 
+    @ExceptionHandler({ResourceNotFoundException.class})
+    public ResponseEntity<Object> handleTypeMismatchException(ResourceNotFoundException ex) {
+        HashMap<String, String> errors = new HashMap<>();
+        ex.printStackTrace();
+        errors.put("message", ex.getMessage());
+        errors.put("error", ex.getLocalizedMessage());
+        return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler({NotAuthorizedException.class})
+    public ResponseEntity<Object> handleNotAuthorizedException(NotAuthorizedException ex) {
+        HashMap<String, String> errors = new HashMap<>();
+        ex.printStackTrace();
+        errors.put("message", ex.getMessage());
+        errors.put("error", ex.getLocalizedMessage());
+        return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler({BadRequestException.class})
+    public ResponseEntity<Object> handleBadRequestException(BadRequestException ex) {
+        HashMap<String, String> errors = new HashMap<>();
+        ex.printStackTrace();
+        errors.put("message", ex.getMessage());
+        errors.put("error", ex.getLocalizedMessage());
+        return ResponseEntity.badRequest().body(errors);
+    }
     //jasper error;
 //    @ExceptionHandler({net.sf.jasperreports.engine.JRException.class})
 //    public ResponseEntity<Object> handleJRException(net.sf.jasperreports.engine.JRException ex) {

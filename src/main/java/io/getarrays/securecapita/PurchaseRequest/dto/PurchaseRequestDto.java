@@ -1,16 +1,35 @@
 package io.getarrays.securecapita.PurchaseRequest.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class PurchaseRequestDto {
+    private Long id;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date date;
-    private String purchaseRequestNumber;
-    private String receiverEmail;
-    private int departmentCode;
+
+    private Long stationId;
+
     private String reason;
+
+    private List<PurchaseRequestItemDto> requestItems;
+
+    private String status;
+
+    private List<PurchaseRequestApprovalDto> approvals;
+
+    private String signature;
 }
 
 //can you tell me user flow?
