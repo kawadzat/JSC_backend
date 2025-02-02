@@ -1,10 +1,9 @@
-package io.getarrays.securecapita.PurchaseRequest.Controller;
+package io.getarrays.securecapita.PurchaseRequest.controller;
 
-import io.getarrays.securecapita.PurchaseRequest.Domain.PurchaseRequest;
-import io.getarrays.securecapita.PurchaseRequest.Service.PurchaseRequestService;
+import io.getarrays.securecapita.PurchaseRequest.service.PurchaseRequestService;
 
-import io.getarrays.securecapita.PurchaseRequest.Service.PurchaseRequestServiceReport;
-import io.getarrays.securecapita.asserts.model.AssertEntity;
+import io.getarrays.securecapita.PurchaseRequest.service.PurchaseRequestServiceReport;
+import io.getarrays.securecapita.PurchaseRequest.entity.PurchaseRequestEntity;
 import io.getarrays.securecapita.exception.CustomMessage;
 import io.getarrays.securecapita.roles.prerunner.ROLE_AUTH;
 import lombok.RequiredArgsConstructor;
@@ -75,7 +74,7 @@ public class PurchaseRequestController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<?> createPurchaseRequest (@RequestBody @Validated PurchaseRequest newPurchaseRequest ) throws Exception {
+    public ResponseEntity<?> createPurchaseRequest (@RequestBody @Validated PurchaseRequestEntity newPurchaseRequest ) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.CREATE_PURCHASEREQUEST.name()))) {
             return  purchaseRequestService.createPurchaseRequest(newPurchaseRequest);
@@ -104,8 +103,8 @@ public class PurchaseRequestController {
 
 
     @GetMapping("/getAll")
-    public List<PurchaseRequest> getAllPurchaseRequests() {
-        List<PurchaseRequest> listOfAllPurchaseRequests = purchaseRequestService.getAllPurchaseRequests();
+    public List<PurchaseRequestEntity> getAllPurchaseRequests() {
+        List<PurchaseRequestEntity> listOfAllPurchaseRequests = purchaseRequestService.getAllPurchaseRequests();
         return listOfAllPurchaseRequests;
     }
 
@@ -147,13 +146,13 @@ public class PurchaseRequestController {
 
     @RequestMapping("get")
     @ResponseBody
-    public Optional<PurchaseRequest> findById(long id)
+    public Optional<PurchaseRequestEntity> findById(long id)
     {
         return purchaseRequestService.findById(id);
     }
 
     @GetMapping("/get/{purchaseRequestId}")
-    public PurchaseRequest getPurchaseRequestById(@PathVariable Long purchaseRequestId) {
+    public PurchaseRequestEntity getPurchaseRequestById(@PathVariable Long purchaseRequestId) {
         return purchaseRequestService.getPurchaseRequestById(purchaseRequestId);
     }
 

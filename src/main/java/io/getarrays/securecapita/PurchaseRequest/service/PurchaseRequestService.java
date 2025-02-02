@@ -1,19 +1,13 @@
-package io.getarrays.securecapita.PurchaseRequest.Service;
+package io.getarrays.securecapita.PurchaseRequest.service;
 
-import io.getarrays.securecapita.PurchaseRequest.Domain.PurchaseRequest;
-import io.getarrays.securecapita.PurchaseRequest.Domain.PurchaseRequestProduct;
-import io.getarrays.securecapita.PurchaseRequest.Repository.PurchaseRequestProductRepo;
-import io.getarrays.securecapita.PurchaseRequest.Repository.PurchaseRequestRepo;
-import io.getarrays.securecapita.asserts.model.AssertEntity;
-import io.getarrays.securecapita.asserts.model.Inspection;
-import io.getarrays.securecapita.asserts.model.Station;
+import io.getarrays.securecapita.PurchaseRequest.entity.PurchaseRequestItemEntity;
+import io.getarrays.securecapita.PurchaseRequest.repository.PurchaseRequestProductRepo;
+import io.getarrays.securecapita.PurchaseRequest.repository.PurchaseRequestRepo;
+import io.getarrays.securecapita.PurchaseRequest.entity.PurchaseRequestEntity;
 import io.getarrays.securecapita.asserts.repo.AssertsJpaRepository;
 import io.getarrays.securecapita.asserts.repo.StationRepository;
 import io.getarrays.securecapita.exception.CustomMessage;
-import io.getarrays.securecapita.userlogs.ActionType;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -30,16 +24,16 @@ public class PurchaseRequestService implements PurchaseRequestInterface {
     private final PurchaseRequestRepo purchaseRequestRepo;
 
 
-    public PurchaseRequest getPurchaseRequestById(Long purchaseRequestId) {
+    public PurchaseRequestEntity getPurchaseRequestById(Long purchaseRequestId) {
 
 
-        Optional<PurchaseRequest> optionalpurchaseRequest = purchaseRequestRepo.findById(purchaseRequestId);
+        Optional<PurchaseRequestEntity> optionalpurchaseRequest = purchaseRequestRepo.findById(purchaseRequestId);
 
         boolean isPresent = optionalpurchaseRequest.isPresent();
 
         if (isPresent) {
 
-            PurchaseRequest purchaseRequest = optionalpurchaseRequest.get();
+            PurchaseRequestEntity purchaseRequest = optionalpurchaseRequest.get();
             return purchaseRequest;
         }
 
@@ -56,8 +50,8 @@ public class PurchaseRequestService implements PurchaseRequestInterface {
 //}
 
 
-    public List<PurchaseRequest> getAllPurchaseRequests() {
-        List<PurchaseRequest> allPurchaseRequests = purchaseRequestRepo.findAll();
+    public List<PurchaseRequestEntity> getAllPurchaseRequests() {
+        List<PurchaseRequestEntity> allPurchaseRequests = purchaseRequestRepo.findAll();
         return allPurchaseRequests;
     }
     /* get specific user based on Id */
@@ -70,13 +64,13 @@ public class PurchaseRequestService implements PurchaseRequestInterface {
     }
 
     @Override
-    public void addProductsToPurchaseRequest(Long id, PurchaseRequestProduct purchaseRequestProduct) {
+    public void addProductsToPurchaseRequest(Long id, PurchaseRequestItemEntity purchaseRequestProduct) {
 
 
-        Optional<PurchaseRequest> purchaseRequestOptional = purchaseRequestRepo.findById(id);
+        Optional<PurchaseRequestEntity> purchaseRequestOptional = purchaseRequestRepo.findById(id);
 
         if (purchaseRequestOptional.isPresent()) {
-            PurchaseRequest purchaseRequest = purchaseRequestOptional.get();
+            PurchaseRequestEntity purchaseRequest = purchaseRequestOptional.get();
             purchaseRequestProduct.setPurchaseRequest(purchaseRequest);
             purchaseRequestProductRepo.save(purchaseRequestProduct);
         }
@@ -106,18 +100,18 @@ public class PurchaseRequestService implements PurchaseRequestInterface {
 
 
     @Override
-    public void addPurchaseRequestProducttoPurchaseRequest(Long id, PurchaseRequestProduct purchaseRequestProduct) {
+    public void addPurchaseRequestProducttoPurchaseRequest(Long id, PurchaseRequestItemEntity purchaseRequestProduct) {
 
 
     }
 
-    public Optional<PurchaseRequest> findById(Long id) {
+    public Optional<PurchaseRequestEntity> findById(Long id) {
         return purchaseRequestRepo.findById(id);
     }
 
-    public ResponseEntity<?> createPurchaseRequest(PurchaseRequest newPurchaseRequest) {
+    public ResponseEntity<?> createPurchaseRequest(PurchaseRequestEntity newPurchaseRequest) {
 
-        PurchaseRequest createdPurchaseRequest = purchaseRequestRepo.save(newPurchaseRequest);
+        PurchaseRequestEntity createdPurchaseRequest = purchaseRequestRepo.save(newPurchaseRequest);
 
         return ResponseEntity.ok(new CustomMessage("Purchase Request added."));
     }

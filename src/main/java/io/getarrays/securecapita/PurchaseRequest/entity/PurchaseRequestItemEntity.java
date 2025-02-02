@@ -1,8 +1,7 @@
-package io.getarrays.securecapita.PurchaseRequest.Domain;
+package io.getarrays.securecapita.PurchaseRequest.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.getarrays.securecapita.asserts.model.AssertEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,7 +15,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
 @JsonInclude(NON_DEFAULT)
 @Entity
 
-public class PurchaseRequestProduct {
+public class PurchaseRequestItemEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,6 +29,6 @@ public class PurchaseRequestProduct {
 
     @ManyToOne
     @JoinColumn(name = "purchase_request_id", nullable = false)
-    private PurchaseRequest purchaseRequest;
+    private PurchaseRequestEntity purchaseRequest;
 
 }

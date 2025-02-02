@@ -1,10 +1,9 @@
-package io.getarrays.securecapita.PurchaseRequest.Domain;
+package io.getarrays.securecapita.PurchaseRequest.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.getarrays.securecapita.asserts.model.Inspection;
 import io.getarrays.securecapita.asserts.model.Station;
 import io.getarrays.securecapita.itauditing.Auditable;
 import jakarta.annotation.Nonnull;
@@ -25,7 +24,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
 @Builder
 @Entity
 @NoArgsConstructor
-public class PurchaseRequest extends Auditable<String> {
+public class PurchaseRequestEntity extends Auditable<String> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -43,7 +42,7 @@ public class PurchaseRequest extends Auditable<String> {
     private String status;
 
     @OneToMany(mappedBy = "purchaseRequest", cascade = CascadeType.ALL)
-    private List<PurchaseRequestProduct> purchaseRequestProducts;
+    private List<PurchaseRequestItemEntity> purchaseRequestProducts;
 
     @ManyToOne
     @JsonIgnore

@@ -1,8 +1,8 @@
-package io.getarrays.securecapita.PurchaseRequest.Controller;
+package io.getarrays.securecapita.PurchaseRequest.controller;
 
 
-import io.getarrays.securecapita.PurchaseRequest.Domain.PurchaseRequestProduct;
-import io.getarrays.securecapita.PurchaseRequest.Service.PurchaseRequestProductService;
+import io.getarrays.securecapita.PurchaseRequest.entity.PurchaseRequestItemEntity;
+import io.getarrays.securecapita.PurchaseRequest.service.PurchaseRequestProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,10 +20,10 @@ public class PurchaseRequestProductController {
     PurchaseRequestProductService purchaseRequestProductService;
 
     @PostMapping("/create")
-    public PurchaseRequestProduct createPurchaseRequestProduct(@RequestBody PurchaseRequestProduct purchaseRequestProduct) {
+    public PurchaseRequestItemEntity createPurchaseRequestProduct(@RequestBody PurchaseRequestItemEntity purchaseRequestProduct) {
         System.out.println("Incoming purchase request of product from the client is: " + purchaseRequestProduct);
 
-        PurchaseRequestProduct createdPurchaseRequestProduct = purchaseRequestProductService.createPurchaseRequestProduct(purchaseRequestProduct);
+        PurchaseRequestItemEntity createdPurchaseRequestProduct = purchaseRequestProductService.createPurchaseRequestProduct(purchaseRequestProduct);
 
         System.out.println("Created purchase request product is: " + createdPurchaseRequestProduct);
 
@@ -34,8 +34,8 @@ public class PurchaseRequestProductController {
 
 
  @GetMapping("/getAll")
-    public List<PurchaseRequestProduct> getAllPurchaseRequestProducts() {
-        List<PurchaseRequestProduct> listOfAllPurchaseRequestProducts = purchaseRequestProductService.getAllPurchaseRequestsProducts();
+    public List<PurchaseRequestItemEntity> getAllPurchaseRequestProducts() {
+        List<PurchaseRequestItemEntity> listOfAllPurchaseRequestProducts = purchaseRequestProductService.getAllPurchaseRequestsProducts();
         return  listOfAllPurchaseRequestProducts  ;
     }
 

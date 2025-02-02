@@ -1,4 +1,4 @@
-package io.getarrays.securecapita.PurchaseRequest;
+package io.getarrays.securecapita.PurchaseRequest.enums;
 
 public enum PurchaseRequestEnum {
 
