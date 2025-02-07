@@ -65,4 +65,10 @@ public class UserStationService {
         List<UserStation> userStationList = userStationRepo.findAllByUser(userId);
         return ResponseEntity.ok(UserStationDto.fromEntities(userStationList));
     }
+
+    public UserStationCountDto getUserStationsCount() {
+        Long userId = ((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        Long count = userStationRepo.countByUser(userId);
+        return new UserStationCountDto(count);
+    }
 }

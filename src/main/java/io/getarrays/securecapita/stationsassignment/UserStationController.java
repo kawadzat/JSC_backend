@@ -20,6 +20,11 @@ public class UserStationController {
         return userStationService.getUserStations(userId);
     }
 
+    @GetMapping("/getCount")
+    public ResponseEntity<?> getUserStationsCount(){
+        return ResponseEntity.ok(userStationService.getUserStationsCount());
+    }
+
     @PostMapping("/add")
     public ResponseEntity<?> addStationToUser(@RequestParam(name = "userId") Long userId,@RequestParam(name = "stationId")Long stationId){
         return userStationService.addStationToUser(userId,stationId);

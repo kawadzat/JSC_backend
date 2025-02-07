@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ public class UserStationDto {
 
     public static UserStationDto fromEntity(UserStation userStation) {
         return UserStationDto.builder()
-                .assignedBy(userStation.getAssignedBy().getFirstName())
+                .assignedBy(ObjectUtils.isEmpty(userStation.getAssignedBy())?null:userStation.getAssignedBy().getFirstName())
                 .id(userStation.getId())
                 .station(userStation.getStation().getStationName())
                 .createdDate(userStation.getCreatedDate())
