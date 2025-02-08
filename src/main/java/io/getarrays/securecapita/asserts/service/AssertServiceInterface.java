@@ -37,8 +37,8 @@ public interface AssertServiceInterface {
     long countStationsAssignedToUser(User currentUser);
 
     List  findAllMovableAssertsOfStationsAssignedToUser(User currentUser);
-    AssertsResponseDto  getAllAssertsOfUserGroupedByStation(UserDTO currentUser, Boolean moveable);
-    List  findAllAssertsOfCurrentUser(UserDTO currentUser, Boolean moveable);
-    AssertsResponseDto getAllAssertsGroupedByStation(Boolean moveable);
+    AssertsResponseDto  getAllAssertsOfUserGroupedByStation(UserDTO currentUser, Boolean moveable, Long stationId);
+    List  findAllAssertsOfCurrentUser(UserDTO currentUser, Boolean moveable, Long stationId);
+    AssertsResponseDto getAllAssertsGroupedByStation(Boolean moveable, Long stationId);
     List<AssetItemStat> getUserAssertStats(UserDTO currentUser);
 }

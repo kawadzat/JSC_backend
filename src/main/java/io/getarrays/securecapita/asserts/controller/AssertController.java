@@ -65,11 +65,11 @@ public class AssertController {
 
 
     @GetMapping("/UserAssertsAllGroupedByStation")
-    public ResponseEntity<Object> getAllAssertsOfUserGroupedByStation(@AuthenticationPrincipal UserDTO currentUser, @RequestParam(name = "movable", required = false) Boolean movable) {
+    public ResponseEntity<Object> getAllAssertsOfUserGroupedByStation(@AuthenticationPrincipal UserDTO currentUser, @RequestParam(name = "movable", required = false) Boolean movable,  @RequestParam(name = "stationId", required = false) Long stationId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.READ_USER.name()))) {
             try {
-                AssertsResponseDto asserts = assertService.getAllAssertsOfUserGroupedByStation(currentUser, movable);
+                AssertsResponseDto asserts = assertService.getAllAssertsOfUserGroupedByStation(currentUser, movable, stationId);
 
                 return ResponseEntity.ok(asserts);
 
@@ -298,11 +298,11 @@ public class AssertController {
     }
 
     @GetMapping("/UserAssertsAll")
-    public ResponseEntity<Object> getAllAssertsOfStationsAssignedToUser(@AuthenticationPrincipal UserDTO currentUser, @RequestParam(name = "movable", required = false) Boolean movable) {
+    public ResponseEntity<Object> getAllAssertsOfStationsAssignedToUser(@AuthenticationPrincipal UserDTO currentUser, @RequestParam(name = "movable", required = false) Boolean movable,  @RequestParam(name = "stationId", required = false) Long stationId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.READ_USER.name()))) {
             try {
-                List<AssertEntity> asserts = assertService.findAllAssertsOfCurrentUser(currentUser, movable);
+                List<AssertEntity> asserts = assertService.findAllAssertsOfCurrentUser(currentUser, movable, stationId);
 
                 return ResponseEntity.ok(asserts);
 
@@ -315,11 +315,11 @@ public class AssertController {
     }
 
     @GetMapping("/AllGroupedByStation")
-    public ResponseEntity<Object> getAllAssertsGroupedByStation(@RequestParam(name = "movable", required = false) Boolean movable) {
+    public ResponseEntity<Object> getAllAssertsGroupedByStation(@RequestParam(name = "movable", required = false) Boolean movable, @RequestParam(name = "stationId", required = false) Long stationId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.READ_USER.name()))) {
             try {
-                AssertsResponseDto asserts = assertService.getAllAssertsGroupedByStation(movable);
+                AssertsResponseDto asserts = assertService.getAllAssertsGroupedByStation(movable, stationId);
 
                 return ResponseEntity.ok(asserts);
 

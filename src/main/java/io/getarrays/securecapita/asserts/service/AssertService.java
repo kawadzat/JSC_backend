@@ -264,8 +264,8 @@ public class AssertService implements AssertServiceInterface {
 
 //is this correct what needs to be corrected
 @Override
-public AssertsResponseDto getAllAssertsOfUserGroupedByStation(UserDTO currentUser, Boolean movable) {
-    final List<AssertEntity> assertEntities = assertEntityRepository.findUserAsserts(currentUser.getId(), movable);
+public AssertsResponseDto getAllAssertsOfUserGroupedByStation(UserDTO currentUser, Boolean movable, Long stationId) {
+    final List<AssertEntity> assertEntities = assertEntityRepository.findUserAsserts(currentUser.getId(), movable, stationId);
     return groupByAssertsByStation(assertEntities);
 }
 
@@ -445,15 +445,15 @@ public List<AssertEntity>getAssertEntityData(SpecificationInput specificationInp
        }
 
     @Override
-    public List<AssertEntity> findAllAssertsOfCurrentUser(UserDTO currentUser, Boolean movable) {
+    public List<AssertEntity> findAllAssertsOfCurrentUser(UserDTO currentUser, Boolean movable, Long stationId) {
         // Fetch the user's asserts
-        return assertEntityRepository.findUserAsserts(currentUser.getId(), movable);
+        return assertEntityRepository.findUserAsserts(currentUser.getId(), movable, stationId);
 
     }
 
     @Override
-    public AssertsResponseDto getAllAssertsGroupedByStation(Boolean movable) {
-        final List<AssertEntity> assertEntities = assertEntityRepository.findByMoveable(movable);
+    public AssertsResponseDto getAllAssertsGroupedByStation(Boolean movable, Long stationId) {
+        final List<AssertEntity> assertEntities = assertEntityRepository.findByMoveable(movable, stationId);
         return groupByAssertsByStation(assertEntities);
     }
 
