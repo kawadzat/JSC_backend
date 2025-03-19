@@ -2,6 +2,7 @@ package io.getarrays.securecapita.task;
 
 import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.exception.CustomMessage;
+import io.getarrays.securecapita.roles.prerunner.AUTH_ROLE;
 import io.getarrays.securecapita.roles.prerunner.ROLE_AUTH;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+
 @RestController
 @RequestMapping(path = "/task")
 @RequiredArgsConstructor
@@ -27,7 +30,7 @@ public class TaskController {
     public ResponseEntity<CustomMessage> createTask(@AuthenticationPrincipal UserDTO currentUser,
                                                     @RequestBody @Valid TaskDto taskDto) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.READ_USER.name()))) {
+        if (authentication.getAuthorities().stream().anyMatch((r) -> Arrays.asList(AUTH_ROLE.SECRETARY.name(),AUTH_ROLE.HEADADMIN.name(),AUTH_ROLE.HEAD_IT.name()).contains(ROLE_AUTH.READ_USER.name()))) {
             return ResponseEntity.ok(new CustomMessage("Task Created Successfully",
                     taskService.createTask(currentUser, taskDto)));
 
