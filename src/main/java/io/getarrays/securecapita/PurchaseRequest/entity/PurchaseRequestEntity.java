@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.getarrays.securecapita.PurchaseRequest.enums.PurchaseRequestStatusEnum;
 import io.getarrays.securecapita.asserts.model.Station;
+import io.getarrays.securecapita.department.model.DepartmentEntity;
 import io.getarrays.securecapita.itauditing.Auditable;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
@@ -31,12 +32,14 @@ public class PurchaseRequestEntity extends Auditable<String> {
     @JsonProperty
     private Long id;
 
+    private String code;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date date;
 
     @ManyToOne
-    @JoinColumn(name = "station_id")
-    private Station station;
+    @JoinColumn(name = "department_id")
+    private DepartmentEntity department;
 
     private String reason;
 

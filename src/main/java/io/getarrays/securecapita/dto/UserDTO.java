@@ -1,13 +1,10 @@
 package io.getarrays.securecapita.dto;
 
-import io.getarrays.securecapita.ProjectManagement.Issue;
+import io.getarrays.securecapita.department.dto.DepartmentDto;
 import io.getarrays.securecapita.domain.User;
 import lombok.*;
 
-import java.sql.Array;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Junior RT
@@ -23,24 +20,40 @@ import java.util.Optional;
 @NoArgsConstructor
 public class UserDTO {
     private Long id;
+
     private String firstName;
+
     private String lastName;
+
     private String email;
+
     private String address;
+
     private String phone;
+
     private String title;
+
     private String bio;
+
     private String imageUrl;
+
     private boolean enabled;
+
     private boolean isNotLocked;
+
     private boolean isUsingMfa;
+
     private LocalDateTime createdAt;
+
     private String roleName;
 
-
     private String permissions;
+
     private String station;
+
     private boolean isAssigned;
+
+    private DepartmentDto departmentDto;
 
     public static UserDTO toDto(User user) {
         return UserDTO.builder()
@@ -58,6 +71,7 @@ public class UserDTO {
                 .createdAt(user.getCreatedAt())
                 .roleName(user.getRoles().stream().findAny().get().getRole().getName())
                 .permissions(user.getRoles().stream().findAny().get().getRole().getPermission())
+                .departmentDto(DepartmentDto.toDto(user.getDepartment()))
 //                .station(user.getStation() == null ? null : user.getStation().getStationName())
 //                .isAssigned(user.getStation()!=null)
                 .build();

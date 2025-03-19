@@ -28,13 +28,14 @@ import org.springframework.stereotype.Service;
 public class EmailServiceImpl implements EmailService {
     private final JavaMailSender mailSender;
 
+    private static final String fromEmail = "zimjsc2020@gmail.com";
     @Override
     public void sendVerificationEmail(String firstName, String email, String key, String verificationUrl, VerificationType verificationType) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true); // true to set content type to HTML
 
-            helper.setFrom("zimjsc2020@gmail.com");
+            helper.setFrom(fromEmail);
             helper.setTo(email);
 
             String emailContent = getEmailMessage(firstName, verificationUrl, key, verificationType);
@@ -44,6 +45,26 @@ public class EmailServiceImpl implements EmailService {
 
             mailSender.send(message);
             log.info("Email sent to {}", firstName);
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+        }
+    }
+
+    @Override
+    public void sendEmail(String email, String subject, String content) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true); // true to set content type to HTML
+
+            helper.setFrom(fromEmail);
+            helper.setTo(email);
+
+            helper.setText(content, true); // true to interpret the email content as HTML
+
+            helper.setSubject(subject);
+
+            mailSender.send(message);
+            log.info("Email sent to {}", email);
         } catch (Exception exception) {
             log.error(exception.getMessage());
         }

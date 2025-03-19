@@ -38,6 +38,18 @@ public interface AssertEntityRepository extends PagingAndSortingRepository<Asser
 
 
 
+    @Query("SELECT a FROM AssertEntity a WHERE a.movable = true")
+    List<AssertEntity> findAllIMovableAssets();
+
+    @Query("SELECT COUNT(a) FROM AssertEntity a " +
+            "JOIN a.station s " +
+            "JOIN UserStation us ON us.station = s " +
+            "WHERE us.user = :user")
+    long ccountAsserts(@Param("user") User user);
+
+
+
+
     @Query("SELECT COUNT(a) FROM AssertEntity a WHERE LOWER(a.initialRemarks) = 'bad'")
     int countBadAsserts();
 

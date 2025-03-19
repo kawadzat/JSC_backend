@@ -7,6 +7,7 @@ public enum AUTH_ROLE {
     ADMIN,
     PRINCIPAL_ADMIN,
     HEAD_ADMIN,
+    HEAD_IT,
     SYSADMIN,
     AUDITOR,
     ASSISTANT_ADMIN,

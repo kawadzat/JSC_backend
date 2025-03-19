@@ -1,5 +1,6 @@
 package io.getarrays.securecapita.asserts.controller;
 
+import io.getarrays.securecapita.asserts.dto.AssertDto;
 import io.getarrays.securecapita.asserts.dto.AssertsResponseDto;
 import io.getarrays.securecapita.asserts.dto.StationAssertsDto;
 import io.getarrays.securecapita.asserts.model.AssertEntity;
@@ -120,7 +121,7 @@ public class AssertController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<?> createAssert(@RequestBody @Validated AssertEntity newAssert) throws Exception {
+    public ResponseEntity<?> createAssert(@RequestBody @Validated AssertDto newAssert) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.CREATE_ASSET.name()))) {
             return assertService.createAssert(newAssert);

@@ -21,4 +21,30 @@ public interface UserRepository1   extends JpaRepository<User,Long> {
     @Query("SELECT u FROM User u WHERE u.verificationToken = :token AND u.verificationTokenExpiry > CURRENT_TIMESTAMP()")
     Optional<User> findByPasswordVerificationToken(String token);
 
+    @Query("SELECT u FROM User u " +
+            "JOIN u.roles ur " +
+            "JOIN ur.role r " +
+            "JOIN u.stations us " +
+            "WHERE us.station.station_id = :stationId " +
+            "AND r.name IN :roleNames")
+    List<User> findByStationIdAndRoleNameIn(Long stationId, List<String> roleNames);
+
+    @Query("SELECT u FROM User u " +
+            "JOIN u.roles ur " +
+            "JOIN ur.role r " +
+            "JOIN u.stations us " +
+            "WHERE u.department.id = :departmentId " +
+            "AND us.station.station_id IN :stationIds " +
+            "AND r.name IN :roleNames")
+    List<User> findByDepartmentIdAndStationIdInAndRoleNameIn(Long departmentId, List<Long> stationIds, List<String> roleNames);
+
+
+    @Query("SELECT u FROM User u " +
+            "JOIN u.roles ur " +
+            "JOIN ur.role r " +
+            "JOIN u.stations us " +
+            "WHERE u.department.id = :departmentId " +
+            "AND us.station.station_id IN :stationIds ")
+    List<User> findByDepartmentIdAndStationIdIn(Long departmentId, List<Long> stationIds);
+
 }

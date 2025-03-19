@@ -2,6 +2,7 @@ package io.getarrays.securecapita.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.getarrays.securecapita.ProjectManagement.Issue;
+import io.getarrays.securecapita.department.model.DepartmentEntity;
 import io.getarrays.securecapita.roles.UserRole;
 import io.getarrays.securecapita.stationsassignment.UserStation;
 import jakarta.persistence.*;
@@ -68,9 +69,10 @@ public class User {
     private Timestamp verificationTokenExpiry;
     @JsonIgnore
     private String verificationToken;
-//    @ManyToOne
-//    @JoinColumn(name = "station_id")
-//    private Station station;
+
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    private DepartmentEntity department;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
