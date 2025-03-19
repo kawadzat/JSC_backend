@@ -1,5 +1,6 @@
 package io.getarrays.securecapita.asserts.service;
 
+import io.getarrays.securecapita.asserts.dto.AssertDto;
 import io.getarrays.securecapita.asserts.dto.AssertsResponseDto;
 import io.getarrays.securecapita.asserts.dto.StationAssertsDto;
 import io.getarrays.securecapita.asserts.model.AssertEntity;
@@ -64,6 +65,11 @@ public class AssertService implements AssertServiceInterface {
 
 
 
+    public long ccountAssertsForUser(Long userId) {
+        User user = userRepository1.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        return assertRepository.ccountAsserts(user);}
 
 
 
@@ -71,7 +77,12 @@ public class AssertService implements AssertServiceInterface {
 
 
 
-        public List<AssertEntity> findAllMovableAssets() {
+
+
+
+
+
+    public List<AssertEntity> findAllMovableAssets() {
         return assertRepository.findAllMovableAssets();
     }
 
@@ -89,22 +100,33 @@ public class AssertService implements AssertServiceInterface {
 
 
     /* to create user */
-    public ResponseEntity<?> createAssert(AssertEntity newAssert) throws Exception {
+    public ResponseEntity<?> createAssert(AssertDto assertDto) throws Exception {
         //check duplicate
-        Optional<AssertEntity> duplicatedAssert = assertsJpaRepository.findByAssetAndStation(newAssert.getAssetNumber(), newAssert.getSelectedStationID());
+        Optional<AssertEntity> duplicatedAssert = assertsJpaRepository.findByAssetAndStation(assertDto.getAssetNumber(), assertDto.getSelectedStationID());
         if (duplicatedAssert.isPresent()) {
             return ResponseEntity.status(422).body(new CustomMessage("Found Duplicate Entry. Please check again."));
         }
-        Optional<Station> optionalStation = stationRepository.findById(newAssert.getSelectedStationID());
+        Optional<Station> optionalStation = stationRepository.findById(assertDto.getSelectedStationID());
         if (optionalStation.isEmpty()) {
             throw new Exception("Station not found");
         }
-        Optional<OfficeLocation> optionalOfficeLocation = officeLocationRepository.findByStationAndName(optionalStation.get().getStation_id(), newAssert.getLocation());
-        if (optionalStation.isEmpty()) {
+        Optional<OfficeLocation> optionalOfficeLocation = officeLocationRepository.findByStationAndName(optionalStation.get().getStation_id(), assertDto.getLocation());
+        if (optionalOfficeLocation.isEmpty()) {
             throw new Exception("Office Location not found");
         }
+        AssertEntity newAssert = new AssertEntity();
         newAssert.setOfficeLocation(optionalOfficeLocation.get());
         newAssert.setStation(optionalStation.get());
+        newAssert.setDate(assertDto.getDate());
+        newAssert.setAssetDisc(assertDto.getAssetDisc());
+        newAssert.setMovable(assertDto.getMovable());
+        newAssert.setLocation(assertDto.getLocation());
+        newAssert.setAssetNumber(assertDto.getAssetNumber());
+        newAssert.setAssertType(assertDto.getAssertType());
+        newAssert.setInitialRemarks(assertDto.getInitialRemarks());
+        newAssert.setSerialNumber(assertDto.getSerialNumber());
+        newAssert.setInvoiceNumber(assertDto.getInvoiceNumber());
+
         User user = userRepository1.findById(((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get();
         newAssert.setPreparedBy(user);
         AssertEntity createdAssert = assertRepository.save(newAssert);

@@ -10,6 +10,8 @@ import io.getarrays.securecapita.PurchaseRequest.enums.PurchaseRequestStatusEnum
 import io.getarrays.securecapita.PurchaseRequest.repository.PurchaseRequestProductRepo;
 import io.getarrays.securecapita.PurchaseRequest.repository.PurchaseRequestRepo;
 import io.getarrays.securecapita.asserts.service.StationService;
+import io.getarrays.securecapita.codegenerator.CodeGeneratorService;
+import io.getarrays.securecapita.department.service.DepartmentService;
 import io.getarrays.securecapita.domain.PageResponseDto;
 import io.getarrays.securecapita.domain.User;
 import io.getarrays.securecapita.dto.UserDTO;
@@ -18,10 +20,14 @@ import io.getarrays.securecapita.exception.BadRequestException;
 import io.getarrays.securecapita.exception.NotAuthorizedException;
 import io.getarrays.securecapita.exception.ResourceNotFoundException;
 import io.getarrays.securecapita.repository.UserRepository;
+import io.getarrays.securecapita.repository.implementation.UserRepository1;
+import io.getarrays.securecapita.service.EmailService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,13 +38,20 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class PurchaseRequestService implements PurchaseRequestServiceInterface {
-    private final StationService stationService;
 
     private final PurchaseRequestProductRepo purchaseRequestProductRepo;
 
     private final PurchaseRequestRepo purchaseRequestRepo;
 
     private final UserRepository<User> userRepository;
+
+    private final CodeGeneratorService codeGeneratorService;
+
+    private final DepartmentService departmentService;
+
+    private final UserRepository1 userRepository1;
+
+    private final EmailService emailService;
 
     @Override
     public PurchaseRequestDto getPurchaseRequestById(Long purchaseRequestId) {
@@ -89,10 +102,14 @@ public class PurchaseRequestService implements PurchaseRequestServiceInterface {
 
         PurchaseRequestEntity purchaseRequest = new PurchaseRequestEntity();
         purchaseRequest.setDate(purchaseRequestDto.getDate());
-        purchaseRequest.setStation(stationService.findStationByIdOrThrow(purchaseRequestDto.getStationId()));
-        purchaseRequest.setReason(purchaseRequestDto.getReason());
+        purchaseRequest.setDepartment(departmentService.findDepartmentByIdOrThrow(purchaseRequestDto.getDepartmentId()));
 
+        purchaseRequest.setCode(generateCode(purchaseRequest));
+
+        purchaseRequest.setReason(purchaseRequestDto.getReason());
+        final PurchaseRequestEntity pr = purchaseRequest;
         List<PurchaseRequestItemEntity> requestItems = purchaseRequestDto.getRequestItems().stream().map(itemDto -> {
+
             PurchaseRequestItemEntity item = new PurchaseRequestItemEntity();
             item.setDate(itemDto.getDate());
             item.setRef(itemDto.getRef());
@@ -101,7 +118,7 @@ public class PurchaseRequestService implements PurchaseRequestServiceInterface {
             item.setUnitPrice(itemDto.getUnitPrice());
             item.setEstimatedValue(itemDto.getEstimatedValue());
             item.setQuantity(itemDto.getQuantity());
-            item.setPurchaseRequest(purchaseRequest);
+            item.setPurchaseRequest(pr);
             return item;
         }).collect(Collectors.toList());
         purchaseRequest.setStatus(PurchaseRequestStatusEnum.INITIATED);
@@ -109,7 +126,9 @@ public class PurchaseRequestService implements PurchaseRequestServiceInterface {
         purchaseRequest.setRequestItems(requestItems);
         addApprovalHistory(userDTO, purchaseRequest, purchaseRequestDto.getSignature(),
                 PurchaseRequestStatusEnum.INITIATED);
-        return entityToDto(purchaseRequestRepo.save(purchaseRequest));
+        purchaseRequest= purchaseRequestRepo.save(purchaseRequest);
+        sendEmailToNextApprovers(purchaseRequest, userDTO);
+        return entityToDto(purchaseRequest);
     }
 
     private void addApprovalHistory(UserDTO userDto, PurchaseRequestEntity purchaseRequest, String signature,
@@ -128,45 +147,15 @@ public class PurchaseRequestService implements PurchaseRequestServiceInterface {
         purchaseRequest.setApprovalHistories(approvalHistoryList);
     }
 
-//    public boolean updateStatus(Long id) {
-//        Optional<PurchaseRequest> purchaseRequest = findById(id);
-//        purchaseRequest.setStatus("Completed");
-//
-//        return saveOrUpdatepurchaseRequest(purchaseRequest);
-//    }
-
-//    @Override
-//    public void addPurchaseRequestProductToPurchaseRequest(Long id, PurchaseRequest purchaseRequest) {
-//      //  invoice.setInvoiceNumber(randomAlphanumeric(8).toUpperCase());
-//       PurchaseRequest purchaseRequest =  purchaseRequestRepo.findBypurchaseRequestNumber(purchaseRequest)  ;
-// findById(id).get();
-//
-//
-//
-//        invoice.setCustomer(customer);
-//        invoiceRepository.save(invoice);
-//
-//   }
-//how are we adding products now?
-//    @Override
-//    public void addPurchaseRequestProductToPurchaseRequest(Long id, PurchaseRequest purchaseRequest, int sequence) {
-//        String sequenceNumber = "PR" + String.format("%06d", sequence);
-//        purchaseRequest.setPurchaseRequestNumber(sequenceNumber);
-//
-////        PurchaseRequest purchaseRequest2 = purchaseRequestRepo.findBypurchaseRequestNumber();
-//
-//        purchaseRequest.setPurchaseRequestNumber(String.valueOf(purchaseRequest));
-
     public PurchaseRequestDto entityToDto(PurchaseRequestEntity purchaseRequestEntity) {
         PurchaseRequestDto purchaseRequestDto = new PurchaseRequestDto();
         purchaseRequestDto.setId(purchaseRequestEntity.getId());
-        // Map basic fields
+        purchaseRequestDto.setCode(purchaseRequestEntity.getCode());
         purchaseRequestDto.setDate(purchaseRequestEntity.getDate());
-        purchaseRequestDto.setStationId(purchaseRequestEntity.getStation().getStation_id()); // Assuming Station is
-        // an entity with an id
+        purchaseRequestDto.setDepartmentId(purchaseRequestEntity.getDepartment().getId()); // Assuming Station is
+        purchaseRequestDto.setDepartment(departmentService.entityToDto(purchaseRequestEntity.getDepartment()));
         purchaseRequestDto.setReason(purchaseRequestEntity.getReason());
 
-        // Map request items (convert each PurchaseRequestItemEntity to PurchaseRequestItemDto)
         List<PurchaseRequestItemDto> itemDtos = purchaseRequestEntity.getRequestItems().stream().map(itemEntity -> {
             PurchaseRequestItemDto itemDto = new PurchaseRequestItemDto();
             itemDto.setId(itemEntity.getId());
@@ -192,7 +181,6 @@ public class PurchaseRequestService implements PurchaseRequestServiceInterface {
             return approvalDto;
         }).toList();
         purchaseRequestDto.setApprovals(approvals);
-
         return purchaseRequestDto;
     }
 
@@ -226,8 +214,27 @@ public class PurchaseRequestService implements PurchaseRequestServiceInterface {
         }
         purchaseRequest.setStatus(nextStatus);
         addApprovalHistory(currentUser, purchaseRequest, purchaseRequestApprovalDto.getSignature(), nextStatus);
-        purchaseRequestRepo.save(purchaseRequest);
+        sendEmailToNextApprovers(purchaseRequestRepo.save(purchaseRequest), currentUser);
         return true;
     }
 
+    private void sendEmailToNextApprovers(PurchaseRequestEntity purchaseRequest, UserDTO currentUser) {
+        List<String> nextRoles = purchaseRequest.getStatus().getNext() != null ? purchaseRequest.getStatus().getNext().getRoles() : null;
+        if (!CollectionUtils.isEmpty(nextRoles)) {
+            userRepository1.findByDepartmentIdAndStationIdInAndRoleNameIn(purchaseRequest.getDepartment().getId(), userRepository.get(currentUser.getId()).getStations().stream().map(e->e.getStation().getStation_id()).toList(), nextRoles).stream().forEach(user -> {
+                if (StringUtils.hasText(user.getEmail())) {
+                    emailService.sendEmail(user.getEmail(), "Purchase Request " + purchaseRequest.getCode() + " Update", "Purchase Request" + purchaseRequest.getCode() + " is assigned to you and waiting for your approval");
+                }
+            });
+        }
+    }
+
+    private String generateCode(PurchaseRequestEntity purchaseRequest) {
+        String prefix = purchaseRequest.getDepartment().getName().length() >= 3 ? purchaseRequest.getDepartment().getName().substring(0, 3).toUpperCase() :
+                purchaseRequest.getDepartment().getName().toUpperCase();
+
+        int code = codeGeneratorService.generateCode("PurchaseRequest-"+prefix);
+
+        return "PR-" + prefix + "-" + code;
+    }
 }
