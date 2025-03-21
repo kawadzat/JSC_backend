@@ -45,8 +45,9 @@ public class TaskService {
 
     public PageResponseDto<TaskDto> getAllTasks(UserDTO currentUser, TaskSearchDto searchDto) {
         Page<Task> page = taskRepository.findTasksByFilters(currentUser.getId(), searchDto.getOwnedByMe(),
-                searchDto.getAssignedToMe(), PageRequest.of(searchDto.getPage(), searchDto.getSize(), Sort.by(
-                        "lastModifiedDate").descending()));
+                searchDto.getAssignedToMe(), searchDto.getStationId(), searchDto.getDepartmentId(),
+                PageRequest.of(searchDto.getPage(),
+                        searchDto.getSize(), Sort.by("lastModifiedDate").descending()));
         return new PageResponseDto<>(page.getContent().stream().map(this::entityToDto).toList(), page);
     }
 

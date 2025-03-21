@@ -12,13 +12,20 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     Page<Task> findByStatusIn(List<TaskStatusEnum> statuses, Pageable pageable);
 
+    @Query("SELECT t FROM Task t")
+    Page<Task> filterTasks(Pageable pageable);
+
     @Query("SELECT t FROM Task t WHERE " +
             "(:ownedByMe IS NULL OR (t.initiatedUser.id = :currentUserId AND :ownedByMe = TRUE)) AND " +
-            "(:assignedToMe IS NULL OR (t.assignedUser.id = :currentUserId AND :assignedToMe = TRUE))")
+            "(:assignedToMe IS NULL OR (t.assignedUser.id = :currentUserId AND :assignedToMe = TRUE)) AND " +
+            "(:stationId IS NULL OR EXISTS (SELECT us FROM UserStation us WHERE (us.user.id = t.assignedUser.id OR us.user.id = t.initiatedUser.id) AND us.station.id = :stationId)) AND " +
+            "(:departmentId IS NULL OR t.assignedUser.department.id = :departmentId OR t.initiatedUser.department.id = :departmentId)")
     Page<Task> findTasksByFilters(
             @Param("currentUserId") Long currentUserId,
             @Param("ownedByMe") Boolean ownedByMe,
             @Param("assignedToMe") Boolean assignedToMe,
+            @Param("stationId") Long stationId,
+            @Param("departmentId") Long departmentId,
             Pageable pageable
     );
 }

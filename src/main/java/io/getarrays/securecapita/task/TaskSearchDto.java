@@ -13,4 +13,8 @@ public class TaskSearchDto {
     private Boolean ownedByMe;
 
     private Boolean assignedToMe;
+
+    private Long stationId;
+
+    private Long departmentId;
 }
