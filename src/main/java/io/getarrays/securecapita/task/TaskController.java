@@ -29,25 +29,16 @@ public class TaskController {
     @PostMapping
     public ResponseEntity<CustomMessage> createTask(@AuthenticationPrincipal UserDTO currentUser,
                                                     @RequestBody @Valid TaskDto taskDto) throws Exception {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getAuthorities().stream().anyMatch((r) -> Arrays.asList(AUTH_ROLE.SECRETARY.name(),AUTH_ROLE.HEADADMIN.name(),AUTH_ROLE.HEAD_IT.name()).contains(ROLE_AUTH.READ_USER.name()))) {
-            return ResponseEntity.ok(new CustomMessage("Task Created Successfully",
+        return ResponseEntity.ok(new CustomMessage("Task Created Successfully",
                     taskService.createTask(currentUser, taskDto)));
-
-        }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
     }
 
     @PutMapping("/{taskId}")
     public ResponseEntity<CustomMessage> updateTask(@AuthenticationPrincipal UserDTO currentUser,
                                                     @PathVariable Long taskId, @RequestBody @Valid TaskDto taskDto) throws Exception {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.READ_USER.name()))) {
-            return ResponseEntity.ok(new CustomMessage("Task Updated Successfully",
+        return ResponseEntity.ok(new CustomMessage("Task Updated Successfully",
                     taskService.updateTask(currentUser, taskId, taskDto)));
 
-        }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
     }
 
     @GetMapping("/{taskId}")
