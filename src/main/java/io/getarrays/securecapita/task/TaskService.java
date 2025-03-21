@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -42,8 +43,10 @@ public class TaskService {
                 "with id " + taskId));
     }
 
-    public PageResponseDto<TaskDto> getAllTasks(PageRequest pageRequest) {
-        Page<Task> page = taskRepository.findAll(pageRequest);
+    public PageResponseDto<TaskDto> getAllTasks(UserDTO currentUser, TaskSearchDto searchDto) {
+        Page<Task> page = taskRepository.findTasksByFilters(currentUser.getId(), searchDto.getOwnedByMe(),
+                searchDto.getAssignedToMe(), PageRequest.of(searchDto.getPage(), searchDto.getSize(), Sort.by(
+                        "lastModifiedDate").descending()));
         return new PageResponseDto<>(page.getContent().stream().map(this::entityToDto).toList(), page);
     }
 
