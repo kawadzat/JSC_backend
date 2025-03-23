@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserDetailController {
@@ -26,7 +28,7 @@ public class UserDetailController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<?> filterUsers(@RequestParam(required = false) Long stationId, @RequestParam(required = false) Long departmentId) {
-        return ResponseEntity.ok(userService.filterUsers(stationId, departmentId));
+    public ResponseEntity<?> filterUsers(@RequestParam(required = false) List<Long> stationIds, @RequestParam(required = false) List<Long> departmentIds) {
+        return ResponseEntity.ok(userService.filterUsers(stationIds, departmentIds));
     }
 }

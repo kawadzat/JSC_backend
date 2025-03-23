@@ -43,8 +43,8 @@ public interface UserRepository1   extends JpaRepository<User,Long> {
             "JOIN u.roles ur " +
             "JOIN ur.role r " +
             "JOIN u.stations us " +
-            "WHERE u.department.id = :departmentId " +
+            "WHERE u.department.id IN :departmentIds " +
             "AND us.station.station_id IN :stationIds ")
-    List<User> findByDepartmentIdAndStationIdIn(Long departmentId, List<Long> stationIds);
+    List<User> findByDepartmentIdAndStationIdIn(List<Long> departmentIds, List<Long> stationIds);
 
 }

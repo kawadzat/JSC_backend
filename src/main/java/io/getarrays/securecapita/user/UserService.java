@@ -37,12 +37,11 @@ public class UserService {
     public List<UserDTO> getDepartmentAndStationFellows(UserDTO currentUser) {
         User user = userRepository.get(currentUser.getId());
         return userRepository1.findByDepartmentIdAndStationIdIn(user.getDepartment() != null ?
-                user.getDepartment().getId() : null, user.getStations() != null ?
+                List.of(user.getDepartment().getId()) : null, user.getStations() != null ?
                 user.getStations().stream().map(e -> e.getStation().getStation_id()).toList() : null).stream().map(UserDTOMapper::fromUser).toList();
     }
 
-    public List<UserDTO> filterUsers(Long stationId, Long departmentId) {
-        return userRepository1.findByDepartmentIdAndStationIdIn(departmentId, stationId != null ? List.of(stationId)
-                : null).stream().map(UserDTOMapper::fromUser).toList();
+    public List<UserDTO> filterUsers(List<Long> stationIds, List<Long> departmentIds) {
+        return userRepository1.findByDepartmentIdAndStationIdIn(departmentIds, stationIds).stream().map(UserDTOMapper::fromUser).toList();
     }
 }
