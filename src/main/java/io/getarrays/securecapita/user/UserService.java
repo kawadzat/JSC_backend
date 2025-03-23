@@ -40,4 +40,9 @@ public class UserService {
                 user.getDepartment().getId() : null, user.getStations() != null ?
                 user.getStations().stream().map(e -> e.getStation().getStation_id()).toList() : null).stream().map(UserDTOMapper::fromUser).toList();
     }
+
+    public List<UserDTO> filterUsers(Long stationId, Long departmentId) {
+        return userRepository1.findByDepartmentIdAndStationIdIn(departmentId, stationId != null ? List.of(stationId)
+                : null).stream().map(UserDTOMapper::fromUser).toList();
+    }
 }

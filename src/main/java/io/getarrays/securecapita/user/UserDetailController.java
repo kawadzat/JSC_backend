@@ -24,4 +24,9 @@ public class UserDetailController {
     public ResponseEntity<?> getDepartmentAndStationFellows(@AuthenticationPrincipal UserDTO currentUser) {
         return ResponseEntity.ok(userService.getDepartmentAndStationFellows(currentUser));
     }
+
+    @GetMapping("/filter")
+    public ResponseEntity<?> filterUsers(@RequestParam(required = false) Long stationId, @RequestParam(required = false) Long departmentId) {
+        return ResponseEntity.ok(userService.filterUsers(stationId, departmentId));
+    }
 }
