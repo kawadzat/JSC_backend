@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -169,4 +170,12 @@ public class TaskService {
                 TaskStatusEnum.IN_PROGRESS), pageable);
         pendingTasks.forEach(this::sendReminderEmail);
     }
+
+    public Long getCompletedTaskCount() {
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return taskRepository.countCompletedTasksForUser(currentUser.getId(), TaskStatusEnum.COMPLETED);
+    }
+
+
+
 }

@@ -27,5 +27,11 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             @Param("stationId") Long stationId,
             @Param("departmentId") Long departmentId,
             Pageable pageable
-    );
+    );@Query("SELECT COUNT(t) FROM Task t WHERE t.assignedUser.id = :userId")
+    Long countTasksAssignedToUser(@Param("userId") Long userId);
+    @Query("SELECT COUNT(t) FROM Task t WHERE t.status = :status")
+    Long countPendingTasks(@Param("status") TaskStatusEnum status);
+    @Query("SELECT COUNT(t) FROM Task t WHERE t.assignedUser.id = :userId AND t.status = :status")
+    Long countCompletedTasksForUser(@Param("userId") Long userId, @Param("status") TaskStatusEnum status);
+
 }
