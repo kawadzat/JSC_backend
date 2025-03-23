@@ -1,5 +1,6 @@
 package io.getarrays.securecapita.dtomapper;
 
+import io.getarrays.securecapita.department.dto.DepartmentDto;
 import io.getarrays.securecapita.domain.Role;
 import io.getarrays.securecapita.domain.User;
 import io.getarrays.securecapita.dto.UserDTO;
@@ -18,8 +19,16 @@ public class UserDTOMapper {
     public static UserDTO fromUser(User user) {
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(user, userDTO);
+
+        if (user.getDepartment() != null) {
+            DepartmentDto departmentDTO = new DepartmentDto(); // Initialize DTO
+            BeanUtils.copyProperties(user.getDepartment(), departmentDTO);
+            userDTO.setDepartmentDto(departmentDTO); // Set to UserDTO
+        }
+
         return userDTO;
     }
+
 
     public static UserDTO fromUser(User user, UserRole role) {
         UserDTO userDTO = new UserDTO();
