@@ -8,6 +8,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
 
@@ -50,7 +52,9 @@ public class Task extends Auditable<String> {
     @JoinColumn(name = "initiated_user_id", nullable = false)
     private User initiatedUser;
 
-    @ManyToOne
-    @JoinColumn(name = "assigned_user_id", nullable = false)
-    private User assignedUser;
+    @ManyToMany
+    @JoinTable(name = "task_assigned_users", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns =
+    @JoinColumn(name = "user_id"))
+    private Set<User> assignedUsers = new HashSet<>();
+
 }

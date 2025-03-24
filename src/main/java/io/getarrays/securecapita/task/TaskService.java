@@ -9,6 +9,7 @@ import io.getarrays.securecapita.exception.BadRequestException;
 import io.getarrays.securecapita.exception.NotAuthorizedException;
 import io.getarrays.securecapita.exception.ResourceNotFoundException;
 import io.getarrays.securecapita.repository.UserRepository;
+import io.getarrays.securecapita.repository.implementation.UserRepository1;
 import io.getarrays.securecapita.service.EmailService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -29,6 +33,8 @@ public class TaskService {
     private final TaskRepository taskRepository;
 
     private final UserRepository<User> userRepository;
+
+    private final UserRepository1 userRepository1;
 
     private final CodeGeneratorService codeGeneratorService;
 
@@ -46,8 +52,7 @@ public class TaskService {
     public PageResponseDto<TaskDto> getAllTasks(UserDTO currentUser, TaskSearchDto searchDto) {
         Page<Task> page = taskRepository.findTasksByFilters(currentUser.getId(), searchDto.getOwnedByMe(),
                 searchDto.getAssignedToMe(), searchDto.getStationId(), searchDto.getDepartmentId(),
-                PageRequest.of(searchDto.getPage(),
-                        searchDto.getSize(), Sort.by("lastModifiedDate").descending()));
+                PageRequest.of(searchDto.getPage(), searchDto.getSize(), Sort.by("lastModifiedDate").descending()));
         return new PageResponseDto<>(page.getContent().stream().map(this::entityToDto).toList(), page);
     }
 
@@ -92,7 +97,11 @@ public class TaskService {
         task.setDueDate(taskDto.getDueDate());
         task.setStatus(TaskStatusEnum.valueOf(taskDto.getStatus()));
         task.setInitiatedUser(userRepository.get(currentUser.getId()));
-        task.setAssignedUser(userRepository.get(taskDto.getAssignedUserId()));
+        Set<User> assignedUsers = new HashSet<>(userRepository1.findAllById(taskDto.getAssignedUserIds()));
+        if (assignedUsers.size() != taskDto.getAssignedUserIds().size()) {
+            throw new ResourceNotFoundException("One or more assignedUserIds don't exist.");
+        }
+        task.setAssignedUsers(assignedUsers);
         return task;
     }
 
@@ -107,8 +116,8 @@ public class TaskService {
         taskDto.setPriority(taskEntity.getPriority().name());
         taskDto.setStatus(taskEntity.getStatus().name());
         taskDto.setInitiatedUser(UserDTOMapper.fromUser(taskEntity.getInitiatedUser()));
-        taskDto.setAssignedUser(UserDTOMapper.fromUser(taskEntity.getAssignedUser()));
-        taskDto.setAssignedUserId(taskEntity.getAssignedUser().getId());
+        taskDto.setAssignedUsers(taskEntity.getAssignedUsers().stream().map(UserDTOMapper::fromUser).collect(Collectors.toSet()));
+        taskDto.setAssignedUserIds(taskEntity.getAssignedUsers().stream().map(User::getId).collect(Collectors.toSet()));
         return taskDto;
     }
 
@@ -121,7 +130,7 @@ public class TaskService {
         Task task = findTaskByIdOrThrow(taskId);
 
         // Check if the current user is either the assigned user or the initiating user.
-        if (!(task.getAssignedUser().getId().equals(currentUser.getId()) || task.getInitiatedUser().getId().equals(currentUser.getId()))) {
+        if (!(task.getAssignedUsers().stream().map(User::getId).toList().contains(currentUser.getId()) || task.getInitiatedUser().getId().equals(currentUser.getId()))) {
             throw new NotAuthorizedException("You are not authorized to update this task status");
         }
 
@@ -145,19 +154,24 @@ public class TaskService {
     }
 
     private void sendUpdateEmail(Task task) {
-        String email = task.getAssignedUser().getEmail();
-        String subject = "Task Update";
-        String content =
-                "Dear " + task.getAssignedUser().getFirstName() + ",\n\n" + "Your task \"" + task.getTitle() + "\" " + "is now " + task.getStatus().name().toLowerCase() + ".";
-        emailService.sendEmail(email, subject, content);
+        task.getAssignedUsers().stream().forEach(e -> {
+            String email = e.getEmail();
+            String subject = "Task Update";
+            String content =
+                    "Dear " + e.getFirstName() + ",\n\n" + "Your task \"" + task.getTitle() + "\" " + "is " + "now " + task.getStatus().name().toLowerCase() + ".";
+            emailService.sendEmail(email, subject, content);
+        });
     }
 
     private void sendReminderEmail(Task task) {
-        String email = task.getAssignedUser().getEmail();
-        String subject = "Reminder: Pending Task";
-        String content =
-                "Dear " + task.getAssignedUser().getFirstName() + ",\n\n" + "Your task \"" + task.getTitle() + "\" " + "is" + " still pending. " + "Please take the necessary actions to update its status.";
-        emailService.sendEmail(email, subject, content);
+        task.getAssignedUsers().stream().forEach(e -> {
+            String email = e.getEmail();
+            String subject = "Reminder: Pending Task";
+            String content =
+                    "Dear " + e.getFirstName() + ",\n\n" + "Your task \"" + task.getTitle() + "\" " + "is" + " still "
+                            + "pending. " + "Please take the necessary actions to update its status.";
+            emailService.sendEmail(email, subject, content);
+        });
     }
 
     // This cron expression schedules the task to run every day at 8 AM.
