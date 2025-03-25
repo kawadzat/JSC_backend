@@ -5,6 +5,8 @@ import io.getarrays.securecapita.domain.User;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Junior RT
@@ -53,7 +55,7 @@ public class UserDTO {
 
     private boolean isAssigned;
 
-    private DepartmentDto departmentDto;
+    private List<DepartmentDto> departments;
 
     public static UserDTO toDto(User user) {
         return UserDTO.builder()
@@ -71,7 +73,7 @@ public class UserDTO {
                 .createdAt(user.getCreatedAt())
                 .roleName(user.getRoles().stream().findAny().get().getRole().getName())
                 .permissions(user.getRoles().stream().findAny().get().getRole().getPermission())
-                .departmentDto(DepartmentDto.toDto(user.getDepartment()))
+                .departments(user.getUserDepartments().stream().map(e -> DepartmentDto.toDto(e.getDepartment())).collect(Collectors.toList()))
 //                .station(user.getStation() == null ? null : user.getStation().getStationName())
 //                .isAssigned(user.getStation()!=null)
                 .build();

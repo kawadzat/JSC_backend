@@ -17,17 +17,17 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     @Query("SELECT t FROM Task t WHERE " +
             "(:ownedByMe IS NULL OR (t.initiatedUser.id = :currentUserId AND :ownedByMe = TRUE)) AND " +
-            "(:assignedToMe IS NULL OR (:currentUserId IN (SELECT u.id FROM t.assignedUsers u) AND :assignedToMe = " +
-            "TRUE)) AND " +
+            "(:assignedToMe IS NULL OR (:currentUserId IN (SELECT u.id FROM t.assignedUsers u) AND :assignedToMe = TRUE)) AND " +
             "(:stationId IS NULL OR EXISTS (" +
             "   SELECT us FROM UserStation us WHERE " +
             "   (us.user.id IN (SELECT u.id FROM t.assignedUsers u) OR us.user.id = t.initiatedUser.id) " +
             "   AND us.station.id = :stationId" +
             ")) AND " +
             "(:departmentId IS NULL OR EXISTS (" +
-            "   SELECT u FROM t.assignedUsers u WHERE u.department.id = :departmentId) OR " +
-            "   t.initiatedUser.department.id = :departmentId" +
-            ")")
+            "   SELECT ud FROM UserDepartment ud WHERE " +
+            "   (ud.user.id IN (SELECT u.id FROM t.assignedUsers u) OR ud.user.id = t.initiatedUser.id) " +
+            "   AND ud.department.id = :departmentId" +
+            "))")
     Page<Task> findTasksByFilters(
             @Param("currentUserId") Long currentUserId,
             @Param("ownedByMe") Boolean ownedByMe,
