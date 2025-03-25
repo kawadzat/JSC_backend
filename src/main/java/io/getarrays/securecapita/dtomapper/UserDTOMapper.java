@@ -7,6 +7,9 @@ import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.roles.UserRole;
 import org.hibernate.Hibernate;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.CollectionUtils;
+
+import java.util.stream.Collectors;
 
 /**
  * @author Junior RT
@@ -20,10 +23,9 @@ public class UserDTOMapper {
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(user, userDTO);
 
-        if (user.getDepartment() != null) {
+        if (!CollectionUtils.isEmpty(user.getUserDepartments())) {
             DepartmentDto departmentDTO = new DepartmentDto(); // Initialize DTO
-            BeanUtils.copyProperties(user.getDepartment(), departmentDTO);
-            userDTO.setDepartmentDto(departmentDTO); // Set to UserDTO
+            userDTO.setDepartments(user.getUserDepartments().stream().map(e->DepartmentDto.toDto(e.getDepartment())).collect(Collectors.toList())); // Set to UserDTO
         }
 
         return userDTO;

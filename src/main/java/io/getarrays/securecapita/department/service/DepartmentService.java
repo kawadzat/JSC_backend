@@ -13,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class DepartmentService {
 
@@ -89,4 +91,19 @@ public class DepartmentService {
         return departmentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Department not " +
                 "found with id " + id));
     }
+
+    public List<DepartmentEntity> findDepartmentsByIdsOrThrow(List<Long> ids) {
+        List<DepartmentEntity> departments = departmentRepository.findAllById(ids);
+
+        // Check if all requested IDs are found
+        if (departments.size() != ids.size()) {
+            List<Long> foundIds = departments.stream().map(DepartmentEntity::getId).toList();
+            List<Long> missingIds = ids.stream().filter(id -> !foundIds.contains(id)).toList();
+
+            throw new ResourceNotFoundException("Departments not found with ids: " + missingIds);
+        }
+
+        return departments;
+    }
+
 }

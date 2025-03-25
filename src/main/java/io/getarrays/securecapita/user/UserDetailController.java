@@ -17,9 +17,9 @@ public class UserDetailController {
     private UserService userService;
 
     @PutMapping("/update/{userId}")
-    public ResponseEntity<?> updateUser(@PathVariable(name = "userId") Long userId,
+    public ResponseEntity<?> updateUser(@AuthenticationPrincipal UserDTO currentUser, @PathVariable(name = "userId") Long userId,
                                         @RequestBody UserUpdateDto userUpdateDto) {
-        return ResponseEntity.ok(userService.update(userId, userUpdateDto));
+        return ResponseEntity.ok(userService.update(currentUser, userId, userUpdateDto));
     }
 
     @GetMapping("/departmentAndStationFellows")

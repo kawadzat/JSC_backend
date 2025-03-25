@@ -5,6 +5,7 @@ import io.getarrays.securecapita.ProjectManagement.Issue;
 import io.getarrays.securecapita.department.model.DepartmentEntity;
 import io.getarrays.securecapita.roles.UserRole;
 import io.getarrays.securecapita.stationsassignment.UserStation;
+import io.getarrays.securecapita.user.UserDepartment;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -70,16 +71,17 @@ public class User {
     @JsonIgnore
     private String verificationToken;
 
-    @ManyToOne
-    @JoinColumn(name = "department_id")
-    private DepartmentEntity department;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     @JsonIgnore
     private List<UserStation> stations = new ArrayList<>();
 
-//    @ManyToMany(fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @JsonIgnore
+    private List<UserDepartment> userDepartments = new ArrayList<>();
+
+    //    @ManyToMany(fetch = FetchType.EAGER)
 //    @JoinTable(
 //            name = "users_roles",
 //            joinColumns = @JoinColumn(name = "user_id"),
