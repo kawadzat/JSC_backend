@@ -17,9 +17,17 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     @Query("SELECT t FROM Task t WHERE " +
             "(:ownedByMe IS NULL OR (t.initiatedUser.id = :currentUserId AND :ownedByMe = TRUE)) AND " +
-            "(:assignedToMe IS NULL OR (t.assignedUser.id = :currentUserId AND :assignedToMe = TRUE)) AND " +
-            "(:stationId IS NULL OR EXISTS (SELECT us FROM UserStation us WHERE (us.user.id = t.assignedUser.id OR us.user.id = t.initiatedUser.id) AND us.station.id = :stationId)) AND " +
-            "(:departmentId IS NULL OR t.assignedUser.department.id = :departmentId OR t.initiatedUser.department.id = :departmentId)")
+            "(:assignedToMe IS NULL OR (:currentUserId IN (SELECT u.id FROM t.assignedUsers u) AND :assignedToMe = " +
+            "TRUE)) AND " +
+            "(:stationId IS NULL OR EXISTS (" +
+            "   SELECT us FROM UserStation us WHERE " +
+            "   (us.user.id IN (SELECT u.id FROM t.assignedUsers u) OR us.user.id = t.initiatedUser.id) " +
+            "   AND us.station.id = :stationId" +
+            ")) AND " +
+            "(:departmentId IS NULL OR EXISTS (" +
+            "   SELECT u FROM t.assignedUsers u WHERE u.department.id = :departmentId) OR " +
+            "   t.initiatedUser.department.id = :departmentId" +
+            ")")
     Page<Task> findTasksByFilters(
             @Param("currentUserId") Long currentUserId,
             @Param("ownedByMe") Boolean ownedByMe,
@@ -27,11 +35,15 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             @Param("stationId") Long stationId,
             @Param("departmentId") Long departmentId,
             Pageable pageable
+<<<<<<< HEAD
     );@Query("SELECT COUNT(t) FROM Task t WHERE t.assignedUser.id = :userId")
     Long countTasksAssignedToUser(@Param("userId") Long userId);
     @Query("SELECT COUNT(t) FROM Task t WHERE t.status = :status")
     Long countPendingTasks(@Param("status") TaskStatusEnum status);
     @Query("SELECT COUNT(t) FROM Task t WHERE t.assignedUser.id = :userId AND t.status = :status")
     Long countCompletedTasksForUser(@Param("userId") Long userId, @Param("status") TaskStatusEnum status);
+=======
+    );
+>>>>>>> 7b7f3ca7f5a44ad885fd78366d89344361b9c26e
 
 }

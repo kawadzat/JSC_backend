@@ -2,14 +2,13 @@ package io.getarrays.securecapita.task;
 
 import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.utils.ValidEnum;
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -43,8 +42,8 @@ public class TaskDto {
 
     private UserDTO initiatedUser;
 
-    @NotNull(message = "assignedUserId is required")
-    private Long assignedUserId;
+    @NotEmpty(message = "assignedUserIds must not be empty.")
+    private Set<Long> assignedUserIds;
 
-    private UserDTO assignedUser;
+    private Set<UserDTO> assignedUsers;
 }
