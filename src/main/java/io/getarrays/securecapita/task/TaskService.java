@@ -185,10 +185,10 @@ public class TaskService {
         pendingTasks.forEach(this::sendReminderEmail);
     }
 
-    public Long getCompletedTaskCount() {
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return taskRepository.countCompletedTasksForUser(currentUser.getId(), TaskStatusEnum.COMPLETED);
-    }
+//    public Long getCompletedTaskCount() {
+//        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        return taskRepository.countCompletedTasksForUser(currentUser.getId(), TaskStatusEnum.COMPLETED);
+//    }
 
 
 

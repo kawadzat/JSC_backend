@@ -35,15 +35,15 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             @Param("stationId") Long stationId,
             @Param("departmentId") Long departmentId,
             Pageable pageable
-<<<<<<< HEAD
-    );@Query("SELECT COUNT(t) FROM Task t WHERE t.assignedUser.id = :userId")
+    );
+
+    @Query("SELECT COUNT(t) FROM Task t WHERE t.assignedUser.id = :userId")
     Long countTasksAssignedToUser(@Param("userId") Long userId);
+
     @Query("SELECT COUNT(t) FROM Task t WHERE t.status = :status")
     Long countPendingTasks(@Param("status") TaskStatusEnum status);
-    @Query("SELECT COUNT(t) FROM Task t WHERE t.assignedUser.id = :userId AND t.status = :status")
-    Long countCompletedTasksForUser(@Param("userId") Long userId, @Param("status") TaskStatusEnum status);
-=======
-    );
->>>>>>> 7b7f3ca7f5a44ad885fd78366d89344361b9c26e
+
+//    @Query("SELECT COUNT(t) FROM Task t WHERE t.assignedUser.id = :userId AND t.status = :status")
+//    Long countCompletedTasksForUser(@Param("userId") Long userId, @Param("status") TaskStatusEnum status);
 
 }
