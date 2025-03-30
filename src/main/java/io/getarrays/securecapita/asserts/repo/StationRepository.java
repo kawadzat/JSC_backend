@@ -22,7 +22,7 @@ public interface StationRepository extends JpaRepository<Station, Long> {
     @Query("SELECT s FROM Station s WHERE s.province.id = :provinceId")
     List<Station> findStationsByProvinceId(@Param("provinceId") Long provinceId);
 
-    @Query("SELECT s FROM Station s JOIN s.users u WHERE u.id = :userId")
+    @Query("SELECT s FROM Station s JOIN UserStation us ON us.station = s   WHERE :userId = us.user.id")
     List<Station> findAllStation(Long userId);
 
     @Query("SELECT COUNT(DISTINCT station_id) FROM Station")

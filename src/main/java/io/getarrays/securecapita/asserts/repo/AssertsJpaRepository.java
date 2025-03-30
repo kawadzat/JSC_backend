@@ -21,7 +21,7 @@ import java.util.Optional;
 public interface AssertsJpaRepository extends JpaRepository<AssertEntity, Long> {
 //find want to get all asserts of stations assigned to logged in user
 //this end point
-    @Query("SELECT ae FROM AssertEntity ae JOIN ae.station st WHERE :currentUser MEMBER OF st.users ORDER BY ae.id")
+    @Query("SELECT ae FROM AssertEntity ae JOIN ae.station st JOIN UserStation us ON us.station = st   WHERE :currentUser = us.user ORDER BY ae.id")
     Page<AssertEntity> findAllAssertsOfStationsAssignedToUser(Pageable pageable, @Param("currentUser") User currentUser);
 //
 //    @Query("SELECT ae FROM AssertEntity ae WHERE ae.user = :currentUser ORDER BY ae.id")
