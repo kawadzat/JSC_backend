@@ -76,34 +76,26 @@ public class UserService {
 
 
     public List<UserDTO> getDepartmentAndStationFellows(UserDTO currentUser) {
-        User user = userRepository.get(currentUser.getId());
+        User user = userRepository1.findById(currentUser.getId()).get();
 
         // Get department ID safely
-        List<Long> departmentIds = (user.getUserDepartments() != null)
-                ? user.getUserDepartments().stream().map(e->e.getDepartment().getId()).toList()
-                : Collections.emptyList();
+        List<Long> departmentIds = (user.getUserDepartments() != null) ?
+                user.getUserDepartments().stream().map(e -> e.getDepartment().getId()).toList() :
+                Collections.emptyList();
 
         // Get station IDs safely
-        List<Long> stationIds = (user.getStations() != null)
-                ? user.getStations().stream()
-                .map(e -> e.getStation().getStation_id())
-                .filter(Objects::nonNull)
-                .toList()
-                : Collections.emptyList();
+        List<Long> stationIds = (user.getStations() != null) ?
+                user.getStations().stream().map(e -> e.getStation().getStation_id()).filter(Objects::nonNull).toList() : Collections.emptyList();
 
         // Fetch users
-        List<User> fellowUsers = userRepository1.findByDepartmentIdAndStationIdIn(
-                !departmentIds.isEmpty() ? departmentIds : null,
-                !stationIds.isEmpty() ? stationIds : null
-        );
+        List<User> fellowUsers = userRepository1.findByDepartmentIdAndStationIdIn(currentUser.getId(),
+                !departmentIds.isEmpty() ? departmentIds : null, !stationIds.isEmpty() ? stationIds : null);
 
-        return fellowUsers.stream()
-                .map(UserDTOMapper::fromUser)
-                .toList();
+        return fellowUsers.stream().map(UserDTOMapper::fromUser).toList();
     }
 
 
     public List<UserDTO> filterUsers(List<Long> stationIds, List<Long> departmentIds) {
-        return userRepository1.findByDepartmentIdAndStationIdIn(departmentIds, stationIds).stream().map(UserDTOMapper::fromUser).toList();
+        return userRepository1.findByDepartmentIdAndStationIdIn(null, departmentIds, stationIds).stream().map(UserDTOMapper::fromUser).toList();
     }
 }

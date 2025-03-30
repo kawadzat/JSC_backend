@@ -33,8 +33,8 @@ public interface UserRepository1 extends JpaRepository<User, Long> {
             "JOIN u.roles ur " +
             "JOIN ur.role r " +
             "JOIN u.stations us " +
-            "JOIN u.userDepartments ud " +  // Adjusted for UserDepartment
-            "WHERE ud.department.id = :departmentId " +  // Updated department reference
+            "JOIN u.userDepartments ud " +
+            "WHERE ud.department.id = :departmentId " +
             "AND us.station.station_id IN :stationIds " +
             "AND r.name IN :roleNames")
     List<User> findByDepartmentIdAndStationIdInAndRoleNameIn(Long departmentId, List<Long> stationIds,
@@ -43,9 +43,10 @@ public interface UserRepository1 extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u " +
             "JOIN u.stations us " +
-            "JOIN u.userDepartments ud " +  // Adjusted for UserDepartment
-            "WHERE ud.department.id IN :departmentIds " +  // Updated department reference
-            "AND us.station.station_id IN :stationIds")
-    List<User> findByDepartmentIdAndStationIdIn(List<Long> departmentIds, List<Long> stationIds);
+            "JOIN u.userDepartments ud " +
+            "WHERE ud.department.id IN :departmentIds " +
+            "AND us.station.station_id IN :stationIds " +
+            "AND (:currentUserId is null OR u.id <> :currentUserId)")
+    List<User> findByDepartmentIdAndStationIdIn(Long currentUserId, List<Long> departmentIds, List<Long> stationIds);
 
 }
