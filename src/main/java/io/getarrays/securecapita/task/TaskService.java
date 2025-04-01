@@ -16,8 +16,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -183,4 +186,22 @@ public class TaskService {
                 TaskStatusEnum.IN_PROGRESS), pageable);
         pendingTasks.forEach(this::sendReminderEmail);
     }
+
+
+
+    public int getPendingTaskCountForUser(Long userId) {
+        return taskRepository.countPendingTasksForUser(userId);
+    }
+
+
+    public int getCompletedTaskCountForUser(Long userId) {
+        return taskRepository.countCompletedTasksForUser(userId);
+    }
+
+
+
+
+
+
+
 }

@@ -42,7 +42,8 @@ public class AssertEntity extends Auditable<String> {
     private String assetDisc;
     @NotNull                                                                                     
     private String assetNumber;
-
+@NotNull
+private  int quantity;
     @NotNull
     @Column(columnDefinition = "TINYINT(1) DEFAULT 1")
     private boolean movable;

@@ -55,4 +55,19 @@ public class TaskController {
         taskService.updateTaskStatus(currentUser, taskId, status);
         return ResponseEntity.ok(new CustomMessage("Task status updated successfully"));
     }
+
+    @GetMapping("/pending-count/{userId}")
+    public ResponseEntity<Integer> getPendingTaskCount(@PathVariable Long userId) {
+        int count = taskService.getPendingTaskCountForUser(userId);
+        return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/completed-count/{userId}")
+    public ResponseEntity<Integer> getCompletedTaskCount(@PathVariable Long userId) {
+        int count = taskService.getCompletedTaskCountForUser(userId);
+        return ResponseEntity.ok(count);
+    }
+
+
+
 }
