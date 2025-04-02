@@ -30,24 +30,29 @@ public class UserStationService {
     }
 
     public ResponseEntity<?> addStationToUser(Long userId, Long stationId) {
-        Optional<UserStation> optionalUserStation=userStationRepo.findAllByUserAndStation(userId,stationId);
-        if(optionalUserStation.isPresent()){
-            return ResponseEntity.badRequest().body(new CustomMessage("user is already in the station."));
-        }
-        Optional<User> optionalUser=userRepository1.findById(userId);
-        User assignedBy = userRepository1.findById((((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId())).get();
-        Optional<Station> optionalStation=stationRepository.findById(stationId);
-        if(optionalUser.isEmpty()||optionalStation.isEmpty()){
-            return ResponseEntity.badRequest().body(new CustomMessage("user or station is not valid, try again."));
-        }
+        Optional<UserStation> optionalUserStation = userStationRepo.findAllByUserAndStation(userId, stationId);
+        if (optionalUserStation.isEmpty()) {
 
-        UserStation userStation=UserStation.builder()
-                .user(optionalUser.get())
-                .assignedBy(assignedBy)
-                .station(optionalStation.get())
-                .createdDate(new Timestamp(new Date().getTime()))
-                .build();
-        return ResponseEntity.ok(UserStationDto.fromEntity(userStationRepo.save(userStation)));
+            Optional<User> optionalUser = userRepository1.findById(userId);
+            User assignedBy =
+                    userRepository1.findById((((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId())).get();
+            Optional<Station> optionalStation = stationRepository.findById(stationId);
+
+            if (optionalUser.isEmpty() || optionalStation.isEmpty()) {
+                return ResponseEntity.badRequest().body(new CustomMessage("User or station is not valid, try again."));
+            }
+
+            UserStation userStation = UserStation.builder()
+                    .user(optionalUser.get())
+                    .assignedBy(assignedBy)
+                    .station(optionalStation.get())
+                    .createdDate(new Timestamp(new Date().getTime()))
+                    .build();
+
+// Save the userStation entity
+            userStationRepo.save(userStation);
+        }
+        return ResponseEntity.ok(new CustomMessage("User successfully assigned to the station."));
 
     }
 

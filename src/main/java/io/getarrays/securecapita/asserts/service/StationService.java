@@ -111,17 +111,7 @@ public class StationService {
     }
 
     public ResponseEntity<?> addUser(Long stationId, Long userId) {
-        Optional<Station> optionStation = stationRepository.findById(stationId);
-        if (optionStation.isEmpty()) {
-            return ResponseEntity.badRequest().body("Station does not exist!");
-        }
-        Optional<User> optionalUser = userRepository1.findById(userId);
-        if (optionalUser.isEmpty()) {
-            return ResponseEntity.badRequest().body("User does not exist!");
-        }
-        System.out.println("Ok");
-        optionStation.get().addUser(optionalUser.get());
-        stationRepository.save(optionStation.get());
+
         return ResponseEntity.ok(new CustomMessage("Added User to Station"));
     }
 
