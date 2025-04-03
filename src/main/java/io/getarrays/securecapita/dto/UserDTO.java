@@ -2,6 +2,7 @@ package io.getarrays.securecapita.dto;
 
 import io.getarrays.securecapita.department.dto.DepartmentDto;
 import io.getarrays.securecapita.domain.User;
+import io.getarrays.securecapita.stationsassignment.UserStationDto;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -57,6 +58,8 @@ public class UserDTO {
 
     private List<DepartmentDto> departments;
 
+    private List<UserStationDto> stations;
+
     public static UserDTO toDto(User user) {
         return UserDTO.builder()
                 .id(user.getId())
@@ -74,6 +77,7 @@ public class UserDTO {
                 .roleName(user.getRoles().stream().findAny().get().getRole().getName())
                 .permissions(user.getRoles().stream().findAny().get().getRole().getPermission())
                 .departments(user.getUserDepartments().stream().map(e -> DepartmentDto.toDto(e.getDepartment())).collect(Collectors.toList()))
+                .stations(UserStationDto.fromEntities(user.getStations()))
 //                .station(user.getStation() == null ? null : user.getStation().getStationName())
 //                .isAssigned(user.getStation()!=null)
                 .build();

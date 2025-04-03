@@ -5,6 +5,7 @@ import io.getarrays.securecapita.domain.Role;
 import io.getarrays.securecapita.domain.User;
 import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.roles.UserRole;
+import io.getarrays.securecapita.stationsassignment.UserStationDto;
 import org.hibernate.Hibernate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
@@ -28,6 +29,9 @@ public class UserDTOMapper {
             userDTO.setDepartments(user.getUserDepartments().stream().map(e->DepartmentDto.toDto(e.getDepartment())).collect(Collectors.toList())); // Set to UserDTO
         }
 
+        if (!CollectionUtils.isEmpty(user.getStations())) {
+            userDTO.setStations(UserStationDto.fromEntities(user.getStations())); // Set to UserDTO
+        }
         return userDTO;
     }
 
@@ -40,9 +44,12 @@ public class UserDTOMapper {
         userDTO.setRoleName(role.getRole().getName());
         userDTO.setPermissions(role.getRole().getPermission());
         userDTO.setAssigned(!user.getStations().isEmpty());
+        userDTO.setStations(UserStationDto.fromEntities(user.getStations()));
+        if (!CollectionUtils.isEmpty(user.getUserDepartments())) {
+            DepartmentDto departmentDTO = new DepartmentDto(); // Initialize DTO
+            userDTO.setDepartments(user.getUserDepartments().stream().map(e->DepartmentDto.toDto(e.getDepartment())).collect(Collectors.toList())); // Set to UserDTO
+        }
         return userDTO;
-
-
     }
 
     public static User toUser(UserDTO userDTO) {
