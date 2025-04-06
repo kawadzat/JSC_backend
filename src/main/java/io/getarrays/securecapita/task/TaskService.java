@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,10 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -85,7 +83,7 @@ public class TaskService {
             task = new Task();
             task.setStatus(TaskStatusEnum.PENDING);
             task.setCode(generateCode());
-            task.setInititatedDate(new Date());
+            task.setInitiatedDate(new Date());
         } else {
             task = findTaskByIdOrThrow(taskId);
             if (Arrays.asList(TaskStatusEnum.CANCELLED, TaskStatusEnum.IN_PROGRESS, TaskStatusEnum.COMPLETED).contains(task.getStatus())) {
@@ -199,5 +197,31 @@ public class TaskService {
     public int getCompletedTaskCountForUser(Long userId) {
         return taskRepository.countCompletedTasksForUser(userId);
     }
-    
+
+    public TaskReportDto getStatusReport(Date dateFrom, Date dateTo, Long userId, Long stationId, Long departmentId) {
+        if (dateFrom == null) {
+            dateFrom = new Date(0); // epoch
+        }
+        if (dateTo == null) {
+            dateTo = new Date(); // now
+        }
+
+        List<Object[]> results = taskRepository.countTasksByStatusWithFilters(dateFrom, dateTo, userId, stationId, departmentId);
+
+        TaskReportDto report = new TaskReportDto();
+        report.setPendingCount(0L);
+        report.setInProgressCount(0L);
+        report.setCompletedCount(0L);
+
+        for (Object[] result : results) {
+            TaskStatusEnum status = (TaskStatusEnum) result[0];
+            Long count = (Long) result[1];
+            switch (status) {
+                case PENDING -> report.setPendingCount(count);
+                case IN_PROGRESS -> report.setInProgressCount(count);
+                case COMPLETED -> report.setCompletedCount(count);
+            }
+        }
+        return report;
+    }
 }

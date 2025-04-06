@@ -32,7 +32,7 @@ public class Task extends Auditable<String> {
 
     private String description;
 
-    private Date inititatedDate;
+    private Date initiatedDate;
 
     private Date startDate;
 

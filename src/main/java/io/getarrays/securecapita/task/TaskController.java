@@ -5,14 +5,16 @@ import io.getarrays.securecapita.exception.CustomMessage;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 @RestController
 @RequestMapping(path = "/task")
 @RequiredArgsConstructor
-
 public class TaskController {
     @Autowired
     private TaskService taskService;
@@ -66,5 +68,16 @@ public class TaskController {
     public ResponseEntity<Integer> getCompletedTaskCount(@PathVariable Long userId) {
         int count = taskService.getCompletedTaskCountForUser(userId);
         return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/status/report")
+    public ResponseEntity<?> getStatusReport(@RequestParam(name = "dateFrom", required = false) @DateTimeFormat(iso =
+            DateTimeFormat.ISO.DATE) Date dateFrom,
+                                             @RequestParam(name = "dateTo", required = false) @DateTimeFormat(iso =
+                                                     DateTimeFormat.ISO.DATE) Date dateTo, @RequestParam(name =
+            "userId", required = false) Long userId,
+                                             @RequestParam(name = "stationId", required = false) Long stationId,
+                                             @RequestParam(name = "departmentId", required = false) Long departmentId) {
+        return ResponseEntity.ok().body(taskService.getStatusReport(dateFrom, dateTo, userId, stationId, departmentId));
     }
 }
