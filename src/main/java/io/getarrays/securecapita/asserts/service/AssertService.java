@@ -505,4 +505,57 @@ public List<AssertEntity>getAssertEntityData(SpecificationInput specificationInp
         return stats;
     }
 
+
+    public ResponseEntity<?> updateAssertById(Long assertId, AssertDto assertDto) throws Exception {
+        // Check if the assert exists
+        Optional<AssertEntity> optionalAssert = assertRepository.findById(assertId);
+        if (optionalAssert.isEmpty()) {
+            return ResponseEntity.status(404).body(new CustomMessage("Assert not found."));
+        }
+
+        AssertEntity existingAssert = optionalAssert.get();
+
+        // Validate station
+        Optional<Station> optionalStation = stationRepository.findById(assertDto.getSelectedStationID());
+        if (optionalStation.isEmpty()) {
+            throw new Exception("Station not found");
+        }
+
+        // Validate office location
+        Optional<OfficeLocation> optionalOfficeLocation = officeLocationRepository.findByStationAndName(optionalStation.get().getStation_id(), assertDto.getLocation());
+        if (optionalOfficeLocation.isEmpty()) {
+            throw new Exception("Office Location not found");
+        }
+
+        // Update fields
+        existingAssert.setOfficeLocation(optionalOfficeLocation.get());
+        existingAssert.setStation(optionalStation.get());
+        existingAssert.setDate(assertDto.getDate());
+        existingAssert.setAssetDisc(assertDto.getAssetDisc());
+        existingAssert.setMovable(assertDto.getMovable());
+        existingAssert.setLocation(assertDto.getLocation());
+        existingAssert.setAssetNumber(assertDto.getAssetNumber());
+        existingAssert.setAssertType(assertDto.getAssertType());
+        existingAssert.setInitialRemarks(assertDto.getInitialRemarks());
+        existingAssert.setSerialNumber(assertDto.getSerialNumber());
+        existingAssert.setInvoiceNumber(assertDto.getInvoiceNumber());
+
+        // Update user info
+        User user = userRepository1.findById(((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get();
+        existingAssert.setPreparedBy(user);
+
+        AssertEntity updatedAssert = assertRepository.save(existingAssert);
+        userLogService.addLog(ActionType.UPDATED, "Updated assert successfully by ID. Assert: " + updatedAssert.getAssetDisc());
+
+        return ResponseEntity.ok(updatedAssert);
+    }
+
+
+
+
+
+
+
+
+
 }

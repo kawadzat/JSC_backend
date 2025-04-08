@@ -82,6 +82,16 @@ public class AssertController {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateAssertById(
+            @PathVariable("id") Long assertId,
+            @RequestBody AssertDto assertDto) {
+        try {
+            return assertService.updateAssertById(assertId, assertDto);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new CustomMessage("Update failed: " + e.getMessage()));
+        }
+    }
 
 
 
@@ -348,5 +358,12 @@ public class AssertController {
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
     }
+
+
+
+
+
+
+
 }
 

@@ -59,7 +59,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests().requestMatchers("/station/check/**").hasAnyAuthority(ROLE_AUTH.CHECK_ASSET.name());
         http.authorizeHttpRequests().requestMatchers("/assert/confirm/**").hasAnyAuthority(ROLE_AUTH.CONFIRM_ASSET.name());
         http.authorizeHttpRequests().requestMatchers("/assert/movable/**");
-
+        http.authorizeHttpRequests().requestMatchers("/assert/movable/**");
         http.authorizeHttpRequests().requestMatchers("/assert/allaserts/**");
 
 

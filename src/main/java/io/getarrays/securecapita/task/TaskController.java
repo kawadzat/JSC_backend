@@ -61,8 +61,8 @@ public class TaskController {
         int count = taskService.getPendingTaskCountForUser(userId);
         return ResponseEntity.ok(count);
     }
-
-    @GetMapping("/completed-count/{userId}")
+//task for cards api
+    @GetMapping("task/completed-count/{userId}")
     public ResponseEntity<Integer> getCompletedTaskCount(@PathVariable Long userId) {
         int count = taskService.getCompletedTaskCountForUser(userId);
         return ResponseEntity.ok(count);
