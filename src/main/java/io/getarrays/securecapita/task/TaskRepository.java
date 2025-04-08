@@ -84,6 +84,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     AND (:stationId IS NULL OR us.station.station_id = :stationId)
     AND (:departmentId IS NULL OR ud.department.id = :departmentId)
     GROUP BY u.id, t.status
+    ORDER BY u.firstName, u.lastName
 """)
     List<Object[]> countTasksByUserAndStatusWithFilters(@Param("startDate") Date startDate,
                                                         @Param("endDate") Date endDate,
