@@ -5,7 +5,7 @@ import io.getarrays.securecapita.department.service.DepartmentService;
 import io.getarrays.securecapita.domain.User;
 import io.getarrays.securecapita.dto.UserDTO;
 import io.getarrays.securecapita.dtomapper.UserDTOMapper;
-import io.getarrays.securecapita.repository.UserRepository;
+import io.getarrays.securecapita.exception.ResourceNotFoundException;
 import io.getarrays.securecapita.repository.implementation.UserRepository1;
 import nl.basjes.parse.useragent.utils.springframework.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,16 +21,13 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     @Autowired
-    private UserRepository<User> userRepository;
-
-    @Autowired
     private DepartmentService departmentService;
 
     @Autowired
-    private UserRepository1 userRepository1;
+    private UserRepository1 userRepository;
 
     public UserDTO update(UserDTO currentUser, Long userId, UserUpdateDto userUpdateDto) {
-        User user = userRepository.get(userId);
+        User user = findByIdOrThrow(userId);
 
         List<Long> newDepartmentIds = userUpdateDto.getDepartmentIds();
 
@@ -56,27 +53,27 @@ public class UserService {
             // Determine departments to add
             List<UserDepartment> departmentsToAdd =
                     newDepartments.stream().filter(dept -> !existingDepartmentMap.containsKey(dept.getId())) // Only
-                    // add if not already
-                    // assigned
-                    .map(dept -> {
-                        UserDepartment userDepartment = new UserDepartment();
-                        userDepartment.setUser(user);
-                        userDepartment.setDepartment(dept);
-                        userDepartment.setCreatedDate(new Timestamp(System.currentTimeMillis()));
-                        userDepartment.setAssignedBy(userRepository.get(currentUser.getId()));
-                        return userDepartment;
-                    }).toList();
+                            // add if not already
+                            // assigned
+                            .map(dept -> {
+                                UserDepartment userDepartment = new UserDepartment();
+                                userDepartment.setUser(user);
+                                userDepartment.setDepartment(dept);
+                                userDepartment.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+                                userDepartment.setAssignedBy(findByIdOrThrow(currentUser.getId()));
+                                return userDepartment;
+                            }).toList();
 
             // Add new departments
             user.getUserDepartments().addAll(departmentsToAdd);
         }
 
-        return UserDTOMapper.fromUser(userRepository1.save(user));
+        return UserDTOMapper.fromUser(userRepository.save(user));
     }
 
 
     public List<UserDTO> getDepartmentAndStationFellows(UserDTO currentUser) {
-        User user = userRepository1.findById(currentUser.getId()).get();
+        User user = userRepository.findById(currentUser.getId()).get();
 
         // Get department ID safely
         List<Long> departmentIds = (user.getUserDepartments() != null) ?
@@ -88,7 +85,7 @@ public class UserService {
                 user.getStations().stream().map(e -> e.getStation().getStation_id()).filter(Objects::nonNull).toList() : Collections.emptyList();
 
         // Fetch users
-        List<User> fellowUsers = userRepository1.findByDepartmentIdAndStationIdIn(currentUser.getId(),
+        List<User> fellowUsers = userRepository.findByDepartmentIdAndStationIdIn(currentUser.getId(),
                 !departmentIds.isEmpty() ? departmentIds : null, !stationIds.isEmpty() ? stationIds : null);
 
         return fellowUsers.stream().map(UserDTOMapper::fromUser).toList();
@@ -96,6 +93,11 @@ public class UserService {
 
 
     public List<UserDTO> filterUsers(List<Long> stationIds, List<Long> departmentIds) {
-        return userRepository1.findByDepartmentIdAndStationIdIn(null, departmentIds, stationIds).stream().map(UserDTOMapper::fromUser).toList();
+        return userRepository.findByDepartmentIdAndStationIdIn(null, departmentIds, stationIds).stream().map(UserDTOMapper::fromUser).toList();
+    }
+
+    private User findByIdOrThrow(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("No User found by id: "
+                + userId));
     }
 }

@@ -56,10 +56,10 @@ public class UserStationService {
 
     }
 
-    public ResponseEntity<?> removeStationFromUser(Long assignId) {
-        Optional<UserStation> optionalUserStation=userStationRepo.findById(assignId);
+    public ResponseEntity<?> removeStationFromUser(Long userId, Long stationId) {
+        Optional<UserStation> optionalUserStation = userStationRepo.findAllByUserAndStation(userId, stationId);
         if(optionalUserStation.isEmpty()){
-            return ResponseEntity.badRequest().body(new CustomMessage("user or station is not valid, try again."));
+            return ResponseEntity.badRequest().body(new CustomMessage("StationId is not valid or already removed, try again."));
         }
         userStationRepo.delete(optionalUserStation.get());
         return ResponseEntity.ok(new CustomMessage("user removed from the station."));

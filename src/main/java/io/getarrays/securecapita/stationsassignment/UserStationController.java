@@ -31,7 +31,7 @@ public class UserStationController {
     }
 
     @DeleteMapping("/remove")
-    public ResponseEntity<?> removeStationToUser(@RequestParam(name = "assignId")Long assignId){
-        return userStationService.removeStationFromUser(assignId);
+    public ResponseEntity<?> removeStationToUser(@RequestParam(name = "userId") Long userId, @RequestParam(name = "stationId")Long stationId){
+        return userStationService.removeStationFromUser(userId, stationId);
     }
 }

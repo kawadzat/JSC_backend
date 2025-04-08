@@ -33,7 +33,7 @@ public class UserStationDto {
     public static UserStationDto fromEntity(UserStation userStation) {
         return UserStationDto.builder()
                 .assignedBy(ObjectUtils.isEmpty(userStation.getAssignedBy())?null:userStation.getAssignedBy().getFirstName())
-                .id(userStation.getId())
+                .id(userStation.getStation().getStation_id())
                 .station(userStation.getStation().getStationName())
                 .createdDate(userStation.getCreatedDate())
                 .build();
