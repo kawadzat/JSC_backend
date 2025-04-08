@@ -80,4 +80,15 @@ public class TaskController {
                                              @RequestParam(name = "departmentId", required = false) Long departmentId) {
         return ResponseEntity.ok().body(taskService.getStatusReport(dateFrom, dateTo, userId, stationId, departmentId));
     }
+
+    @GetMapping("/user-wise-status/report")
+    public ResponseEntity<?> getUserWiseStatusReport(@RequestParam(name = "dateFrom", required = false) @DateTimeFormat(iso =
+            DateTimeFormat.ISO.DATE) Date dateFrom,
+                                             @RequestParam(name = "dateTo", required = false) @DateTimeFormat(iso =
+                                                     DateTimeFormat.ISO.DATE) Date dateTo, @RequestParam(name =
+            "userId", required = false) Long userId,
+                                             @RequestParam(name = "stationId", required = false) Long stationId,
+                                             @RequestParam(name = "departmentId", required = false) Long departmentId) {
+        return ResponseEntity.ok().body(taskService.getUserWiseStatusReport(dateFrom, dateTo, userId, stationId, departmentId));
+    }
 }

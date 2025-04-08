@@ -56,7 +56,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     int countTotalAssignedTasksForUser(@Param("userId") Long userId);
 
     @Query("""
-    SELECT t.status, COUNT(t)
+    SELECT t.status, COUNT(DISTINCT t)
     FROM Task t
     JOIN t.assignedUsers u
     JOIN u.stations us
@@ -72,5 +72,24 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
                                                  @Param("userId") Long userId,
                                                  @Param("stationId") Long stationId,
                                                  @Param("departmentId") Long departmentId);
+
+    @Query("""
+    SELECT u, t.status, COUNT(DISTINCT t)
+    FROM Task t
+    JOIN t.assignedUsers u
+    JOIN u.stations us
+    JOIN u.userDepartments ud
+    WHERE t.initiatedDate BETWEEN :startDate AND :endDate
+    AND (:userId IS NULL OR u.id = :userId)
+    AND (:stationId IS NULL OR us.station.station_id = :stationId)
+    AND (:departmentId IS NULL OR ud.department.id = :departmentId)
+    GROUP BY u.id, t.status
+""")
+    List<Object[]> countTasksByUserAndStatusWithFilters(@Param("startDate") Date startDate,
+                                                        @Param("endDate") Date endDate,
+                                                        @Param("userId") Long userId,
+                                                        @Param("stationId") Long stationId,
+                                                        @Param("departmentId") Long departmentId);
+
 
 }

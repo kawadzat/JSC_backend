@@ -224,4 +224,43 @@ public class TaskService {
         }
         return report;
     }
+
+    public List<UserWiseTaskReportDto> getUserWiseStatusReport(Date dateFrom, Date dateTo, Long userId, Long stationId, Long departmentId) {
+        if (dateFrom == null) {
+            dateFrom = new Date(0);
+        }
+        if (dateTo == null) {
+            dateTo = new Date();
+        }
+
+        List<Object[]> results = taskRepository.countTasksByUserAndStatusWithFilters(dateFrom, dateTo, userId, stationId, departmentId);
+
+        // Use a Map to accumulate task stats by user
+        Map<Long, UserWiseTaskReportDto> reportMap = new HashMap<>();
+
+        for (Object[] row : results) {
+            User user = (User) row[0];
+            TaskStatusEnum status = (TaskStatusEnum) row[1];
+            Long count = (Long) row[2];
+
+            UserWiseTaskReportDto userReport = reportMap.computeIfAbsent(user.getId(), id -> {
+                UserWiseTaskReportDto dto = new UserWiseTaskReportDto();
+                dto.setUser(UserDTOMapper.fromUser(user));
+                dto.setTaskStats(new TaskReportDto());
+                dto.getTaskStats().setPendingCount(0L);
+                dto.getTaskStats().setInProgressCount(0L);
+                dto.getTaskStats().setCompletedCount(0L);
+                return dto;
+            });
+
+            switch (status) {
+                case PENDING -> userReport.getTaskStats().setPendingCount(count);
+                case IN_PROGRESS -> userReport.getTaskStats().setInProgressCount(count);
+                case COMPLETED -> userReport.getTaskStats().setCompletedCount(count);
+            }
+        }
+
+        return new ArrayList<>(reportMap.values());
+    }
+
 }
