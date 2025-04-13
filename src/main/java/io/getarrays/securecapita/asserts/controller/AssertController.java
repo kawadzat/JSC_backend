@@ -122,12 +122,7 @@ public class AssertController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createAssert(@RequestBody @Validated AssertDto newAssert) throws Exception {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.CREATE_ASSET.name()))) {
-            return assertService.createAssert(newAssert);
-        }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
-
+        return assertService.createAssert(newAssert);
     }
 
     //    @PostMapping("/invoice/addtoassert/{id}")
@@ -230,12 +225,7 @@ public class AssertController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateAssertEntity(@PathVariable("id") Long assertEntityId, @RequestBody AssertDto dto) throws Exception {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.CREATE_ASSET.name()))) {
-            return assertService.updateAssertEntity(assertEntityId, dto);
-        }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
-
+        return assertService.updateAssertEntity(assertEntityId, dto);
     }
 
     //stat
