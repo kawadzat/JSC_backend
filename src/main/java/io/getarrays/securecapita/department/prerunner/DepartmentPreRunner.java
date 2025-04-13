@@ -26,7 +26,7 @@ public class DepartmentPreRunner implements CommandLineRunner {
         addDepartmentIfNotExists(departments, "HR", "Human Resources");
         addDepartmentIfNotExists(departments, "IT", "Information Technology");
         addDepartmentIfNotExists(departments, "FIN", "Finance");
-        addDepartmentIfNotExists(departments, "MKT", "Marketing");
+        addDepartmentIfNotExists(departments, "CMM", "Communication");
         addDepartmentIfNotExists(departments, "OPS", "Operations");
 
         if (!departments.isEmpty()) {
