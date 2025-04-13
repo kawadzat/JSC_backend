@@ -14,6 +14,7 @@ import io.getarrays.securecapita.asserts.repo.StationRepository;
 import io.getarrays.securecapita.domain.User;
 import io.getarrays.securecapita.dto.*;
 import io.getarrays.securecapita.exception.CustomMessage;
+import io.getarrays.securecapita.exception.ResourceNotFoundException;
 import io.getarrays.securecapita.jasper.downloadtoken.DownloadToken;
 import io.getarrays.securecapita.jasper.downloadtoken.DownloadTokenRepository;
 import io.getarrays.securecapita.jasper.downloadtoken.DownloadTokenService;
@@ -89,15 +90,48 @@ public class AssertService implements AssertServiceInterface {
 
 
 
+    
 
-    /* updating the user */
     public AssertEntity updateAssertEntity(AssertEntity assertEntity) {
-
         AssertEntity updatedAssertEntity = assertRepository.save(assertEntity);
         userLogService.addLog(ActionType.UPDATED, "updated assert successfully.");
         return updatedAssertEntity;
     }
 
+    public ResponseEntity<?> updateAssertEntity(Long assertId, AssertDto dto) throws Exception {
+        AssertEntity assertEntity = assertEntityRepository.findById(assertId)
+                .orElseThrow(() -> new ResourceNotFoundException("Invalid assert id"));
+
+        Optional<AssertEntity> duplicatedAssert = assertsJpaRepository.findByAssetAndStation(dto.getAssetNumber(), dto.getSelectedStationID());
+        if (duplicatedAssert.isPresent() && assertId!=duplicatedAssert.get().getId()) {
+            return ResponseEntity.status(422).body(new CustomMessage("Found Duplicate Entry. Please check again."));
+        }
+        Optional<Station> optionalStation = stationRepository.findById(dto.getSelectedStationID());
+        if (optionalStation.isEmpty()) {
+            throw new ResourceNotFoundException("Station not found");
+        }
+        Optional<OfficeLocation> optionalOfficeLocation = officeLocationRepository.findByStationAndName(optionalStation.get().getStation_id(), dto.getLocation());
+        if (optionalOfficeLocation.isEmpty()) {
+            throw new ResourceNotFoundException("Office Location not found");
+        }
+        assertEntity.setOfficeLocation(optionalOfficeLocation.get());
+        assertEntity.setStation(optionalStation.get());
+        assertEntity.setDate(dto.getDate());
+        assertEntity.setAssetDisc(dto.getAssetDisc());
+        assertEntity.setMovable(dto.getMovable());
+        assertEntity.setLocation(dto.getLocation());
+        assertEntity.setAssetNumber(dto.getAssetNumber());
+        assertEntity.setAssertType(dto.getAssertType());
+        assertEntity.setInitialRemarks(dto.getInitialRemarks());
+        assertEntity.setSerialNumber(dto.getSerialNumber());
+        assertEntity.setInvoiceNumber(dto.getInvoiceNumber());
+
+        User user = userRepository1.findById(((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get();
+        assertEntity.setPreparedBy(user);
+        AssertEntity createdAssert = assertRepository.save(assertEntity);
+        userLogService.addLog(ActionType.UPDATED, "updated assert successfully.");
+        return ResponseEntity.ok(createdAssert);
+    }
 
     /* to create user */
     public ResponseEntity<?> createAssert(AssertDto assertDto) throws Exception {
@@ -108,11 +142,11 @@ public class AssertService implements AssertServiceInterface {
         }
         Optional<Station> optionalStation = stationRepository.findById(assertDto.getSelectedStationID());
         if (optionalStation.isEmpty()) {
-            throw new Exception("Station not found");
+            throw new ResourceNotFoundException("Station not found");
         }
         Optional<OfficeLocation> optionalOfficeLocation = officeLocationRepository.findByStationAndName(optionalStation.get().getStation_id(), assertDto.getLocation());
         if (optionalOfficeLocation.isEmpty()) {
-            throw new Exception("Office Location not found");
+            throw new ResourceNotFoundException("Office Location not found");
         }
         AssertEntity newAssert = new AssertEntity();
         newAssert.setOfficeLocation(optionalOfficeLocation.get());

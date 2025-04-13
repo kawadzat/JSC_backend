@@ -229,14 +229,10 @@ public class AssertController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateAssertEntity(@PathVariable("id") Long assertEntityId, @RequestBody AssertEntity assertEntity) {
+    public ResponseEntity<?> updateAssertEntity(@PathVariable("id") Long assertEntityId, @RequestBody AssertDto dto) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.CREATE_ASSET.name()))) {
-            AssertEntity oldAssertEntity = assertService.getAssertEntityById(assertEntityId);
-            oldAssertEntity.setDate(new Timestamp(System.currentTimeMillis()));
-            oldAssertEntity.setAssetDisc(assertEntity.getAssetDisc());
-            AssertEntity updatedAssertEntity = assertService.updateAssertEntity(oldAssertEntity);
-            return ResponseEntity.ok(updatedAssertEntity);
+            return assertService.updateAssertEntity(assertEntityId, dto);
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomMessage("You don't have permission."));
 
@@ -291,6 +287,7 @@ public class AssertController {
         if (authentication.getAuthorities().stream().anyMatch((r) -> r.getAuthority().contains(ROLE_AUTH.CREATE_ASSET.name()))) {
             AssertEntity oldAssertEntity = assertService.getAssertEntityById(assertEntityId);
             oldAssertEntity.setMovable(assertEntity.isMovable());
+
             AssertEntity updatedAssertEntity = assertService.updateAssertEntity(oldAssertEntity);
             return ResponseEntity.ok(new CustomMessage("Movable status changed successfully.",updatedAssertEntity));
         }
