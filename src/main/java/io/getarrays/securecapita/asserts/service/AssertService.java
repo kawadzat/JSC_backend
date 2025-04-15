@@ -125,6 +125,7 @@ public class AssertService implements AssertServiceInterface {
         assertEntity.setInitialRemarks(dto.getInitialRemarks());
         assertEntity.setSerialNumber(dto.getSerialNumber());
         assertEntity.setInvoiceNumber(dto.getInvoiceNumber());
+        assertEntity.setQuantity(dto.getQuantity());
 
         User user = userRepository1.findById(((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get();
         assertEntity.setPreparedBy(user);
@@ -160,7 +161,7 @@ public class AssertService implements AssertServiceInterface {
         newAssert.setInitialRemarks(assertDto.getInitialRemarks());
         newAssert.setSerialNumber(assertDto.getSerialNumber());
         newAssert.setInvoiceNumber(assertDto.getInvoiceNumber());
-
+        newAssert.setQuantity(assertDto.getQuantity());
         User user = userRepository1.findById(((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get();
         newAssert.setPreparedBy(user);
         AssertEntity createdAssert = assertRepository.save(newAssert);
