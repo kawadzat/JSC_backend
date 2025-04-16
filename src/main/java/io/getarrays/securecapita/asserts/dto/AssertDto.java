@@ -50,4 +50,7 @@ public class AssertDto {
 
     @NotNull(message = "invoiceNumber must not be null")
     private String invoiceNumber;
+
+    @NotNull(message = "quantity must not be null")
+    private int quantity;
 }
