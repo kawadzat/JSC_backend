@@ -211,10 +211,10 @@ public class StationPreRunner implements CommandLineRunner {
         stationArrayList.add(Station.builder().station_id(81L).province(getProvince(provinceList,11L)).stationName("HARARE_HIGH_COURT").build());
         stationArrayList.add(Station.builder().station_id(82L).province(getProvince(provinceList,11L)).stationName("BULAWAYO_HIGH_COURT").build());
         stationArrayList.add(Station.builder().station_id(83L).province(getProvince(provinceList,11L)).stationName("MASVINGO_HIGH_COURT").build());
-        stationArrayList.add(Station.builder().station_id(84L).province(getProvince(provinceList,11L)).stationName("MUTATE_HIGH_COURT").build());
+        stationArrayList.add(Station.builder().station_id(84L).province(getProvince(provinceList,11L)).stationName("MUTARE_HIGH_COURT").build());
         stationArrayList.add(Station.builder().station_id(85L).province(getProvince(provinceList,11L)).stationName("MASTER_HARARE_HIGH_COURT").build());
         stationArrayList.add(Station.builder().station_id(86L).province(getProvince(provinceList,11L)).stationName("LABOUR_COURT_HARARE").build());
-        stationArrayList.add(Station.builder().station_id(87L).province(getProvince(provinceList,11L)).stationName("LABOUR_COURT_BULAWATO").build());
+        stationArrayList.add(Station.builder().station_id(87L).province(getProvince(provinceList,11L)).stationName("LABOUR_COURT_BULAWAYO").build());
         stationArrayList.add(Station.builder().station_id(88L).province(getProvince(provinceList,11L)).stationName("LABOUR_COURT_GWERU").build());
 
 

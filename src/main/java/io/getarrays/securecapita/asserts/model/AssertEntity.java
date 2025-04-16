@@ -51,7 +51,7 @@ private  int quantity;
     @NotNull
     private String serialNumber;
     //add all details, station, and only can filter from frontend
-    //CAN WE DO IT
+    //CAN WE DO IT task filters?
     @NotNull
     private String invoiceNumber;
     @NotNull

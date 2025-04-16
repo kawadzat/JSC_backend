@@ -17,6 +17,8 @@ public class AssertDto {
     @NotNull(message = "assetNumber must not be null")
     private String assetNumber;
 
+    @NotNull(message = "serialNumber must not be null")
+    private  int quantity;
     @NotNull(message = "location must not be null")
     private String location;
 
@@ -41,6 +43,10 @@ public class AssertDto {
 
     @NotNull(message = "serialNumber must not be null")
     private String serialNumber;
+
+
+
+
 
     @NotNull(message = "invoiceNumber must not be null")
     private String invoiceNumber;
