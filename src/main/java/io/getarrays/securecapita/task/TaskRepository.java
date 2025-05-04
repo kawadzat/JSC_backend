@@ -22,12 +22,12 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             "TRUE)) AND " +
             "(:stationId IS NULL OR EXISTS (" +
             "   SELECT us FROM UserStation us WHERE " +
-            "   (us.user.id IN (SELECT u.id FROM t.assignedUsers u) OR us.user.id = t.initiatedUser.id) " +
+            "   (us.user.id IN (SELECT u.id FROM t.assignedUsers u)) " +
             "   AND us.station.id = :stationId" +
             ")) AND " +
             "(:departmentId IS NULL OR EXISTS (" +
             "   SELECT ud FROM UserDepartment ud WHERE " +
-            "   (ud.user.id IN (SELECT u.id FROM t.assignedUsers u) OR ud.user.id = t.initiatedUser.id) " +
+            "   (ud.user.id IN (SELECT u.id FROM t.assignedUsers u)) " +
             "   AND ud.department.id = :departmentId" +
             "))")
     Page<Task> findTasksByFilters(
