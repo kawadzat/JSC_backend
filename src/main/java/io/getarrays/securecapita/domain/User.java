@@ -54,8 +54,6 @@ public class User {
     private String imageUrl;
     private boolean enabled;
 
-
-
     private int projectSize;
 
     @JsonIgnore

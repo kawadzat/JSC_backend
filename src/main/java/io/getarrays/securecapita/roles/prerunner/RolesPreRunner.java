@@ -81,6 +81,33 @@ public class RolesPreRunner implements CommandLineRunner {
         updateRole(roles, AUTH_ROLE.SYSADMIN, permissionSysAdmin);
 
 
+        String permissionDEPUTY_HEAD_IT = ROLE_AUTH.READ_USER + "," +
+                ROLE_AUTH.UPDATE_USER + "," +
+                ROLE_AUTH.VIEW_ASSET + "," +
+                ROLE_AUTH.VIEW_STATION + "," +
+                ROLE_AUTH.ALL_STATION + "," +
+                ROLE_AUTH.REQUEST_MOVE_ASSET + "," +
+                ROLE_AUTH.APPROVE_MOVE_ASSET + "," +
+                ROLE_AUTH.CREATE_STATION + "," +
+                ROLE_AUTH.ASSIGN_STATION + "," +
+                ROLE_AUTH.ASSIGN_ROLE + "," +
+                ROLE_AUTH.CREATE_PRODUCT + "," +
+                ROLE_AUTH.CREATE_PURCHASEREQUEST + "," +
+                ROLE_AUTH.CREATE_ASSET;
+        updateRole(roles, AUTH_ROLE.SYSADMIN, permissionSysAdmin);
+
+
+
+
+
+
+
+
+
+
+
+
+
         String permissionAdminCS = ROLE_AUTH.READ_USER + "," +
                 ROLE_AUTH.UPDATE_USER + "," +
                 ROLE_AUTH.VIEW_ASSET + "," +

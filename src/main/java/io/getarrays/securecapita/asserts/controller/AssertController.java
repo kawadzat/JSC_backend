@@ -86,12 +86,6 @@ public class AssertController {
 
 
 
-
-
-
-
-
-
 //is this  correct counting number of stations assigned to logged in user
     @GetMapping("/userstations")
     public ResponseEntity<Long> countStationsAssignedToUser(@AuthenticationPrincipal User currentUser) {

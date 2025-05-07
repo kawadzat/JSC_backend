@@ -13,9 +13,7 @@ import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.sql.Timestamp;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
 import static jakarta.persistence.CascadeType.ALL;
@@ -83,4 +81,21 @@ private  int quantity;
 
     @ManyToOne
     private User checkedBy;
+
+    @OneToMany(mappedBy = "assertEntity", cascade = ALL)
+    @JsonManagedReference
+    private List< ITServices> itServices;
+
+    @ManyToMany
+    @JoinTable(name = "assert_assigned_users", joinColumns = @JoinColumn(name = "assert_id"), inverseJoinColumns =
+    @JoinColumn(name = "user_id"))
+    private Set<User> assignedUsers = new HashSet<>();
+
+
+
+
+
+
+
+
 }
