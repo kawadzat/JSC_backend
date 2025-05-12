@@ -2,7 +2,7 @@
 <configuration scan="true">
 
     <!-- ==== File locations ==== -->
-    <property name="LOG_PATH" value="/jsc/logs"/>
+    <property name="LOG_PATH" value="/opt/jsc/be-logs"/>
     <property name="LOG_FILE" value="app.log"/>
 
     <!-- ==== Console Appender ==== -->
