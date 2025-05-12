@@ -141,6 +141,7 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
 
     @Override
     public User get(Long id) {
+        log.info("inside get");
         try {
             return jdbc.queryForObject(SELECT_USER_BY_ID_QUERY, of("id", id), new UserRowMapper());
         } catch (EmptyResultDataAccessException exception) {
