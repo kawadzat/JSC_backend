@@ -28,6 +28,7 @@ public class DepartmentPreRunner implements CommandLineRunner {
         addDepartmentIfNotExists(departments, "FIN", "Finance");
         addDepartmentIfNotExists(departments, "CMM", "Communication");
         addDepartmentIfNotExists(departments, "OPS", "Operations");
+        addDepartmentIfNotExists(departments, "PRT", "Protocol");
 
         if (!departments.isEmpty()) {
             departmentRepository.saveAll(departments);

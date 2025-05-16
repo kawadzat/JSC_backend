@@ -9,6 +9,9 @@ public enum AUTH_ROLE {
     HEAD_ADMIN,
     HEAD_IT,
     DEPUTY_HEAD_IT ,
+    SOFTWARE_DEVELOPER ,
+    SYS_ANALYST ,
+    ASSISTANT_SECRETARY,
   ICT_OFFICER ,
     SYSADMIN,
     AUDITOR,
@@ -17,8 +20,11 @@ public enum AUTH_ROLE {
     SECRETARY,
     HEADADMIN,
     DEPUTYHEADADMIN,
-    ASSISTANT_SECRETARY,
-    ADMINOFFICER;
+
+    ADMINOFFICER,
+
+
+    ;
 
 //which?
     public static int getMaxPriority() {

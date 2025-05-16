@@ -3,6 +3,7 @@ package io.getarrays.securecapita.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.getarrays.securecapita.ProjectManagement.Issue;
 import io.getarrays.securecapita.department.model.DepartmentEntity;
+import io.getarrays.securecapita.itinventory.Laptop;
 import io.getarrays.securecapita.roles.UserRole;
 import io.getarrays.securecapita.stationsassignment.UserStation;
 import io.getarrays.securecapita.user.UserDepartment;
@@ -115,6 +116,11 @@ public class User {
         Hibernate.initialize(getStations());
         return !stations.isEmpty();
     }
+
+    //laptops
+
+    @ManyToMany(mappedBy = "users")
+    private Set<Laptop> laptops;
 }
 
 

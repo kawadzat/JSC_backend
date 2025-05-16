@@ -75,7 +75,6 @@ private  int quantity;
     @Transient
     private Long selectedStationID;
 
-
     @ManyToOne
     private User preparedBy;
 
@@ -90,12 +89,6 @@ private  int quantity;
     @JoinTable(name = "assert_assigned_users", joinColumns = @JoinColumn(name = "assert_id"), inverseJoinColumns =
     @JoinColumn(name = "user_id"))
     private Set<User> assignedUsers = new HashSet<>();
-
-
-
-
-
-
 
 
 }

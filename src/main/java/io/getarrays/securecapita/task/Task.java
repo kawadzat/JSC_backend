@@ -57,4 +57,5 @@ public class Task extends Auditable<String> {
     @JoinColumn(name = "user_id"))
     private Set<User> assignedUsers = new HashSet<>();
 
+
 }

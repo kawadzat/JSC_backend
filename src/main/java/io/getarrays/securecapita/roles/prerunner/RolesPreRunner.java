@@ -94,7 +94,7 @@ public class RolesPreRunner implements CommandLineRunner {
                 ROLE_AUTH.CREATE_PRODUCT + "," +
                 ROLE_AUTH.CREATE_PURCHASEREQUEST + "," +
                 ROLE_AUTH.CREATE_ASSET;
-        updateRole(roles, AUTH_ROLE.SYSADMIN, permissionSysAdmin);
+        updateRole(roles, AUTH_ROLE.DEPUTY_HEAD_IT,permissionDEPUTY_HEAD_IT);
 
 
 
@@ -143,6 +143,30 @@ public class RolesPreRunner implements CommandLineRunner {
         updateRole(roles, AUTH_ROLE.ADMINOFFICER, permissionAdminCS);
 
 
+
+
+        String permissionSOFTWARE_DEVELOPER = ROLE_AUTH.READ_USER + "," +
+                ROLE_AUTH.UPDATE_USER + "," +
+                ROLE_AUTH.VIEW_ASSET + "," +
+                ROLE_AUTH.VIEW_STATION + "," +
+                ROLE_AUTH.ALL_STATION + "," +
+                ROLE_AUTH.REQUEST_MOVE_ASSET + "," +
+                ROLE_AUTH.APPROVE_MOVE_ASSET + "," +
+                ROLE_AUTH.CREATE_STATION + "," +
+                ROLE_AUTH.ASSIGN_STATION + "," +
+                ROLE_AUTH.ASSIGN_ROLE + "," +
+                ROLE_AUTH.CREATE_PRODUCT + "," +
+                ROLE_AUTH.CREATE_PURCHASEREQUEST + "," +
+                ROLE_AUTH.CREATE_ASSET;
+        updateRole(roles, AUTH_ROLE.SOFTWARE_DEVELOPER,permissionSOFTWARE_DEVELOPER );
+
+
+
+
+
+
+
+
         String permissionAuditor = ROLE_AUTH.READ_USER + "," +
 
                 ROLE_AUTH.VIEW_ASSET + "," +
@@ -160,45 +184,30 @@ public class RolesPreRunner implements CommandLineRunner {
                 ROLE_AUTH.VIEW_STATION;
         updateRole(roles, AUTH_ROLE.ASSISTANT_ADMIN, permissionOFFICEBEARER);
 
-
         String permissionSecretary = ROLE_AUTH.READ_USER + "," +
 
                 ROLE_AUTH.VIEW_ASSET + "," +
                               ROLE_AUTH.ALL_STATION;
         updateRole(roles, AUTH_ROLE.SECRETARY, permissionSecretary);
 
-
-
-
-
         String permissionHEADADMIN = ROLE_AUTH.READ_USER + "," +
-
                 ROLE_AUTH.VIEW_ASSET + "," +
-
-                ROLE_AUTH.ALL_STATION
-              ;
+                ROLE_AUTH.ALL_STATION;
         updateRole(roles, AUTH_ROLE.HEADADMIN, permissionHEADADMIN);
-
         updateRole(roles, AUTH_ROLE.HEAD_IT, permissionHEADADMIN);
-
+        updateRole(roles, AUTH_ROLE.DEPUTY_HEAD_IT, permissionHEADADMIN);
+        updateRole(roles, AUTH_ROLE.SOFTWARE_DEVELOPER, permissionHEADADMIN);
         String permissionDEPUTYHEADADMIN = ROLE_AUTH.READ_USER + "," +
-
                 ROLE_AUTH.VIEW_ASSET + "," +
                 ROLE_AUTH.ALL_STATION + "," +
-
                 ROLE_AUTH.CHECK_ASSET + "," +
                 ROLE_AUTH.APPROVE_MOVE_ASSET+","+
 
                 ROLE_AUTH.VIEW_STATION;
         updateRole(roles, AUTH_ROLE.DEPUTYHEADADMIN, permissionDEPUTYHEADADMIN);
-
-
         String permissionASS_Secretary = ROLE_AUTH.READ_USER + "," +
-
                 ROLE_AUTH.VIEW_ASSET + "," +
-
-                ROLE_AUTH.ALL_STATION
-                ;
+                ROLE_AUTH.ALL_STATION ;
         updateRole(roles, AUTH_ROLE.ASSISTANT_SECRETARY, permissionASS_Secretary);
 
 
@@ -206,18 +215,13 @@ public class RolesPreRunner implements CommandLineRunner {
 //                ROLE_AUTH.UPDATE_USER + "," +
                 ROLE_AUTH.VIEW_ASSET + "," +
                 ROLE_AUTH.VIEW_STATION + "," +
-                               ROLE_AUTH.REQUEST_MOVE_ASSET;
-
-        ;
-
+               ROLE_AUTH.REQUEST_MOVE_ASSET;
         updateRole(roles, AUTH_ROLE. PRINCIPAL_ADMIN, permissionPRINCIPAL_ADMIN);
 
         String permissionRegistrar = ROLE_AUTH.READ_USER + "," +
                 ROLE_AUTH.VIEW_ASSET + "," +
-
                 ROLE_AUTH.CHECK_ASSET + "," +
                 ROLE_AUTH.VIEW_STATION;
-
         updateRole(roles, AUTH_ROLE.REGISTRAR, permissionRegistrar);
         updateRole(roles, AUTH_ROLE.DEPUTY_REGISTRAR, permissionRegistrar);
     }
